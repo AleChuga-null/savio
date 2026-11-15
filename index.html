@@ -6,9 +6,6 @@
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Savio</title>
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="icon" href="icon.png" type="image/png" sizes="256x256">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@300;400;700&family=Cinzel+Decorative:wght@400;700;900&family=Prompt:wght@300;400;500;600&display=swap">
@@ -256,6 +253,35 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
 .tcard .btn:not(.danger):not(.primary):hover:not(:disabled){background:rgba(255,255,255,.95)}
 
 
+/* ---- inicio de sesión: ojito y enlace de recuperación ---- */
+.pw{position:relative}
+.field .pw input{padding-right:50px}
+.pw-toggle{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:var(--ink-soft);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.pw-toggle:hover{background:rgba(255,255,255,.85);color:var(--ink)}
+.pw-toggle svg{width:26px;height:26px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6px;stroke-linecap:round;stroke-linejoin:round}
+.pw-toggle svg *{vector-effect:non-scaling-stroke}
+/* ojo: solo se mueve el párpado superior; la línea de abajo no se mueve */
+.pw-toggle .lid{transform:scaleY(-1);transform-origin:12px 12px;transform-box:view-box;transition:transform .38s cubic-bezier(.45,0,.2,1)}
+.pw-toggle[aria-pressed="true"] .lid{transform:scaleY(1)}
+.pw-toggle .ring{opacity:0;transform:translate(var(--px,0px),var(--py,0px));transition:opacity .1s ease,transform .14s ease-out}
+.pw-toggle[aria-pressed="true"]{color:var(--accent)}
+.pw-toggle[aria-pressed="true"] .ring{opacity:1;transition:opacity .18s ease .16s,transform .14s ease-out}
+
+/* contraseña: todos los caracteres cambian a la vez */
+.pw .pwmask{position:absolute;inset:0;display:flex;align-items:center;overflow:hidden;pointer-events:none;color:var(--ink);padding-right:50px}
+.pw .pwtxt{display:flex;align-items:center;white-space:pre}
+.pw .pwc{position:relative;display:block;flex:none;height:1.5em;width:var(--w1);animation:pwW .3s var(--ease) both;animation-delay:var(--d)}
+.pw .pwc span{position:absolute;left:0;top:0;line-height:1.5em;white-space:pre}
+.pw .pwo{animation:pwOut .22s ease both;animation-delay:var(--d)}
+.pw .pwn{animation:pwIn .3s var(--ease) both;animation-delay:var(--d)}
+@keyframes pwW{from{width:var(--w0)}to{width:var(--w1)}}
+@keyframes pwOut{to{opacity:0;transform:translateY(-3px) scale(.6)}}
+@keyframes pwIn{from{opacity:0;transform:translateY(4px) scale(.6)}to{opacity:1;transform:none}}
+.pw.anim input{color:transparent;-webkit-text-fill-color:transparent;caret-color:transparent}
+.linkbtn{align-self:flex-start;padding:4px 0;border:0;background:transparent;color:var(--link);font:700 15px/1.3 var(--f-sub);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:hover{color:var(--ink)}
+.linkbtn:disabled{opacity:.55;cursor:default}
+
 /* ---- móvil: las carpetas viven en un cajón lateral (menú hamburguesa) ---- */
 .menu-btn,.side-close,.scrim{display:none}
 @keyframes chipIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
@@ -350,7 +376,7 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
   <main class="main">
     <section class="panel" id="auth" hidden aria-labelledby="authTitle">
       <h2 id="authTitle">Entra en Savio</h2>
-      <p class="hint">Tus guardados son privados y se sincronizan en todos tus dispositivos.</p>
+      <p class="hint" id="authLead">Tus guardados son privados y se sincronizan en todos tus dispositivos.</p>
       <form id="authForm" style="display:flex;flex-direction:column;gap:12px" novalidate>
         <div class="field">
           <label for="a-email">Correo</label>
@@ -358,7 +384,11 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
         </div>
         <div class="field">
           <label for="a-pass">Contraseña</label>
-          <input id="a-pass" type="password" autocomplete="current-password" minlength="8">
+          <div class="pw">
+            <input id="a-pass" type="password" autocomplete="current-password" minlength="8">
+            <button type="button" class="pw-toggle" data-for="a-pass" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="lower" d="M2 12C6 18.5 18 18.5 22 12"/><circle class="ring" cx="12" cy="12" r="2.8"/><g class="lid"><path d="M2 12C6 5.5 18 5.5 22 12"/><path d="M4.29 9.51L2.51 7.9M7.33 7.91L6.11 5.61M12 7.13V4.33M16.67 7.91L17.89 5.61M19.71 9.51L21.49 7.9"/></g></svg></button>
+          </div>
+          <button type="button" class="linkbtn" id="a-forgot">¿Has olvidado la contraseña?</button>
         </div>
         <p class="error" id="a-error" role="alert"></p>
         <p class="hint" id="a-info" role="status"></p>
@@ -367,9 +397,26 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
           <button type="button" class="btn" id="a-signup">Crear cuenta</button>
         </div>
       </form>
-      <div class="or">o</div>
-      <div class="row-btns"><button type="button" class="btn demo" id="a-demo">Probar sin cuenta</button></div>
-      <p class="hint">Verás la página con datos de ejemplo. No hace falta correo ni contraseña.</p>
+      <form id="resetForm" style="display:flex;flex-direction:column;gap:12px" novalidate hidden>
+        <div class="field">
+          <label for="r-pass">Contraseña nueva</label>
+          <div class="pw">
+            <input id="r-pass" type="password" autocomplete="new-password" minlength="8">
+            <button type="button" class="pw-toggle" data-for="r-pass" aria-label="Mostrar contraseña" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="lower" d="M2 12C6 18.5 18 18.5 22 12"/><circle class="ring" cx="12" cy="12" r="2.8"/><g class="lid"><path d="M2 12C6 5.5 18 5.5 22 12"/><path d="M4.29 9.51L2.51 7.9M7.33 7.91L6.11 5.61M12 7.13V4.33M16.67 7.91L17.89 5.61M19.71 9.51L21.49 7.9"/></g></svg></button>
+          </div>
+          <p class="hint">Mínimo 8 caracteres.</p>
+        </div>
+        <p class="error" id="r-error" role="alert"></p>
+        <div class="row-btns">
+          <button type="submit" class="btn primary">Guardar contraseña</button>
+          <button type="button" class="btn" id="r-cancel">Cancelar</button>
+        </div>
+      </form>
+      <div id="authAlt" style="display:flex;flex-direction:column;gap:12px">
+        <div class="or">o</div>
+        <div class="row-btns"><button type="button" class="btn demo" id="a-demo">Probar sin cuenta</button></div>
+        <p class="hint">Verás la página con datos de ejemplo. No hace falta correo ni contraseña.</p>
+      </div>
     </section>
 
     <div class="main-head">
@@ -1413,6 +1460,9 @@ function authMsg(e){
   if(/already registered/i.test(m)) return 'Ese correo ya tiene cuenta. Pulsa Entrar.';
   if(/signups? not allowed|signup is disabled/i.test(m)) return 'El registro de cuentas nuevas está desactivado.';
   if(/rate limit/i.test(m)) return 'Demasiados intentos. Espera unos minutos.';
+  if(/different from the old/i.test(m)) return 'La contraseña nueva tiene que ser distinta de la anterior.';
+  if(/at least|weak|too short/i.test(m)) return 'Esa contraseña es demasiado corta o débil. Prueba con otra de 8 caracteres o más.';
+  if(/expired|invalid.*(token|link)|otp/i.test(m)) return 'El enlace ha caducado. Pide uno nuevo desde «¿Has olvidado la contraseña?».';
   return m || 'No se pudo completar. Inténtalo de nuevo.';
 }
 function setAuthBusy(b){
@@ -1440,16 +1490,157 @@ function doAuth(mode){
     $('a-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
   });
 }
+function showRecovery(){
+  document.body.classList.add('locked');
+  $('auth').hidden = false;
+  $('authTitle').textContent = 'Contraseña nueva';
+  $('authLead').textContent = 'Elige una contraseña nueva para tu cuenta. Con el ojito puedes comprobar que está bien escrita.';
+  $('authForm').hidden = true;
+  $('authAlt').hidden = true;
+  $('resetForm').hidden = false;
+  $('r-pass').focus();
+}
 function startSupabase(){
+  var hash = location.hash || '';
+  var recovering = /type=recovery/.test(hash);
+  var linkError = /error_code=|error=access_denied/.test(hash);
   sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   $('authForm').addEventListener('submit', function(e){ e.preventDefault(); doAuth('in'); });
   $('a-signup').addEventListener('click', function(){ doAuth('up'); });
-  sbClient.auth.onAuthStateChange(function(ev){ if(ev === 'SIGNED_OUT') location.reload(); });
+  $('a-forgot').addEventListener('click', function(){
+    var email = $('a-email').value.trim(), btn = $('a-forgot');
+    $('a-error').textContent = ''; $('a-info').textContent = '';
+    if(email.indexOf('@') < 1){
+      $('a-error').textContent = 'Escribe tu correo arriba y vuelve a pulsar aquí.';
+      $('a-email').focus();
+      return;
+    }
+    btn.disabled = true;
+    var opts = /^https?:$/.test(location.protocol) ? { redirectTo: location.origin + location.pathname } : {};
+    sbClient.auth.resetPasswordForEmail(email, opts).then(function(r){
+      btn.disabled = false;
+      if(r.error){ $('a-error').textContent = authMsg(r.error); return; }
+      $('a-info').textContent = 'Si ese correo tiene cuenta, te hemos enviado un enlace para crear una contraseña nueva. Mira también en el correo no deseado.';
+    }).catch(function(){
+      btn.disabled = false;
+      $('a-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
+    });
+  });
+  $('resetForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var pass = $('r-pass').value, b = $('resetForm').querySelector('button[type="submit"]');
+    $('r-error').textContent = '';
+    if(pass.length < 8){ $('r-error').textContent = 'Usa al menos 8 caracteres.'; $('r-pass').focus(); return; }
+    b.disabled = true;
+    sbClient.auth.updateUser({ password: pass }).then(function(r){
+      b.disabled = false;
+      if(r.error){ $('r-error').textContent = authMsg(r.error); return; }
+      try{ history.replaceState(null, '', location.pathname + location.search); }catch(x){}
+      $('resetForm').hidden = true; $('authAlt').hidden = false; $('authForm').hidden = false;
+      $('authTitle').textContent = 'Entra en Savio';
+      enterApp(r.data.user);
+      toast('Contraseña cambiada');
+    }).catch(function(){
+      b.disabled = false;
+      $('r-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
+    });
+  });
+  $('r-cancel').addEventListener('click', function(){ sbClient.auth.signOut(); });
+  sbClient.auth.onAuthStateChange(function(ev){
+    if(ev === 'SIGNED_OUT') location.reload();
+    if(ev === 'PASSWORD_RECOVERY') showRecovery();
+  });
   sbClient.auth.getSession().then(function(r){
-    var s = r && r.data && r.data.session;
-    if(s) enterApp(s.user); else showAuth();
+    var sess = r && r.data && r.data.session;
+    if(recovering && sess){ showRecovery(); return; }
+    if(sess) enterApp(sess.user); else showAuth();
+    if(linkError) $('a-error').textContent = 'El enlace ha caducado o ya se usó. Pide uno nuevo desde «¿Has olvidado la contraseña?».';
   }).catch(function(){ showAuth(); });
 }
+/* ---------- ojito: todos los caracteres cambian a la vez, con su animación de aparición y desaparición ---------- */
+var DOT = '\u2022';
+function pwWidths(cs, glyphs){
+  var probe = document.createElement('span');
+  probe.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:pre';
+  probe.style.fontFamily = cs.fontFamily; probe.style.fontSize = cs.fontSize;
+  probe.style.fontWeight = cs.fontWeight; probe.style.letterSpacing = cs.letterSpacing;
+  document.body.appendChild(probe);
+  var w = {};
+  glyphs.forEach(function(g){
+    if(w[g] !== undefined) return;
+    probe.textContent = g;
+    w[g] = probe.getBoundingClientRect().width;
+  });
+  probe.remove();
+  return w;
+}
+function pwReveal(inp, show){
+  var wrap = inp.parentNode;
+  if(inp._pwT){ clearTimeout(inp._pwT); inp._pwT = null; }
+  var old = wrap.querySelector('.pwmask');
+  if(old) old.remove();
+  wrap.classList.remove('anim');
+  inp.type = show ? 'text' : 'password';
+  var chars = Array.from(inp.value);
+  if(reduced || !chars.length) return;
+  var cs = getComputedStyle(inp);
+  var m = document.createElement('div');
+  m.className = 'pwmask';
+  m.setAttribute('aria-hidden','true');
+  m.style.fontFamily = cs.fontFamily; m.style.fontSize = cs.fontSize; m.style.fontWeight = cs.fontWeight;
+  m.style.letterSpacing = cs.letterSpacing;
+  m.style.paddingLeft = (parseFloat(cs.paddingLeft) + parseFloat(cs.borderLeftWidth)) + 'px';
+  var inner = document.createElement('span');
+  inner.className = 'pwtxt';
+  inner.style.transform = 'translateX(' + (-inp.scrollLeft) + 'px)';
+  var W = pwWidths(cs, chars.concat([DOT]));
+  chars.forEach(function(c){
+    var from = show ? DOT : c, to = show ? c : DOT;
+    var cell = document.createElement('span');
+    cell.className = 'pwc';
+    cell.style.setProperty('--w0', W[from] + 'px');
+    cell.style.setProperty('--w1', W[to] + 'px');
+    cell.style.setProperty('--d', '0ms');
+    var o = document.createElement('span'); o.className = 'pwo'; o.textContent = from;
+    var n = document.createElement('span'); n.className = 'pwn'; n.textContent = to;
+    cell.appendChild(o); cell.appendChild(n);
+    inner.appendChild(cell);
+  });
+  m.appendChild(inner);
+  wrap.appendChild(m);
+  wrap.classList.add('anim');
+  inp._pwT = setTimeout(function(){
+    inp._pwT = null; m.remove(); wrap.classList.remove('anim');
+  }, 360);
+}
+var eyeBtns = Array.prototype.slice.call(document.querySelectorAll('.pw-toggle'));
+var lookRaf = 0, lookX = 0, lookY = 0;
+function eyeLook(){
+  lookRaf = 0;
+  eyeBtns.forEach(function(b){
+    if(b.getAttribute('aria-pressed') !== 'true') return;
+    var r = b.getBoundingClientRect();
+    if(!r.width) return;
+    var dx = lookX - (r.left + r.width / 2), dy = lookY - (r.top + r.height / 2);
+    var d = Math.sqrt(dx * dx + dy * dy) || 1, k = Math.min(1, d / 90);
+    b.style.setProperty('--px', (dx / d * k * 2.3).toFixed(2) + 'px');
+    b.style.setProperty('--py', (dy / d * k * 0.9).toFixed(2) + 'px');
+  });
+}
+document.addEventListener('pointermove', function(e){
+  lookX = e.clientX; lookY = e.clientY;
+  if(!lookRaf) lookRaf = requestAnimationFrame(eyeLook);
+}, { passive:true });
+eyeBtns.forEach(function(b){
+  b.addEventListener('click', function(){
+    var inp = $(b.getAttribute('data-for')), show = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', show ? 'true' : 'false');
+    b.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    pwReveal(inp, show);
+    inp.focus({ preventScroll:true });
+    if(show) eyeLook();
+  });
+});
 $('a-demo').addEventListener('click', enterDemo);
 $('logoutBtn').addEventListener('click', function(){
   if(state.demo || !sbClient){ location.reload(); return; }
