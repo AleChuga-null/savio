@@ -344,6 +344,18 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
   .side{position:sticky;top:156px;max-height:calc(100vh - 172px)}
 }
 
+/* barras de desplazamiento: finas, translúcidas y en el verde de la web */
+html,.side,.side nav,.ddmenu,.fpop,.chips{scrollbar-color:rgba(28,83,76,.32) transparent}
+.side nav,.ddmenu,.fpop,.side{scrollbar-width:thin}
+.side nav:hover,.ddmenu:hover,.fpop:hover,.side:hover{scrollbar-color:rgba(28,83,76,.55) transparent}
+@supports not (scrollbar-color:auto){
+  html::-webkit-scrollbar{width:12px;height:12px}
+  .side nav::-webkit-scrollbar,.ddmenu::-webkit-scrollbar,.fpop::-webkit-scrollbar,.side::-webkit-scrollbar,.chips::-webkit-scrollbar{width:8px;height:8px}
+  html::-webkit-scrollbar-track,.side nav::-webkit-scrollbar-track,.ddmenu::-webkit-scrollbar-track,.fpop::-webkit-scrollbar-track,.side::-webkit-scrollbar-track,.chips::-webkit-scrollbar-track{background:transparent}
+  html::-webkit-scrollbar-thumb,.side nav::-webkit-scrollbar-thumb,.ddmenu::-webkit-scrollbar-thumb,.fpop::-webkit-scrollbar-thumb,.side::-webkit-scrollbar-thumb,.chips::-webkit-scrollbar-thumb{background:rgba(28,83,76,.32);border-radius:999px;border:2px solid transparent;background-clip:content-box}
+  .side nav::-webkit-scrollbar-thumb:hover,.ddmenu::-webkit-scrollbar-thumb:hover,.fpop::-webkit-scrollbar-thumb:hover,.side::-webkit-scrollbar-thumb:hover{background:rgba(28,83,76,.55);background-clip:content-box}
+}
+
 /* ---- móvil: las carpetas viven en un cajón lateral (menú hamburguesa) ---- */
 .menu-btn,.side-close,.scrim{display:none}
 @keyframes chipIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
