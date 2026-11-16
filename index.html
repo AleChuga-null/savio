@@ -327,6 +327,23 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
 .fmbtns{display:flex;gap:8px;padding:8px 10px 6px}
 .fmbtns .btn{flex:1}
 
+/* ---- «+» junto al título y formulario flotante de carpeta nueva ---- */
+.side-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.side-add{flex:none}
+.fpop{position:fixed;z-index:60;padding:12px;gap:8px;overflow-y:auto;border-radius:18px;background:rgba(246,252,252,.9);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);border:1px solid var(--edge);
+  box-shadow:0 18px 40px -14px rgba(13,43,36,.45),inset 0 1px 0 rgba(255,255,255,.9);animation:fade .18s var(--ease)}
+.fp-title{margin:0;padding:2px 2px 0;font:700 13px/1.2 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.fpop .hint{min-height:0}
+/* la lista de carpetas se desplaza por su cuenta; el resto de la barra y las tarjetas no se mueven con ella */
+@media (min-width:821px){
+  .side{max-height:calc(100vh - 112px)}
+  .side nav{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:2px}
+}
+@media (min-width:821px) and (max-width:1040px){
+  .side{position:sticky;top:156px;max-height:calc(100vh - 172px)}
+}
+
 /* ---- móvil: las carpetas viven en un cajón lateral (menú hamburguesa) ---- */
 .menu-btn,.side-close,.scrim{display:none}
 @keyframes chipIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
@@ -354,7 +371,8 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
     transform:translateX(-108%);visibility:hidden;transition:transform .38s var(--ease),visibility 0s linear .38s}
   body.view-tasks .side{background:linear-gradient(180deg,rgba(28,83,76,.2),rgba(28,83,76,.2)),#E4F2F2}
   body.menu-open .side{transform:none;visibility:visible;transition:transform .38s var(--ease)}
-  .side-title{display:block;margin:0 52px 4px 4px;padding-bottom:12px;border-bottom:1px solid var(--line);font-size:15px}
+  .side-head{margin:0 52px 4px 0;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .side-title{display:block;margin:0 4px;font-size:15px}
   .side-close{display:inline-flex;align-items:center;justify-content:center;position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.7);color:var(--ink);cursor:pointer}
   .side-close:hover{background:#fff}
   .side-close svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
@@ -411,18 +429,12 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
   <div class="scrim" id="scrim"></div>
   <aside class="side" id="side">
     <button type="button" class="side-close" id="sideClose" aria-label="Cerrar carpetas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <p class="side-title">Carpetas</p>
+    <div class="side-head">
+      <p class="side-title">Carpetas</p>
+      <button type="button" class="ib sm side-add" id="sideAdd" aria-label="Nueva carpeta" title="Nueva carpeta" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
     <nav aria-label="Carpetas"><div class="chips" id="chips"></div></nav>
-    <button type="button" class="newfolder" id="newFolderBtn">+ Nueva carpeta</button>
-    <form class="inline-form" id="folderForm" hidden>
-      <p class="hint" id="nf-hint" hidden></p>
-      <label class="sr" for="nf-name">Nombre de la carpeta</label>
-      <input id="nf-name" type="text" maxlength="40" placeholder="Nombre, por ejemplo Recetas" autocomplete="off">
-      <div class="row-btns">
-        <button type="submit" class="btn primary">Crear</button>
-        <button type="button" class="btn" id="nf-cancel">Cancelar</button>
-      </div>
-    </form>
+    <button type="button" class="newfolder" id="newFolderBtn" aria-haspopup="dialog">+ Nueva carpeta</button>
   </aside>
 
   <main class="main">
@@ -547,6 +559,17 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<form class="inline-form fpop" id="folderForm" role="dialog" aria-labelledby="nf-title" hidden>
+  <p class="fp-title" id="nf-title">Nueva carpeta</p>
+  <p class="hint" id="nf-hint" hidden></p>
+  <label class="sr" for="nf-name">Nombre de la carpeta</label>
+  <input id="nf-name" type="text" maxlength="40" placeholder="Nombre, por ejemplo Recetas" autocomplete="off">
+  <div class="row-btns">
+    <button type="submit" class="btn primary">Crear</button>
+    <button type="button" class="btn" id="nf-cancel">Cancelar</button>
+  </div>
+</form>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1135,14 +1158,52 @@ function renderSubnav(){
     ]));
   });
 }
-function openFolderForm(pid){
+/* formulario de carpeta nueva: flota junto a donde has pulsado (botón «+», botón de abajo o «⋯» de una carpeta) */
+function formAnchor(){
+  var a = null;
+  if(state.newParent) a = document.querySelector('.fk[data-fid="' + state.newParent + '"]');
+  return a || $(state.formFrom === 'top' ? 'sideAdd' : 'newFolderBtn');
+}
+function placeFolderForm(){
+  var f = $('folderForm');
+  if(f.hidden) return;
+  var a = formAnchor();
+  if(!a) return;
+  var r = a.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  var w = Math.min(260, vw - 16);
+  f.style.width = w + 'px';
+  f.style.top = ''; f.style.bottom = ''; f.style.maxHeight = '';
+  var sr = $('side').getBoundingClientRect();
+  if(sr.right > 0 && vw - sr.right - 8 >= w + 8){
+    var row = a.closest('.crow') || a;
+    f.style.left = (sr.right + 8) + 'px';
+    f.style.maxHeight = (vh - 16) + 'px';
+    var mh0 = f.offsetHeight;
+    f.style.top = Math.max(8, Math.min(row.getBoundingClientRect().top, vh - mh0 - 8)) + 'px';
+    return;
+  }
+  f.style.left = Math.min(Math.max(8, r.left), Math.max(8, vw - w - 8)) + 'px';
+  var mh = f.offsetHeight, below = vh - r.bottom - 14;
+  if(mh > below && r.top > below){
+    f.style.bottom = (vh - r.top + 6) + 'px';
+    f.style.maxHeight = Math.max(160, r.top - 20) + 'px';
+  } else {
+    f.style.top = (r.bottom + 6) + 'px';
+    f.style.maxHeight = Math.max(160, below) + 'px';
+  }
+}
+function openFolderForm(pid, from){
+  closeMenu(false);
   state.newParent = pid || '';
+  state.formFrom = from || 'bottom';
   var p = folderById(state.newParent);
+  $('nf-title').textContent = p ? 'Nueva subcarpeta' : 'Nueva carpeta';
   $('nf-hint').textContent = p ? 'Se creará dentro de «' + pathOf(p) + '».' : '';
   $('nf-hint').hidden = !p;
   $('nf-name').placeholder = p ? 'Nombre, por ejemplo Uñas' : 'Nombre, por ejemplo Recetas';
   $('folderForm').hidden = false;
-  $('nf-name').focus();
+  placeFolderForm();
+  $('nf-name').focus({ preventScroll:true });
 }
 function closeFolderForm(){
   $('folderForm').hidden = true;
@@ -1542,8 +1603,19 @@ $('pendingBtn').addEventListener('click', function(){
   renderList();
 });
 $('newFolderBtn').addEventListener('click', function(){
-  if(!$('folderForm').hidden && !state.newParent) closeFolderForm(); else openFolderForm('');
+  if(!$('folderForm').hidden && !state.newParent && state.formFrom === 'bottom') closeFolderForm(); else openFolderForm('', 'bottom');
 });
+$('sideAdd').addEventListener('click', function(){
+  if(!$('folderForm').hidden && !state.newParent && state.formFrom === 'top') closeFolderForm(); else openFolderForm('', 'top');
+});
+document.addEventListener('mousedown', function(e){
+  var f = $('folderForm');
+  if(f.hidden || f.contains(e.target)) return;
+  if(e.target.closest && e.target.closest('#newFolderBtn,#sideAdd')) return;
+  closeFolderForm();
+});
+window.addEventListener('scroll', placeFolderForm, true);
+window.addEventListener('resize', placeFolderForm);
 $('nf-cancel').addEventListener('click', closeFolderForm);
 $('folderForm').addEventListener('submit', function(e){
   e.preventDefault();
@@ -1570,6 +1642,7 @@ function openSide(){
 }
 function closeSide(refocus){
   if(!document.body.classList.contains('menu-open')) return;
+  closeFolderForm();
   document.body.classList.remove('menu-open');
   $('menuBtn').setAttribute('aria-expanded','false');
   if(refocus) $('menuBtn').focus({ preventScroll:true });
@@ -1710,11 +1783,21 @@ enhance($('t-link'));
 
 /* ---------- menú desplegable de opciones de carpeta («⋯») ---------- */
 function placeMenu(menu, btn){
-  var r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+  var r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
   var w = Math.min(250, vw - 16);
   menu.style.width = w + 'px';
-  menu.style.left = Math.min(Math.max(8, r.right - w), Math.max(8, vw - w - 8)) + 'px';
   menu.style.top = ''; menu.style.bottom = ''; menu.style.maxHeight = '';
+  /* si cabe, el menú sale fuera de la barra lateral, a su derecha y a la altura de la fila */
+  var side = btn.closest('.side'), sr = side ? side.getBoundingClientRect() : null;
+  if(sr && vw - sr.right - 8 >= w + 8){
+    var row = btn.closest('.crow'), rt = (row || btn).getBoundingClientRect().top;
+    menu.style.left = (sr.right + 8) + 'px';
+    menu.style.maxHeight = (vh - 16) + 'px';
+    var mh0 = menu.offsetHeight;
+    menu.style.top = Math.max(8, Math.min(rt, vh - mh0 - 8)) + 'px';
+    return;
+  }
+  menu.style.left = Math.min(Math.max(8, r.right - w), Math.max(8, vw - w - 8)) + 'px';
   var mh = menu.offsetHeight, below = window.innerHeight - r.bottom - 14;
   if(mh > below && r.top > below){
     menu.style.bottom = (window.innerHeight - r.top + 6) + 'px';
