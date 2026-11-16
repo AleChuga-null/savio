@@ -101,8 +101,6 @@ button,select,input,textarea{font:inherit;color:inherit}
 .inline-form{display:flex;flex-direction:column;gap:8px}
 .inline-form input{width:100%;min-height:42px;padding:0 14px;border:1px solid var(--edge);border-radius:14px;background:rgba(255,255,255,.7)}
 .inline-form .row-btns .btn{flex:1}
-.folder-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:13.5px;color:var(--ink-soft);padding-top:6px;border-top:1px solid var(--line)}
-.folder-actions:empty{display:none}
 
 .main{min-width:0;display:flex;flex-direction:column;gap:16px}
 .main-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:4px 4px 0}
@@ -287,9 +285,7 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
 .linkbtn:disabled{opacity:.55;cursor:default}
 
 /* ---- color de carpetas y deshacer ---- */
-.fa-name{display:flex;align-items:center;gap:8px}
-.fa-btns .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.colorpick{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:16px;background:rgba(255,255,255,.5);border:1px solid var(--edge)}
+.fa-lab{font:700 13px/1 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
 .swgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .sw{width:100%;max-width:34px;aspect-ratio:1;justify-self:center;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.95);cursor:pointer;box-shadow:0 2px 6px -2px rgba(13,43,36,.5);transition:transform .2s var(--ease),box-shadow .2s}
 .sw:hover{transform:scale(1.1)}
@@ -306,17 +302,30 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
 .ctog:hover{background:rgba(255,255,255,.6);color:var(--ink)}
 .ctog svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s var(--ease)}
 .ctog[aria-expanded="false"] svg{transform:rotate(-90deg)}
-.folder-actions{flex-direction:column;align-items:stretch;gap:10px}
-.fa-name{font-weight:600;color:var(--ink);overflow-wrap:anywhere}
-.fa-msg{line-height:1.45}
-.fa-btns{display:flex;flex-wrap:wrap;gap:6px}
-.fa-move{display:flex;flex-direction:column;gap:4px}
-.fa-lab{font:700 13px/1 var(--f-sub);letter-spacing:.1em;text-transform:uppercase}
-.fa-move .ddbtn{min-height:40px;border-radius:12px}
 .subnav{display:flex;flex-wrap:wrap;gap:8px}
 .subpill{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border:1px solid var(--edge);border-radius:999px;background:rgba(255,255,255,.6);cursor:pointer;font-weight:500;transition:background .2s,transform .2s var(--ease)}
 .subpill:hover{background:rgba(255,255,255,.95);transform:translateY(-1px)}
 .subpill .n{font:700 14px/1 var(--f-sub);color:var(--ink-soft)}
+
+/* ---- botón «⋯» de cada carpeta y su menú desplegable ---- */
+.fk{flex:none;width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--ink-soft);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.fk svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.fk:hover,.fk[aria-expanded="true"]{background:rgba(255,255,255,.85);color:var(--ink)}
+.crow .rename-form{flex:1;min-width:0;padding:2px 0}
+.fmopt svg{margin-left:0;stroke:currentColor}
+.fmopt .chev{margin-left:auto;stroke:var(--ink-soft)}
+.fmopt .chk{margin-left:auto;stroke:var(--accent)}
+.fmopt .dot{margin:0 2.5px}
+.fmopt.danger{color:var(--danger)}
+.fmopt.danger:hover,.fmopt.danger:focus-visible{background:rgba(169,38,30,.1)}
+.fmhead{font-weight:600}
+.fmsep{height:1px;margin:4px 6px;background:var(--line);flex:none}
+.fmtitle{display:flex;align-items:center;gap:8px;min-width:0;padding:8px 12px 6px;font:700 13px/1.2 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.fmtitle span:last-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fmbody{display:flex;flex-direction:column;gap:8px;padding:6px 10px 10px}
+.fmmsg{margin:0;padding:6px 12px 2px;font-size:14px;line-height:1.45;color:var(--ink-soft)}
+.fmbtns{display:flex;gap:8px;padding:8px 10px 6px}
+.fmbtns .btn{flex:1}
 
 /* ---- móvil: las carpetas viven en un cajón lateral (menú hamburguesa) ---- */
 .menu-btn,.side-close,.scrim{display:none}
@@ -352,6 +361,7 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
   .chips{flex-direction:column;overflow:visible;padding-bottom:0;gap:4px}
   .chip{width:100%;min-height:50px;padding:0 14px;border:1px solid transparent;border-radius:16px;background:transparent;font-size:16px;white-space:normal}
   .chip .dot{width:13px;height:13px}
+  .fk{width:40px;height:40px}
   body.menu-open .chip{animation:chipIn .45s var(--ease) backwards;animation-delay:calc(var(--i,0) * 45ms + 120ms)}
 }
 
@@ -413,7 +423,6 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
         <button type="button" class="btn" id="nf-cancel">Cancelar</button>
       </div>
     </form>
-    <div class="folder-actions" id="folderActions"></div>
   </aside>
 
   <main class="main">
@@ -556,10 +565,10 @@ var state = {
   mode:'loading', got:false, slow:false, confirmed:false, failed:false, demo:false,
   folders:DEFAULT_FOLDERS.slice(), links:[],
   folder:'all', pending:false, q:'',
-  editing:null, confirmDel:null, confirmFolder:false,
+  editing:null, confirmDel:null,
   view:'links', tasks:[], confirmTask:null, loaded:{}
 };
-state.collapsed = {}; state.newParent = ''; state.renaming = false; state.colorOpen = false; state.undo = null;
+state.collapsed = {}; state.newParent = ''; state.renamingId = ''; state.fmenu = ''; state.undo = null;
 try{ state.collapsed = JSON.parse(localStorage.getItem('savio-collapsed') || '{}') || {}; }catch(e){}
 function saveCollapsed(){ try{ localStorage.setItem('savio-collapsed', JSON.stringify(state.collapsed)); }catch(e){} }
 function expandTo(id){
@@ -743,12 +752,20 @@ function renameFolder(id, name){
   if(!name){ toast('Escribe un nombre para la carpeta'); return; }
   var dup = state.folders.some(function(x){ return x.id !== id && (x.parentId || '') === (f.parentId || '') && x.name.toLowerCase() === name.toLowerCase(); });
   if(dup){ toast('Ya existe una carpeta con ese nombre aquí'); return; }
-  state.renaming = false;
+  state.renamingId = '';
   setFolders(state.folders.map(function(x){
     if(x.id !== id) return x;
     var n = Object.assign({}, x); n.name = name; return n;
   }));
   toast('Carpeta renombrada');
+}
+function startRename(id){
+  state.renamingId = id;
+  renderChips();
+}
+function cancelRename(){
+  state.renamingId = '';
+  renderChips();
 }
 
 /* ---------- deshacer ---------- */
@@ -768,7 +785,7 @@ function restore(sn){
   state.links = sn.links; state.tasks = sn.tasks; state.folders = sn.folders;
   if(changed) persistFolders();
   state.folder = sn.folder;
-  state.confirmDel = null; state.confirmTask = null; state.confirmFolder = false; state.renaming = false;
+  state.confirmDel = null; state.confirmTask = null; state.renamingId = '';
   renderAll();
 }
 function showUndo(msg, sn){
@@ -830,8 +847,8 @@ function scopeTest(){
 }
 function selectFolder(key){
   closeSide(false);
-  state.folder = key; state.confirmFolder = false; state.confirmDel = null; state.confirmTask = null;
-  state.renaming = false; state.colorOpen = false;
+  state.folder = key; state.confirmDel = null; state.confirmTask = null;
+  state.renamingId = '';
   expandTo(key);
   closeComposer(); closeTaskComposer();
   renderAll();
@@ -879,7 +896,8 @@ function deleteFolder(id){
     if(up) n.parentId = up; else delete n.parentId;
     return n;
   });
-  state.folder = up || 'all'; state.confirmFolder = false;
+  if(state.folder === id) state.folder = up || 'all';
+  state.renamingId = '';
   closeComposer(); closeTaskComposer();
   setFolders(next);
   showUndo('Carpeta borrada', sn);
@@ -1001,7 +1019,7 @@ function renderAll(){
     var orphans = viewItems().filter(function(x){ return !folderById(x.folderId); }).length;
     if(state.folder === 'none' ? !orphans : !folderById(state.folder)) state.folder = 'all';
   }
-  renderViews(); renderCount(); renderHead(); renderStatus(); renderChips(); renderSubnav(); renderFolderActions(); renderList();
+  renderViews(); renderCount(); renderHead(); renderStatus(); renderChips(); renderSubnav(); renderList();
 }
 function renderHead(){
   var tv = state.view === 'tasks', f = folderById(state.folder), inS = scopeTest();
@@ -1054,6 +1072,28 @@ function chip(key, label, n, fo){
     h('span',{class:'n'}, String(n))
   ]);
 }
+/* botón «⋯» de cada carpeta */
+function kebab(f){
+  return h('button',{type:'button',class:'fk','data-fid':f.id,'aria-haspopup':'menu','aria-expanded':state.fmenu === f.id ? 'true' : 'false',
+    'aria-label':'Opciones de la carpeta «' + f.name + '»',title:'Opciones',
+    onclick:function(e){ toggleFolderMenu(f.id, e.currentTarget); }}, ico('more'));
+}
+/* renombrar en la misma fila */
+function renameForm(f){
+  var inp = h('input',{type:'text',maxlength:'40',value:f.name,'aria-label':'Nombre de la carpeta'});
+  inp.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); cancelRename(); }
+  });
+  var form = h('form',{class:'inline-form rename-form',onsubmit:function(e){ e.preventDefault(); renameFolder(f.id, inp.value); }},[
+    inp,
+    h('div',{class:'row-btns'},[
+      h('button',{type:'submit',class:'btn primary mini'},'Guardar'),
+      h('button',{type:'button',class:'btn mini',onclick:cancelRename},'Cancelar')
+    ])
+  ]);
+  setTimeout(function(){ inp.focus(); inp.select(); }, 0);
+  return form;
+}
 function renderChips(){
   var box = $('chips');
   box.textContent = '';
@@ -1065,11 +1105,12 @@ function renderChips(){
     kidsOf(pid).forEach(function(f){
       if(seen[f.id]) return;
       seen[f.id] = 1;
-      var kids = kidsOf(f.id), isOpen = !state.collapsed[f.id];
+      var kids = kidsOf(f.id), isOpen = !state.collapsed[f.id], renaming = state.renamingId === f.id;
       box.appendChild(h('div',{class:'crow',style:'--lvl:' + d},[
         kids.length ? h('button',{type:'button',class:'ctog','aria-expanded':isOpen ? 'true' : 'false','aria-label':(isOpen ? 'Ocultar' : 'Mostrar') + ' las subcarpetas de «' + f.name + '»',
           onclick:function(){ state.collapsed[f.id] = isOpen; saveCollapsed(); renderChips(); }}, ico('chev')) : h('span',{class:'ctog-sp'}),
-        chip(f.id, f.name, cntIn(descIds(f.id)), f)
+        renaming ? renameForm(f) : chip(f.id, f.name, cntIn(descIds(f.id)), f),
+        renaming ? null : kebab(f)
       ]));
       if(kids.length && isOpen) walk(f.id, d + 1);
     });
@@ -1109,65 +1150,6 @@ function closeFolderForm(){
   state.newParent = '';
   $('nf-hint').hidden = true;
 }
-function colorPanel(f){
-  var cur = famOf(famIdOf(f)), tone = toneOf(f);
-  var fams = h('div',{class:'swgrid',role:'group','aria-label':'Color de la carpeta'}, FAMILIES.map(function(fm){
-    return h('button',{type:'button',class:'sw',title:fm.name,'aria-label':fm.name,'aria-pressed':fm.id === cur.id ? 'true' : 'false',
-      style:'background:' + mkColor(fm, 2).bg,onclick:function(){ setFolderColor(f.id,{ color:fm.id }); }});
-  }));
-  var tones = h('div',{class:'swgrid',role:'group','aria-label':'Tono'}, TONES.map(function(_, i){
-    return h('button',{type:'button',class:'sw',title:TONE_NAMES[i],'aria-label':'Tono ' + TONE_NAMES[i].toLowerCase(),'aria-pressed':i === tone ? 'true' : 'false',
-      style:'background:' + mkColor(cur, i).bg,onclick:function(){ setFolderColor(f.id,{ tone:i }); }});
-  }));
-  return h('div',{class:'colorpick'},[
-    h('span',{class:'fa-lab'},'Color'), fams,
-    h('span',{class:'fa-lab'},'Tono'), tones,
-    h('p',{class:'hint'},'Sus subcarpetas toman la misma gama; cada una puede tener su propio tono.')
-  ]);
-}
-function renderFolderActions(){
-  var box = $('folderActions');
-  box.textContent = '';
-  var f = folderById(state.folder);
-  if(!f) return;
-  var own = state.links.concat(state.tasks).filter(function(x){ return x.folderId === f.id; }).length;
-  var subs = kidsOf(f.id).length;
-  if(state.confirmFolder){
-    var msg = (own ? 'Sus ' + plural(own,'elemento','elementos') + ' (guardados y tareas) pasarán a «Sin carpeta». ' : '')
-      + (subs ? (subs === 1 ? 'Su subcarpeta subirá un nivel. ' : 'Sus ' + subs + ' subcarpetas subirán un nivel. ') : '')
-      + (own || subs ? '¿Borrar la carpeta?' : '¿Borrar la carpeta vacía?');
-    box.appendChild(h('span',{class:'fa-msg'},msg));
-    box.appendChild(h('div',{class:'fa-btns'},[
-      h('button',{type:'button',class:'btn danger mini',onclick:function(){ deleteFolder(f.id); }},'Sí, borrar'),
-      h('button',{type:'button',class:'btn mini',onclick:function(){ state.confirmFolder = false; renderFolderActions(); }},'No')
-    ]));
-    return;
-  }
-  if(state.renaming){
-    var inp = h('input',{type:'text',maxlength:'40',value:f.name,'aria-label':'Nombre de la carpeta'});
-    box.appendChild(h('form',{class:'inline-form',onsubmit:function(e){ e.preventDefault(); renameFolder(f.id, inp.value); }},[
-      inp,
-      h('div',{class:'row-btns'},[
-        h('button',{type:'submit',class:'btn primary mini'},'Guardar'),
-        h('button',{type:'button',class:'btn mini',onclick:function(){ state.renaming = false; renderFolderActions(); }},'Cancelar')
-      ])
-    ]));
-    setTimeout(function(){ inp.focus(); inp.select(); }, 0);
-    return;
-  }
-  var mv = h('select',{'aria-label':'Mover la carpeta «' + f.name + '» dentro de otra',onchange:function(e){ moveFolder(f.id, e.target.value); }},
-    [h('option',{value:''},'Carpeta principal')].concat(folderOpts(f.id).map(function(o){ return h('option',{value:o.id},o.label); })));
-  mv.value = (f.parentId && folderById(f.parentId)) ? f.parentId : '';
-  box.appendChild(h('span',{class:'fa-name'},[mkDot(f), h('span',null,f.name)]));
-  box.appendChild(h('div',{class:'fa-btns'},[
-    h('button',{type:'button',class:'btn mini',onclick:function(){ state.renaming = true; state.colorOpen = false; renderFolderActions(); }},'Renombrar'),
-    h('button',{type:'button',class:'btn mini','aria-pressed':state.colorOpen ? 'true' : 'false',onclick:function(){ state.colorOpen = !state.colorOpen; renderFolderActions(); }},'Color'),
-    h('button',{type:'button',class:'btn mini',onclick:function(){ openFolderForm(f.id); }},'+ Subcarpeta'),
-    h('button',{type:'button',class:'btn ghost mini',onclick:function(){ state.confirmFolder = true; state.colorOpen = false; renderFolderActions(); }},'Borrar')
-  ]));
-  if(state.colorOpen) box.appendChild(colorPanel(f));
-  box.appendChild(h('div',{class:'fa-move'},[h('span',{class:'fa-lab'},'Dentro de'), enhance(mv,{dots:true})]));
-}
 function tabFor(f){
   return f ? h('span',{class:'tab h' + (f.hue % HUES)}, f.name) : h('span',{class:'tab h-none'},'Sin carpeta');
 }
@@ -1177,7 +1159,12 @@ var ICONS = {
   edit:'<path d="M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 8.5l3 3"/>',
   trash:'<path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l.8 12h9.4l.8-12M9 7V4.5h6V7"/>',
   out:'<path d="M8 16L16.5 7.5M9.5 7.5h7v7"/>',
-  chev:'<path d="M6 9.5l6 6 6-6"/>'
+  chev:'<path d="M6 9.5l6 6 6-6"/>',
+  chevR:'<path d="M9.5 6l6 6-6 6"/>',
+  back:'<path d="M15 6l-6 6 6 6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  more:'<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
+  folder:'<path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h4l2 2.5h8a1.5 1.5 0 0 1 1.5 1.5v7.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/>'
 };
 function ico(n){
   var s = document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -1369,7 +1356,7 @@ function closeTaskComposer(){
 }
 function resetView(){
   closeSide(false);
-  state.confirmDel = null; state.confirmTask = null; state.confirmFolder = false; state.renaming = false; state.colorOpen = false;
+  state.confirmDel = null; state.confirmTask = null; state.renamingId = '';
   state.pending = false; $('pendingBtn').setAttribute('aria-pressed','false');
   closeComposer(); closeTaskComposer();
 }
@@ -1569,7 +1556,6 @@ $('folderForm').addEventListener('submit', function(e){
   var nf = { id: rid('f_'), name: name, color: par ? famIdOf(par) : pickFamily(), tone: par ? pickTone(parent) : 1 };
   if(parent) nf.parentId = parent;
   state.folder = nf.id;
-  state.confirmFolder = false;
   if(parent){ delete state.collapsed[parent]; saveCollapsed(); }
   closeSide(false);
   closeComposer(); closeTaskComposer();
@@ -1600,7 +1586,7 @@ document.addEventListener('keydown', function(e){
   }
   if(e.key !== 'Escape') return;
   if(document.body.classList.contains('menu-open')){ closeSide(true); return; }
-  if(state.renaming){ state.renaming = false; renderFolderActions(); return; }
+  if(state.renamingId){ cancelRename(); return; }
   if(!$('composer').hidden) closeComposer();
   else if(!$('taskComposer').hidden) closeTaskComposer();
   else if(!$('folderForm').hidden) $('nf-cancel').click();
@@ -1631,6 +1617,7 @@ function closeMenu(refocus){
   if(m.el.parentNode) m.el.parentNode.removeChild(m.el);
   m.btn.setAttribute('aria-expanded','false');
   if(refocus) m.btn.focus({ preventScroll:true });
+  if(m.onClose) m.onClose();
 }
 document.addEventListener('mousedown', function(e){
   if(openMenu && !openMenu.el.contains(e.target) && !openMenu.btn.contains(e.target)) closeMenu(false);
@@ -1720,6 +1707,125 @@ function enhance(sel, opts){
 enhance($('f-folder'),{ dots:true });
 enhance($('t-folder'),{ dots:true });
 enhance($('t-link'));
+
+/* ---------- menú desplegable de opciones de carpeta («⋯») ---------- */
+function placeMenu(menu, btn){
+  var r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+  var w = Math.min(250, vw - 16);
+  menu.style.width = w + 'px';
+  menu.style.left = Math.min(Math.max(8, r.right - w), Math.max(8, vw - w - 8)) + 'px';
+  menu.style.top = ''; menu.style.bottom = ''; menu.style.maxHeight = '';
+  var mh = menu.offsetHeight, below = window.innerHeight - r.bottom - 14;
+  if(mh > below && r.top > below){
+    menu.style.bottom = (window.innerHeight - r.top + 6) + 'px';
+    menu.style.maxHeight = Math.max(160, r.top - 20) + 'px';
+  } else {
+    menu.style.top = (r.bottom + 6) + 'px';
+    menu.style.maxHeight = Math.max(160, below) + 'px';
+  }
+}
+function fmItem(icon, label, fn, o){
+  o = o || {};
+  var chev = o.chev ? ico('chevR') : (o.check ? ico('check') : null);
+  if(chev) chev.setAttribute('class', o.chev ? 'chev' : 'chk');
+  return h('button',{type:'button',class:'ddopt fmopt' + (o.danger ? ' danger' : ''),role:'menuitem',onclick:fn},[
+    o.dot ? h('span',{class:'dot',style:'background:' + o.dot}) : (icon ? ico(icon) : null),
+    h('span',{class:'ddl'},label),
+    chev
+  ]);
+}
+function toggleFolderMenu(id, btn){
+  if(openMenu && openMenu.btn === btn){ closeMenu(true); return; }
+  openFolderMenu(id, btn);
+}
+function openFolderMenu(id, btn){
+  closeMenu(false);
+  var menu = h('div',{class:'ddmenu fmenu',role:'menu'});
+  var self = { el:menu, btn:btn, onClose:function(){ state.fmenu = ''; } };
+  document.body.appendChild(menu);
+  openMenu = self;
+  state.fmenu = id;
+  btn.setAttribute('aria-expanded','true');
+  /* tras cambiar el color la lista se redibuja: se vuelve a enlazar el botón */
+  function relink(){
+    var nb = document.querySelector('.fk[data-fid="' + id + '"]');
+    if(nb){ nb.setAttribute('aria-expanded','true'); self.btn = nb; }
+  }
+  function head(label){
+    return [
+      h('button',{type:'button',class:'ddopt fmopt fmhead',role:'menuitem',onclick:function(){ show('main'); }},[ico('back'), h('span',{class:'ddl'},label)]),
+      h('div',{class:'fmsep',role:'separator'})
+    ];
+  }
+  function show(v, focusKey){
+    var f = folderById(id);
+    if(!f){ closeMenu(false); return; }
+    menu.textContent = '';
+    if(v === 'main'){
+      var cur = folderColor(f);
+      menu.appendChild(h('div',{class:'fmtitle'},[mkDot(f), h('span',null,f.name)]));
+      menu.appendChild(fmItem('edit','Renombrar',function(){ closeMenu(false); startRename(id); }));
+      menu.appendChild(fmItem(null,'Color',function(){ show('color'); },{ dot:cur.bg, chev:true }));
+      menu.appendChild(fmItem('plus','Añadir subcarpeta',function(){ closeMenu(false); openFolderForm(id); }));
+      menu.appendChild(fmItem('folder','Mover a…',function(){ show('move'); },{ chev:true }));
+      menu.appendChild(h('div',{class:'fmsep',role:'separator'}));
+      menu.appendChild(fmItem('trash','Borrar',function(){ show('delete'); },{ danger:true }));
+    } else if(v === 'color'){
+      head('Color').forEach(function(n){ menu.appendChild(n); });
+      var fam = famOf(famIdOf(f)), tone = toneOf(f);
+      var fams = h('div',{class:'swgrid',role:'group','aria-label':'Color de la carpeta'}, FAMILIES.map(function(fm){
+        return h('button',{type:'button',class:'sw','data-k':'f' + fm.id,title:fm.name,'aria-label':fm.name,'aria-pressed':fm.id === fam.id ? 'true' : 'false',
+          style:'background:' + mkColor(fm, 2).bg,onclick:function(){ setFolderColor(id,{ color:fm.id }); relink(); show('color','f' + fm.id); }});
+      }));
+      var tones = h('div',{class:'swgrid',role:'group','aria-label':'Tono'}, TONES.map(function(_, i){
+        return h('button',{type:'button',class:'sw','data-k':'t' + i,title:TONE_NAMES[i],'aria-label':'Tono ' + TONE_NAMES[i].toLowerCase(),'aria-pressed':i === tone ? 'true' : 'false',
+          style:'background:' + mkColor(fam, i).bg,onclick:function(){ setFolderColor(id,{ tone:i }); relink(); show('color','t' + i); }});
+      }));
+      menu.appendChild(h('div',{class:'fmbody'},[
+        h('span',{class:'fa-lab'},'Color'), fams,
+        h('span',{class:'fa-lab'},'Tono'), tones,
+        h('p',{class:'hint'},'Sus subcarpetas toman la misma gama; cada una puede tener su propio tono.')
+      ]));
+    } else if(v === 'move'){
+      head('Mover a…').forEach(function(n){ menu.appendChild(n); });
+      var curP = (f.parentId && folderById(f.parentId)) ? f.parentId : '';
+      [{ id:'', label:'Carpeta principal' }].concat(folderOpts(id)).forEach(function(o){
+        var on = o.id === curP;
+        var dot = o.id ? folderById(o.id) : null;
+        menu.appendChild(fmItem(o.id ? null : 'folder', o.label, function(){
+          closeMenu(false);
+          if(!on) moveFolder(id, o.id);
+        },{ dot:o.id ? dotBg(dot) : null, check:on }));
+      });
+    } else if(v === 'delete'){
+      head('Borrar carpeta').forEach(function(n){ menu.appendChild(n); });
+      var own = state.links.concat(state.tasks).filter(function(x){ return x.folderId === id; }).length;
+      var subs = kidsOf(id).length;
+      var msg = (own ? 'Sus ' + plural(own,'elemento','elementos') + ' (guardados y tareas) pasarán a «Sin carpeta». ' : '')
+        + (subs ? (subs === 1 ? 'Su subcarpeta subirá un nivel. ' : 'Sus ' + subs + ' subcarpetas subirán un nivel. ') : '')
+        + (own || subs ? '¿Borrar la carpeta?' : '¿Borrar la carpeta vacía?');
+      menu.appendChild(h('p',{class:'fmmsg'},msg));
+      menu.appendChild(h('div',{class:'fmbtns'},[
+        h('button',{type:'button',class:'btn danger mini',onclick:function(){ closeMenu(false); deleteFolder(id); }},'Sí, borrar'),
+        h('button',{type:'button',class:'btn mini',onclick:function(){ show('main'); }},'No')
+      ]));
+    }
+    placeMenu(menu, self.btn);
+    var t = focusKey ? menu.querySelector('[data-k="' + focusKey + '"]') : null;
+    if(!t) t = menu.querySelector('.ddopt, .btn');
+    if(t) t.focus({ preventScroll:true });
+  }
+  menu.addEventListener('keydown', function(e){
+    var items = Array.prototype.slice.call(menu.querySelectorAll('button')), i = items.indexOf(document.activeElement);
+    if(e.key === 'ArrowDown'){ e.preventDefault(); items[Math.min(items.length - 1, i + 1)].focus(); }
+    else if(e.key === 'ArrowUp'){ e.preventDefault(); items[Math.max(0, i - 1)].focus(); }
+    else if(e.key === 'Home'){ e.preventDefault(); items[0].focus(); }
+    else if(e.key === 'End'){ e.preventDefault(); items[items.length - 1].focus(); }
+    else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); closeMenu(true); }
+    else if(e.key === 'Tab'){ closeMenu(false); }
+  });
+  show('main');
+}
 
 /* ---------- arranque ---------- */
 function goLocal(){
