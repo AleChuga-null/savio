@@ -238,17 +238,20 @@ body.view-tasks .chip[aria-pressed="true"] .n{color:inherit;opacity:.85}
 body.view-tasks .chip .dot{border-radius:4px}
 body.view-tasks .chip[aria-pressed="true"] .dot{box-shadow:0 0 0 2px rgba(255,255,255,.85)}
 body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
-.card.tcard{border-radius:16px;background:rgba(28,83,76,.11);border-color:rgba(28,83,76,.3)}
-.card.tcard:hover{background:rgba(28,83,76,.16)}
-.tcard .pick.static{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
-.tcard .pick.static:hover{background:var(--accent)}
+.card.tcard{--fc:#1C534C;--fi:#F2FAFA;--fs:#1C534C;--ft:#8ABDBE;border-radius:16px;background:color-mix(in srgb,var(--ft) 26%,transparent);border-color:color-mix(in srgb,var(--fs) 32%,transparent)}
+.card.tcard:hover{background:color-mix(in srgb,var(--ft) 40%,transparent)}
+.tcard .pick.static{background:var(--fc);border-color:transparent;color:var(--fi)}
+.tcard .pick.static:hover{background:var(--fc)}
 .tcard .pick .dot{border-radius:4px;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
-.tcard .date{padding:5px 10px;border-radius:8px;background:rgba(28,83,76,.14);color:var(--accent)}
-.tcard .task{border-top:1px dashed rgba(28,83,76,.35)}
+.tcard .date{padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--fs) 14%,transparent);color:var(--fs)}
+.tcard .date:empty{display:none}
+.tcard .task{border-top:1px dashed color-mix(in srgb,var(--fs) 40%,transparent)}
 .tcard .task:first-child{border-top:0}
 .check{border-radius:9px;border-color:var(--accent)}
-.check:hover{background:rgba(28,83,76,.14);border-color:var(--accent)}
-.check[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+.tcard .check{border-color:var(--fs)}
+.tcard .check:hover{background:color-mix(in srgb,var(--fs) 14%,transparent);border-color:var(--fs)}
+.tcard .check[aria-pressed="true"]{background:var(--fs);border-color:var(--fs)}
+.tcard .reflink{color:var(--fs)}
 .tcard .btn:not(.danger):not(.primary){background:rgba(255,255,255,.7)}
 .tcard .btn:not(.danger):not(.primary):hover:not(:disabled){background:rgba(255,255,255,.95)}
 
@@ -281,6 +284,38 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
 .linkbtn{align-self:flex-start;padding:4px 0;border:0;background:transparent;color:var(--link);font:700 15px/1.3 var(--f-sub);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .linkbtn:hover{color:var(--ink)}
 .linkbtn:disabled{opacity:.55;cursor:default}
+
+/* ---- color de carpetas y deshacer ---- */
+.fa-name{display:flex;align-items:center;gap:8px}
+.fa-btns .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.colorpick{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:16px;background:rgba(255,255,255,.5);border:1px solid var(--edge)}
+.swgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sw{width:100%;max-width:34px;aspect-ratio:1;justify-self:center;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.95);cursor:pointer;box-shadow:0 2px 6px -2px rgba(13,43,36,.5);transition:transform .2s var(--ease),box-shadow .2s}
+.sw:hover{transform:scale(1.1)}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink),0 2px 6px -2px rgba(13,43,36,.5)}
+.toast.has-action{pointer-events:auto;display:flex;align-items:center;gap:14px;padding:8px 8px 8px 18px}
+.toast .undo{min-height:34px;padding:0 14px;border:0;border-radius:999px;background:rgba(255,255,255,.2);color:#fff;font-weight:600;cursor:pointer;transition:background .2s}
+.toast .undo:hover{background:rgba(255,255,255,.34)}
+
+/* ---- subcarpetas ---- */
+.crow{display:flex;align-items:center;gap:2px;padding-left:calc(var(--lvl,0) * 14px)}
+.crow .chip{flex:1;min-width:0;width:auto}
+.ctog,.ctog-sp{flex:none;width:26px}
+.ctog{height:36px;border:0;border-radius:10px;background:transparent;color:var(--ink-soft);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .2s}
+.ctog:hover{background:rgba(255,255,255,.6);color:var(--ink)}
+.ctog svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s var(--ease)}
+.ctog[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.folder-actions{flex-direction:column;align-items:stretch;gap:10px}
+.fa-name{font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.fa-msg{line-height:1.45}
+.fa-btns{display:flex;flex-wrap:wrap;gap:6px}
+.fa-move{display:flex;flex-direction:column;gap:4px}
+.fa-lab{font:700 13px/1 var(--f-sub);letter-spacing:.1em;text-transform:uppercase}
+.fa-move .ddbtn{min-height:40px;border-radius:12px}
+.subnav{display:flex;flex-wrap:wrap;gap:8px}
+.subpill{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border:1px solid var(--edge);border-radius:999px;background:rgba(255,255,255,.6);cursor:pointer;font-weight:500;transition:background .2s,transform .2s var(--ease)}
+.subpill:hover{background:rgba(255,255,255,.95);transform:translateY(-1px)}
+.subpill .n{font:700 14px/1 var(--f-sub);color:var(--ink-soft)}
 
 /* ---- móvil: las carpetas viven en un cajón lateral (menú hamburguesa) ---- */
 .menu-btn,.side-close,.scrim{display:none}
@@ -363,6 +398,7 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
     <nav aria-label="Carpetas"><div class="chips" id="chips"></div></nav>
     <button type="button" class="newfolder" id="newFolderBtn">+ Nueva carpeta</button>
     <form class="inline-form" id="folderForm" hidden>
+      <p class="hint" id="nf-hint" hidden></p>
       <label class="sr" for="nf-name">Nombre de la carpeta</label>
       <input id="nf-name" type="text" maxlength="40" placeholder="Nombre, por ejemplo Recetas" autocomplete="off">
       <div class="row-btns">
@@ -426,6 +462,7 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
       </div>
       <button type="button" class="toggle" id="pendingBtn" aria-pressed="false">Solo por ver</button>
     </div>
+    <div class="subnav" id="subnav" hidden></div>
     <p class="count sr" id="count"></p>
     <p class="status" id="status" role="status" hidden></p>
 
@@ -504,8 +541,8 @@ var LS_KEY = 'guardaditos-v1';
 var SUPABASE_URL = 'https://fazlaqcepxshgrchoagi.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_SDAyhoseEcuyszI3kLH6EQ_xFq7X7lh';
 var DEFAULT_FOLDERS = [
-  { id:'f_programar', name:'Webs para programar', hue:3 },
-  { id:'f_belleza', name:'Belleza', hue:0 }
+  { id:'f_programar', name:'Webs para programar', color:'azul', tone:1 },
+  { id:'f_belleza', name:'Belleza', color:'rosa', tone:1 }
 ];
 var state = {
   mode:'loading', got:false, slow:false, confirmed:false, failed:false, demo:false,
@@ -514,6 +551,14 @@ var state = {
   editing:null, confirmDel:null, confirmFolder:false,
   view:'links', tasks:[], confirmTask:null, loaded:{}
 };
+state.collapsed = {}; state.newParent = ''; state.renaming = false; state.colorOpen = false; state.undo = null;
+try{ state.collapsed = JSON.parse(localStorage.getItem('savio-collapsed') || '{}') || {}; }catch(e){}
+function saveCollapsed(){ try{ localStorage.setItem('savio-collapsed', JSON.stringify(state.collapsed)); }catch(e){} }
+function expandTo(id){
+  var c = folderById(id), g = 0;
+  while(c && c.parentId && g++ < 20){ delete state.collapsed[c.parentId]; c = folderById(c.parentId); }
+  saveCollapsed();
+}
 var appRef = null, linksRef = null, tasksRef = null, queue = Promise.resolve(), toastTimer = null, slowTimer = null;
 
 /* ---------- utilidades ---------- */
@@ -597,9 +642,245 @@ function folderById(id){
   for(var i=0;i<state.folders.length;i++) if(state.folders[i].id === id) return state.folders[i];
   return null;
 }
+/* ---------- colores de carpeta: cada una tiene su gama ---------- */
+var FAMILIES = [
+  { id:'turquesa', name:'Turquesa', h:174, s:42 },
+  { id:'verde', name:'Verde', h:132, s:30 },
+  { id:'lima', name:'Lima', h:76, s:36 },
+  { id:'mostaza', name:'Mostaza', h:42, s:52 },
+  { id:'naranja', name:'Naranja', h:22, s:56 },
+  { id:'coral', name:'Coral', h:6, s:50 },
+  { id:'rosa', name:'Rosa', h:340, s:40 },
+  { id:'violeta', name:'Violeta', h:268, s:30 },
+  { id:'azul', name:'Azul', h:212, s:42 },
+  { id:'gris', name:'Gris', h:200, s:8 }
+];
+var TONES = [22, 33, 44, 70, 86];
+var TONE_NAMES = ['Muy oscuro','Oscuro','Medio','Claro','Muy claro'];
+var LEGACY_TONE = [1, 0, 3, 2, 4];
+function hsl2rgb(hh, ss, ll){
+  ss /= 100; ll /= 100;
+  var k = function(n){ return (n + hh / 30) % 12; };
+  var a = ss * Math.min(ll, 1 - ll);
+  var f = function(n){ return ll - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); };
+  return [f(0), f(8), f(4)];
+}
+function lumOf(rgb){
+  var c = rgb.map(function(v){ return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+function famOf(id){
+  for(var i = 0; i < FAMILIES.length; i++) if(FAMILIES[i].id === id) return FAMILIES[i];
+  return FAMILIES[0];
+}
+function famIdOf(f){ return (f && f.color) ? famOf(f.color).id : 'turquesa'; }
+function toneOf(f){
+  if(f && typeof f.tone === 'number') return Math.max(0, Math.min(4, f.tone));
+  return f ? LEGACY_TONE[(f.hue || 0) % 5] : 2;
+}
+function mkColor(fam, tone){
+  var L = TONES[tone], lm = lumOf(hsl2rgb(fam.h, fam.s, L));
+  var light = (0.94 + 0.05) / (lm + 0.05), dark = (lm + 0.05) / 0.07;
+  return {
+    bg:'hsl(' + fam.h + ' ' + fam.s + '% ' + L + '%)',
+    ink: light >= dark ? '#F2FAFA' : '#0D2B24',
+    strong:'hsl(' + fam.h + ' ' + fam.s + '% ' + TONES[1] + '%)',
+    tint:'hsl(' + fam.h + ' ' + fam.s + '% ' + TONES[4] + '%)'
+  };
+}
+function folderColor(f){
+  return f ? mkColor(famOf(famIdOf(f)), toneOf(f)) : { bg:'#1C534C', ink:'#F2FAFA', strong:'#1C534C', tint:'#8ABDBE' };
+}
+function dotBg(f){ return f ? folderColor(f).bg : 'rgba(255,255,255,.7)'; }
+function mkDot(f){ return h('span',{class:'dot' + (f ? '' : ' h-none'),style:'background:' + dotBg(f)}); }
+function colorVars(f){
+  var c = folderColor(f);
+  return '--fc:' + c.bg + ';--fi:' + c.ink + ';--fs:' + c.strong + ';--ft:' + c.tint;
+}
+function pickFamily(){
+  var used = {};
+  kidsOf('').forEach(function(f){ used[famIdOf(f)] = 1; });
+  for(var i = 0; i < FAMILIES.length; i++) if(!used[FAMILIES[i].id]) return FAMILIES[i].id;
+  return FAMILIES[kidsOf('').length % FAMILIES.length].id;
+}
+function pickTone(parentId){
+  var used = {}, par = folderById(parentId), order = [2, 3, 4, 0, 1];
+  if(par) used[toneOf(par)] = 1;
+  kidsOf(parentId).forEach(function(k){ used[toneOf(k)] = 1; });
+  for(var i = 0; i < order.length; i++) if(!used[order[i]]) return order[i];
+  return order[kidsOf(parentId).length % order.length];
+}
+function setFolderColor(id, patch){
+  var f = folderById(id);
+  if(!f) return;
+  var oldFam = famIdOf(f), newFam = patch.color || oldFam, desc = descIds(id);
+  setFolders(state.folders.map(function(x){
+    if(x.id === id){
+      var n = Object.assign({}, x);
+      n.color = newFam; n.tone = (typeof patch.tone === 'number') ? patch.tone : toneOf(x); delete n.hue;
+      return n;
+    }
+    if(patch.color && desc[x.id] && famIdOf(x) === oldFam){
+      var m = Object.assign({}, x);
+      m.color = newFam; m.tone = toneOf(x); delete m.hue;
+      return m;
+    }
+    return x;
+  }));
+}
+function renameFolder(id, name){
+  name = (name || '').trim().slice(0, 40);
+  var f = folderById(id);
+  if(!f) return;
+  if(!name){ toast('Escribe un nombre para la carpeta'); return; }
+  var dup = state.folders.some(function(x){ return x.id !== id && (x.parentId || '') === (f.parentId || '') && x.name.toLowerCase() === name.toLowerCase(); });
+  if(dup){ toast('Ya existe una carpeta con ese nombre aquí'); return; }
+  state.renaming = false;
+  setFolders(state.folders.map(function(x){
+    if(x.id !== id) return x;
+    var n = Object.assign({}, x); n.name = name; return n;
+  }));
+  toast('Carpeta renombrada');
+}
+
+/* ---------- deshacer ---------- */
+function snap(){
+  return { folders:JSON.parse(JSON.stringify(state.folders)), links:JSON.parse(JSON.stringify(state.links)), tasks:JSON.parse(JSON.stringify(state.tasks)), folder:state.folder };
+}
+function sameJson(a, b){ return JSON.stringify(a) === JSON.stringify(b); }
+function restore(sn){
+  var curL = {}, inL = {}, curT = {}, inT = {};
+  state.links.forEach(function(l){ curL[l.id] = l; });
+  sn.links.forEach(function(l){ inL[l.id] = 1; if(!curL[l.id] || !sameJson(curL[l.id], l)) persistLink(l); });
+  state.links.forEach(function(l){ if(!inL[l.id]) persistRemove(l.id); });
+  state.tasks.forEach(function(t){ curT[t.id] = t; });
+  sn.tasks.forEach(function(t){ inT[t.id] = 1; if(!curT[t.id] || !sameJson(curT[t.id], t)) persistTask(t); });
+  state.tasks.forEach(function(t){ if(!inT[t.id]) persistTaskRemove(t.id); });
+  var changed = !sameJson(state.folders, sn.folders);
+  state.links = sn.links; state.tasks = sn.tasks; state.folders = sn.folders;
+  if(changed) persistFolders();
+  state.folder = sn.folder;
+  state.confirmDel = null; state.confirmTask = null; state.confirmFolder = false; state.renaming = false;
+  renderAll();
+}
+function showUndo(msg, sn){
+  var t = $('toast');
+  clearTimeout(toastTimer);
+  t.textContent = '';
+  t.appendChild(h('span',null,msg));
+  t.appendChild(h('button',{type:'button',class:'undo',onclick:doUndo},'Deshacer'));
+  t.classList.add('show','has-action');
+  state.undo = sn;
+  toastTimer = setTimeout(function(){ t.classList.remove('show','has-action'); state.undo = null; }, 8000);
+}
+function doUndo(){
+  var sn = state.undo;
+  if(!sn) return;
+  state.undo = null;
+  clearTimeout(toastTimer);
+  restore(sn);
+  toast('Deshecho');
+}
+
+/* ---------- árbol de carpetas ---------- */
+function kidsOf(pid){
+  return state.folders.filter(function(f){ return pid ? f.parentId === pid : (!f.parentId || !folderById(f.parentId)); });
+}
+function treeList(){
+  var out = [], seen = {};
+  (function walk(pid, d){
+    kidsOf(pid).forEach(function(f){
+      if(seen[f.id]) return;
+      seen[f.id] = 1;
+      out.push({ f:f, d:d });
+      walk(f.id, d + 1);
+    });
+  })('', 0);
+  return out;
+}
+function descIds(id){
+  var set = {}; set[id] = true;
+  (function walk(pid){
+    state.folders.forEach(function(f){ if(f.parentId === pid && !set[f.id]){ set[f.id] = true; walk(f.id); } });
+  })(id);
+  return set;
+}
+function pathOf(f){
+  var names = [], cur = f, g = 0;
+  while(cur && g++ < 20){ names.unshift(cur.name); cur = cur.parentId ? folderById(cur.parentId) : null; }
+  return names.join(' › ');
+}
+function folderOpts(exclude){
+  var ex = exclude ? descIds(exclude) : {};
+  return treeList().filter(function(t){ return !ex[t.f.id]; }).map(function(t){ return { id:t.f.id, label:pathOf(t.f) }; });
+}
+function scopeTest(){
+  if(state.folder === 'all') return function(){ return true; };
+  if(state.folder === 'none') return function(fid){ return !folderById(fid); };
+  var set = descIds(state.folder);
+  return function(fid){ return !!(fid && set[fid]); };
+}
+function selectFolder(key){
+  closeSide(false);
+  state.folder = key; state.confirmFolder = false; state.confirmDel = null; state.confirmTask = null;
+  state.renaming = false; state.colorOpen = false;
+  expandTo(key);
+  closeComposer(); closeTaskComposer();
+  renderAll();
+}
+function moveFolder(id, pid){
+  if(pid && descIds(id)[pid]) return;
+  var mover = folderById(id), par = pid ? folderById(pid) : null;
+  if(!mover) return;
+  var oldFam = famIdOf(mover), desc = descIds(id);
+  setFolders(state.folders.map(function(f){
+    if(f.id === id){
+      var n = Object.assign({}, f);
+      if(pid) n.parentId = pid; else delete n.parentId;
+      if(par){ n.color = famIdOf(par); n.tone = toneOf(f); delete n.hue; }
+      return n;
+    }
+    if(par && desc[f.id] && famIdOf(f) === oldFam){
+      var m = Object.assign({}, f);
+      m.color = famIdOf(par); m.tone = toneOf(f); delete m.hue;
+      return m;
+    }
+    return f;
+  }));
+  if(pid){ delete state.collapsed[pid]; saveCollapsed(); }
+  toast('Carpeta movida');
+}
+function deleteFolder(id){
+  var f = folderById(id);
+  if(!f) return;
+  var sn = snap();
+  state.links.filter(function(l){ return l.folderId === id; }).forEach(function(l){
+    var moved = Object.assign({}, l, { folderId:'' });
+    state.links = state.links.map(function(x){ return x.id === l.id ? moved : x; });
+    persistLink(moved);
+  });
+  state.tasks.filter(function(t){ return t.folderId === id; }).forEach(function(t){
+    var movedT = Object.assign({}, t, { folderId:'' });
+    state.tasks = state.tasks.map(function(x){ return x.id === t.id ? movedT : x; });
+    persistTask(movedT);
+  });
+  var up = (f.parentId && folderById(f.parentId)) ? f.parentId : '';
+  var next = state.folders.filter(function(x){ return x.id !== id; }).map(function(x){
+    if(x.parentId !== id) return x;
+    var n = Object.assign({}, x);
+    if(up) n.parentId = up; else delete n.parentId;
+    return n;
+  });
+  state.folder = up || 'all'; state.confirmFolder = false;
+  closeComposer(); closeTaskComposer();
+  setFolders(next);
+  showUndo('Carpeta borrada', sn);
+}
 function plural(n, one, many){ return n + ' ' + (n === 1 ? one : many); }
 function toast(msg){
   var t = $('toast');
+  state.undo = null;
+  t.classList.remove('has-action');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
@@ -695,10 +976,9 @@ function setFolders(fs){
 
 /* ---------- render ---------- */
 function visible(){
-  var q = state.q.trim().toLowerCase();
+  var q = state.q.trim().toLowerCase(), inS = scopeTest();
   return state.links.filter(function(l){
-    if(state.folder === 'none'){ if(folderById(l.folderId)) return false; }
-    else if(state.folder !== 'all' && l.folderId !== state.folder) return false;
+    if(!inS(l.folderId)) return false;
     if(state.pending && l.done) return false;
     if(q){
       var hay = [l.title, l.note, (l.tags || []).join(' '), l.url].join(' ').toLowerCase();
@@ -713,18 +993,16 @@ function renderAll(){
     var orphans = viewItems().filter(function(x){ return !folderById(x.folderId); }).length;
     if(state.folder === 'none' ? !orphans : !folderById(state.folder)) state.folder = 'all';
   }
-  renderViews(); renderCount(); renderHead(); renderStatus(); renderChips(); renderFolderActions(); renderList();
+  renderViews(); renderCount(); renderHead(); renderStatus(); renderChips(); renderSubnav(); renderFolderActions(); renderList();
 }
 function renderHead(){
-  var tv = state.view === 'tasks', f = folderById(state.folder);
+  var tv = state.view === 'tasks', f = folderById(state.folder), inS = scopeTest();
   var title = state.folder === 'none' ? 'Sin carpeta' : (f ? f.name : (tv ? 'Todas las tareas' : 'Todos los guardados'));
-  var items = viewItems().filter(function(x){
-    if(state.folder === 'none') return !folderById(x.folderId);
-    return state.folder === 'all' || x.folderId === state.folder;
-  });
+  var items = viewItems().filter(function(x){ return inS(x.folderId); });
   var n = items.length, open = items.filter(function(x){ return !x.done; }).length;
+  var up = (f && f.parentId && folderById(f.parentId)) ? pathOf(folderById(f.parentId)) + ' · ' : '';
   $('viewTitle').textContent = title;
-  $('viewSub').textContent = !n ? '' : (tv ? plural(n,'tarea','tareas') + ' · ' + open + (open === 1 ? ' pendiente' : ' pendientes') : plural(n,'guardado','guardados') + ' · ' + open + ' por ver');
+  $('viewSub').textContent = !n ? up.replace(/ · $/, '') : up + (tv ? plural(n,'tarea','tareas') + ' · ' + open + (open === 1 ? ' pendiente' : ' pendientes') : plural(n,'guardado','guardados') + ' · ' + open + ' por ver');
 }
 function renderViews(){
   var t = state.view === 'tasks';
@@ -758,12 +1036,12 @@ function renderStatus(){
   s.hidden = !msg;
   s.textContent = msg;
 }
-function chip(key, label, n, hue){
+function chip(key, label, n, fo){
   return h('button', {
     type:'button', class:'chip', 'aria-pressed': state.folder === key ? 'true' : 'false',
-    onclick:function(){ closeSide(false); state.folder = key; state.confirmFolder = false; state.confirmDel = null; state.confirmTask = null; closeComposer(); closeTaskComposer(); renderAll(); }
+    onclick:function(){ selectFolder(key); }
   }, [
-    hue != null ? h('span',{class:'dot h' + (hue % HUES)}) : null,
+    fo ? mkDot(fo) : null,
     h('span',null,label),
     h('span',{class:'n'}, String(n))
   ]);
@@ -772,47 +1050,115 @@ function renderChips(){
   var box = $('chips');
   box.textContent = '';
   var tv = state.view === 'tasks', items = viewItems();
-  function cnt(pred){ return items.filter(function(x){ return pred(x) && (!tv || !x.done); }).length; }
-  box.appendChild(chip('all','Todos',cnt(function(){ return true; }),null));
-  state.folders.forEach(function(f){
-    box.appendChild(chip(f.id, f.name, cnt(function(x){ return x.folderId === f.id; }), f.hue));
-  });
+  function cntIn(set){ return items.filter(function(x){ return (!tv || !x.done) && (set === null || !!(x.folderId && set[x.folderId])); }).length; }
+  box.appendChild(chip('all','Todos',cntIn(null),null));
+  var seen = {};
+  (function walk(pid, d){
+    kidsOf(pid).forEach(function(f){
+      if(seen[f.id]) return;
+      seen[f.id] = 1;
+      var kids = kidsOf(f.id), isOpen = !state.collapsed[f.id];
+      box.appendChild(h('div',{class:'crow',style:'--lvl:' + d},[
+        kids.length ? h('button',{type:'button',class:'ctog','aria-expanded':isOpen ? 'true' : 'false','aria-label':(isOpen ? 'Ocultar' : 'Mostrar') + ' las subcarpetas de «' + f.name + '»',
+          onclick:function(){ state.collapsed[f.id] = isOpen; saveCollapsed(); renderChips(); }}, ico('chev')) : h('span',{class:'ctog-sp'}),
+        chip(f.id, f.name, cntIn(descIds(f.id)), f)
+      ]));
+      if(kids.length && isOpen) walk(f.id, d + 1);
+    });
+  })('', 0);
   var hasOrphans = items.some(function(x){ return !folderById(x.folderId); });
-  if(hasOrphans) box.appendChild(chip('none','Sin carpeta',cnt(function(x){ return !folderById(x.folderId); }),null));
+  if(hasOrphans) box.appendChild(chip('none','Sin carpeta',items.filter(function(x){ return (!tv || !x.done) && !folderById(x.folderId); }).length,null));
   Array.prototype.forEach.call(box.children, function(c, i){ c.style.setProperty('--i', i); });
   $('menuBtn').classList.toggle('on', state.folder !== 'all');
+}
+function renderSubnav(){
+  var box = $('subnav');
+  box.textContent = '';
+  var f = folderById(state.folder), kids = f ? kidsOf(f.id) : [];
+  box.hidden = !kids.length;
+  if(!kids.length) return;
+  var tv = state.view === 'tasks', items = viewItems();
+  kids.forEach(function(k){
+    var set = descIds(k.id);
+    var n = items.filter(function(x){ return (!tv || !x.done) && x.folderId && set[x.folderId]; }).length;
+    box.appendChild(h('button',{type:'button',class:'subpill',onclick:function(){ selectFolder(k.id); }},[
+      mkDot(k), h('span',null,k.name), h('span',{class:'n'},String(n))
+    ]));
+  });
+}
+function openFolderForm(pid){
+  state.newParent = pid || '';
+  var p = folderById(state.newParent);
+  $('nf-hint').textContent = p ? 'Se creará dentro de «' + pathOf(p) + '».' : '';
+  $('nf-hint').hidden = !p;
+  $('nf-name').placeholder = p ? 'Nombre, por ejemplo Uñas' : 'Nombre, por ejemplo Recetas';
+  $('folderForm').hidden = false;
+  $('nf-name').focus();
+}
+function closeFolderForm(){
+  $('folderForm').hidden = true;
+  $('nf-name').value = '';
+  state.newParent = '';
+  $('nf-hint').hidden = true;
+}
+function colorPanel(f){
+  var cur = famOf(famIdOf(f)), tone = toneOf(f);
+  var fams = h('div',{class:'swgrid',role:'group','aria-label':'Color de la carpeta'}, FAMILIES.map(function(fm){
+    return h('button',{type:'button',class:'sw',title:fm.name,'aria-label':fm.name,'aria-pressed':fm.id === cur.id ? 'true' : 'false',
+      style:'background:' + mkColor(fm, 2).bg,onclick:function(){ setFolderColor(f.id,{ color:fm.id }); }});
+  }));
+  var tones = h('div',{class:'swgrid',role:'group','aria-label':'Tono'}, TONES.map(function(_, i){
+    return h('button',{type:'button',class:'sw',title:TONE_NAMES[i],'aria-label':'Tono ' + TONE_NAMES[i].toLowerCase(),'aria-pressed':i === tone ? 'true' : 'false',
+      style:'background:' + mkColor(cur, i).bg,onclick:function(){ setFolderColor(f.id,{ tone:i }); }});
+  }));
+  return h('div',{class:'colorpick'},[
+    h('span',{class:'fa-lab'},'Color'), fams,
+    h('span',{class:'fa-lab'},'Tono'), tones,
+    h('p',{class:'hint'},'Sus subcarpetas toman la misma gama; cada una puede tener su propio tono.')
+  ]);
 }
 function renderFolderActions(){
   var box = $('folderActions');
   box.textContent = '';
   var f = folderById(state.folder);
   if(!f) return;
-  var n = state.links.concat(state.tasks).filter(function(x){ return x.folderId === f.id; }).length;
-  if(!state.confirmFolder){
-    box.appendChild(h('span',null,'Carpeta «' + f.name + '»'));
-    box.appendChild(h('button',{type:'button',class:'btn ghost',onclick:function(){ state.confirmFolder = true; renderFolderActions(); }},'Borrar carpeta'));
-  } else {
-    box.appendChild(h('span',null, n ? 'Sus ' + plural(n,'elemento','elementos') + ' (guardados y tareas) pasarán a «Sin carpeta». ¿Borrar la carpeta?' : '¿Borrar la carpeta vacía?'));
-    box.appendChild(h('button',{type:'button',class:'btn danger',onclick:function(){
-      var id = f.id;
-      state.links.filter(function(l){ return l.folderId === id; }).forEach(function(l){
-        var moved = Object.assign({}, l, { folderId:'' });
-        state.links = state.links.map(function(x){ return x.id === l.id ? moved : x; });
-        persistLink(moved);
-      });
-      patchTasks(function(t){ return t.folderId === id; }, { folderId:'' });
-      state.tasks.filter(function(t){ return t.folderId === id; }).forEach(function(t){
-        var movedT = Object.assign({}, t, { folderId:'' });
-        state.tasks = state.tasks.map(function(x){ return x.id === t.id ? movedT : x; });
-        persistTask(movedT);
-      });
-      state.folder = 'all'; state.confirmFolder = false;
-      closeComposer(); closeTaskComposer();
-      setFolders(state.folders.filter(function(x){ return x.id !== id; }));
-      toast('Carpeta borrada');
-    }},'Sí, borrar'));
-    box.appendChild(h('button',{type:'button',class:'btn',onclick:function(){ state.confirmFolder = false; renderFolderActions(); }},'No'));
+  var own = state.links.concat(state.tasks).filter(function(x){ return x.folderId === f.id; }).length;
+  var subs = kidsOf(f.id).length;
+  if(state.confirmFolder){
+    var msg = (own ? 'Sus ' + plural(own,'elemento','elementos') + ' (guardados y tareas) pasarán a «Sin carpeta». ' : '')
+      + (subs ? (subs === 1 ? 'Su subcarpeta subirá un nivel. ' : 'Sus ' + subs + ' subcarpetas subirán un nivel. ') : '')
+      + (own || subs ? '¿Borrar la carpeta?' : '¿Borrar la carpeta vacía?');
+    box.appendChild(h('span',{class:'fa-msg'},msg));
+    box.appendChild(h('div',{class:'fa-btns'},[
+      h('button',{type:'button',class:'btn danger mini',onclick:function(){ deleteFolder(f.id); }},'Sí, borrar'),
+      h('button',{type:'button',class:'btn mini',onclick:function(){ state.confirmFolder = false; renderFolderActions(); }},'No')
+    ]));
+    return;
   }
+  if(state.renaming){
+    var inp = h('input',{type:'text',maxlength:'40',value:f.name,'aria-label':'Nombre de la carpeta'});
+    box.appendChild(h('form',{class:'inline-form',onsubmit:function(e){ e.preventDefault(); renameFolder(f.id, inp.value); }},[
+      inp,
+      h('div',{class:'row-btns'},[
+        h('button',{type:'submit',class:'btn primary mini'},'Guardar'),
+        h('button',{type:'button',class:'btn mini',onclick:function(){ state.renaming = false; renderFolderActions(); }},'Cancelar')
+      ])
+    ]));
+    setTimeout(function(){ inp.focus(); inp.select(); }, 0);
+    return;
+  }
+  var mv = h('select',{'aria-label':'Mover la carpeta «' + f.name + '» dentro de otra',onchange:function(e){ moveFolder(f.id, e.target.value); }},
+    [h('option',{value:''},'Carpeta principal')].concat(folderOpts(f.id).map(function(o){ return h('option',{value:o.id},o.label); })));
+  mv.value = (f.parentId && folderById(f.parentId)) ? f.parentId : '';
+  box.appendChild(h('span',{class:'fa-name'},[mkDot(f), h('span',null,f.name)]));
+  box.appendChild(h('div',{class:'fa-btns'},[
+    h('button',{type:'button',class:'btn mini',onclick:function(){ state.renaming = true; state.colorOpen = false; renderFolderActions(); }},'Renombrar'),
+    h('button',{type:'button',class:'btn mini','aria-pressed':state.colorOpen ? 'true' : 'false',onclick:function(){ state.colorOpen = !state.colorOpen; renderFolderActions(); }},'Color'),
+    h('button',{type:'button',class:'btn mini',onclick:function(){ openFolderForm(f.id); }},'+ Subcarpeta'),
+    h('button',{type:'button',class:'btn ghost mini',onclick:function(){ state.confirmFolder = true; state.colorOpen = false; renderFolderActions(); }},'Borrar')
+  ]));
+  if(state.colorOpen) box.appendChild(colorPanel(f));
+  box.appendChild(h('div',{class:'fa-move'},[h('span',{class:'fa-lab'},'Dentro de'), enhance(mv,{dots:true})]));
 }
 function tabFor(f){
   return f ? h('span',{class:'tab h' + (f.hue % HUES)}, f.name) : h('span',{class:'tab h-none'},'Sin carpeta');
@@ -841,9 +1187,9 @@ function card(l){
   var move = h('select',{class:'move','aria-label':'Cambiar la carpeta de «' + l.title + '»',onchange:function(e){
     var v = e.target.value, target = v === '__none' ? '' : v;
     if(target !== (l.folderId || '')) upsert(Object.assign({}, l, { folderId:target }));
-  }}, [h('option',{value:'__none'},'Sin carpeta')].concat(state.folders.map(function(x){ return h('option',{value:x.id},x.name); })));
+  }}, [h('option',{value:'__none'},'Sin carpeta')].concat(folderOpts().map(function(o){ return h('option',{value:o.id},o.label); })));
   move.value = f ? f.id : '__none';
-  var pick = h('span',{class:'pick'},[h('span',{class:'dot ' + (f ? 'h' + (f.hue % HUES) : 'h-none')}), enhance(move,{compact:true,dots:true})]);
+  var pick = h('span',{class:'pick'},[mkDot(f), enhance(move,{compact:true,dots:true})]);
   var actions;
   if(state.confirmDel === l.id){
     actions = h('div',{class:'actions'},[
@@ -860,7 +1206,7 @@ function card(l){
         iconBtn('check', l.done ? 'Visto: pulsa para marcar como pendiente' : 'Marcar como visto', function(){ upsert(Object.assign({}, l, { done:!l.done })); }, !!l.done),
         iconBtn('task','Añadir una tarea de este enlace',function(){ openTaskFor(l); }),
         iconBtn('edit','Editar',function(){ openComposer(l); }),
-        iconBtn('trash','Borrar',function(){ state.confirmDel = l.id; renderList(); })
+        iconBtn('trash','Borrar',function(){ var sn = snap(); removeLink(l.id); showUndo('Guardado borrado', sn); })
       ])
     ]);
   }
@@ -920,7 +1266,7 @@ function taskRow(t){
       h('button',{type:'button',class:'btn mini',onclick:function(){ state.confirmTask = null; renderList(); }},'No')
     ]));
   } else {
-    var del = iconBtn('trash','Borrar tarea',function(){ state.confirmTask = t.id; renderList(); });
+    var del = iconBtn('trash','Borrar tarea',function(){ var sn = snap(); removeTask(t.id); showUndo('Tarea borrada', sn); });
     del.classList.add('sm');
     kids.push(del);
   }
@@ -929,9 +1275,9 @@ function taskRow(t){
 function taskCard(f, shown, all){
   var done = all.filter(function(t){ return t.done; }).length;
   var key = f ? f.id : '';
-  return h('article',{class:'card tcard'},[
+  return h('article',{class:'card tcard',style:colorVars(f)},[
     h('div',{class:'card-top'},[
-      h('span',{class:'pick static'},[h('span',{class:'dot ' + (f ? 'h' + (f.hue % HUES) : 'h-none')}), h('span',{class:'ddtxt'}, f ? f.name : 'Sin carpeta')]),
+      h('span',{class:'pick static'},[mkDot(f), h('span',{class:'ddtxt'}, f ? pathOf(f) : 'Sin carpeta')]),
       h('span',{class:'date'}, all.length ? done + '/' + all.length + ' hechas' : '')
     ]),
     shown.length ? h('ul',{class:'tlist'},shown.map(taskRow)) : h('p',{class:'note'},all.length ? 'No hay tareas con este filtro.' : 'Aún no hay tareas en esta carpeta.'),
@@ -964,13 +1310,13 @@ function renderTasks(){
     return true;
   }
   var groups;
-  if(state.folder === 'all') groups = state.folders.map(function(f){ return { f:f }; }).concat([{ f:null }]);
+  if(state.folder === 'all') groups = treeList().map(function(t){ return { f:t.f }; }).concat([{ f:null }]);
   else if(state.folder === 'none') groups = [{ f:null }];
-  else groups = [{ f:folderById(state.folder) }];
+  else { var ds = descIds(state.folder); groups = treeList().filter(function(t){ return ds[t.f.id]; }).map(function(t){ return { f:t.f }; }); }
   groups.forEach(function(g){
     var all = state.tasks.filter(function(t){ return g.f ? t.folderId === g.f.id : !folderById(t.folderId); });
     var shown = all.filter(match).sort(function(a,b){ return (a.createdAt || 0) - (b.createdAt || 0); });
-    if(state.folder === 'all' && !all.length) return;
+    if(!all.length && !(g.f && g.f.id === state.folder)) return;
     if(q && !shown.length) return;
     box.appendChild(taskCard(g.f, shown, all));
   });
@@ -996,7 +1342,7 @@ function openTaskComposer(pre){
   closeComposer();
   tel.folder.textContent = '';
   tel.folder.appendChild(h('option',{value:''},'Sin carpeta'));
-  state.folders.forEach(function(f){ tel.folder.appendChild(h('option',{value:f.id},f.name)); });
+  folderOpts().forEach(function(o){ tel.folder.appendChild(h('option',{value:o.id},o.label)); });
   tel.folder.value = (pre.folderId && folderById(pre.folderId)) ? pre.folderId : '';
   tel.link.value = '';
   fillTaskLinks();
@@ -1015,7 +1361,7 @@ function closeTaskComposer(){
 }
 function resetView(){
   closeSide(false);
-  state.confirmDel = null; state.confirmTask = null; state.confirmFolder = false;
+  state.confirmDel = null; state.confirmTask = null; state.confirmFolder = false; state.renaming = false; state.colorOpen = false;
   state.pending = false; $('pendingBtn').setAttribute('aria-pressed','false');
   closeComposer(); closeTaskComposer();
 }
@@ -1030,6 +1376,7 @@ function openTaskFor(l){
   resetView();
   state.q = ''; $('q').value = '';
   state.folder = folderById(l.folderId) ? l.folderId : 'none';
+  expandTo(state.folder);
   renderAll();
   openTaskComposer({ folderId:l.folderId || '', linkId:l.id });
 }
@@ -1039,6 +1386,7 @@ function goTasks(l){
   resetView();
   state.q = ''; $('q').value = '';
   state.folder = (first && folderById(first.folderId)) ? first.folderId : 'none';
+  expandTo(state.folder);
   renderAll();
   window.scrollTo(0,0);
 }
@@ -1056,7 +1404,7 @@ $('taskForm').addEventListener('submit', function(e){
   }
   tel.err.textContent = '';
   var t = { id:rid('t_'), text:text, folderId:tel.folder.value, linkId:tel.link.value, done:false, createdAt:Date.now() };
-  if(state.folder !== 'all') state.folder = folderById(t.folderId) ? t.folderId : 'none';
+  if(state.folder !== 'all'){ state.folder = folderById(t.folderId) ? t.folderId : 'none'; expandTo(state.folder); }
   upsertTask(t);
   tel.text.value = '';
   tel.text.focus({ preventScroll:true });
@@ -1071,7 +1419,7 @@ function openComposer(link){
   $('composerTitle').textContent = link ? 'Editar guardado' : 'Nuevo guardado';
   el.folder.textContent = '';
   el.folder.appendChild(h('option',{value:''},'Sin carpeta'));
-  state.folders.forEach(function(f){ el.folder.appendChild(h('option',{value:f.id},f.name)); });
+  folderOpts().forEach(function(o){ el.folder.appendChild(h('option',{value:o.id},o.label)); });
   el.url.value = link ? link.url : '';
   el.title.value = link ? link.title : '';
   el.tags.value = link ? (link.tags || []).join(', ') : '';
@@ -1138,26 +1486,27 @@ $('pendingBtn').addEventListener('click', function(){
   renderList();
 });
 $('newFolderBtn').addEventListener('click', function(){
-  var f = $('folderForm');
-  f.hidden = !f.hidden;
-  if(!f.hidden) $('nf-name').focus();
+  if(!$('folderForm').hidden && !state.newParent) closeFolderForm(); else openFolderForm('');
 });
-$('nf-cancel').addEventListener('click', function(){ $('folderForm').hidden = true; $('nf-name').value = ''; });
+$('nf-cancel').addEventListener('click', closeFolderForm);
 $('folderForm').addEventListener('submit', function(e){
   e.preventDefault();
   var name = $('nf-name').value.trim().slice(0,40);
   if(!name) return;
-  var dup = state.folders.some(function(f){ return f.name.toLowerCase() === name.toLowerCase(); });
-  if(dup){ toast('Ya existe una carpeta con ese nombre'); return; }
-  var nf = { id: rid('f_'), name: name, hue: state.folders.length % HUES };
+  var parent = folderById(state.newParent) ? state.newParent : '';
+  var dup = state.folders.some(function(f){ return (f.parentId || '') === parent && f.name.toLowerCase() === name.toLowerCase(); });
+  if(dup){ toast(parent ? 'Ya existe una subcarpeta con ese nombre' : 'Ya existe una carpeta con ese nombre'); return; }
+  var par = folderById(parent);
+  var nf = { id: rid('f_'), name: name, color: par ? famIdOf(par) : pickFamily(), tone: par ? pickTone(parent) : 1 };
+  if(parent) nf.parentId = parent;
   state.folder = nf.id;
   state.confirmFolder = false;
+  if(parent){ delete state.collapsed[parent]; saveCollapsed(); }
   closeSide(false);
   closeComposer(); closeTaskComposer();
   setFolders(state.folders.concat([nf]));
-  $('nf-name').value = '';
-  $('folderForm').hidden = true;
-  toast('Carpeta «' + name + '» creada');
+  closeFolderForm();
+  toast(parent ? 'Subcarpeta «' + name + '» creada' : 'Carpeta «' + name + '» creada');
 });
 function openSide(){
   document.body.classList.add('menu-open');
@@ -1175,8 +1524,14 @@ $('sideClose').addEventListener('click', function(){ closeSide(true); });
 $('scrim').addEventListener('click', function(){ closeSide(true); });
 window.addEventListener('resize', function(){ if(window.innerWidth > 820) closeSide(false); });
 document.addEventListener('keydown', function(e){
+  if((e.ctrlKey || e.metaKey) && !e.shiftKey && String(e.key).toLowerCase() === 'z' && state.undo){
+    var tg = e.target && e.target.tagName;
+    if(tg !== 'INPUT' && tg !== 'TEXTAREA' && tg !== 'SELECT'){ e.preventDefault(); doUndo(); }
+    return;
+  }
   if(e.key !== 'Escape') return;
   if(document.body.classList.contains('menu-open')){ closeSide(true); return; }
+  if(state.renaming){ state.renaming = false; renderFolderActions(); return; }
   if(!$('composer').hidden) closeComposer();
   else if(!$('taskComposer').hidden) closeTaskComposer();
   else if(!$('folderForm').hidden) $('nf-cancel').click();
@@ -1213,7 +1568,6 @@ document.addEventListener('mousedown', function(e){
 });
 window.addEventListener('resize', function(){ closeMenu(false); });
 window.addEventListener('scroll', function(e){ if(openMenu && !openMenu.el.contains(e.target)) closeMenu(false); }, true);
-function hueDot(v){ var f = folderById(v); return 'dot ' + (f ? 'h' + (f.hue % HUES) : 'h-none'); }
 function enhance(sel, opts){
   opts = opts || {};
   var dv = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value');
@@ -1229,7 +1583,7 @@ function enhance(sel, opts){
   function sync(){
     var o = sel.options[di.get.call(sel)];
     txt.textContent = o ? o.text : '';
-    dotEl.className = hueDot(o ? o.value : '');
+    dotEl.style.background = dotBg(folderById(o ? o.value : ''));
     btn.disabled = sel.disabled;
   }
   Object.defineProperty(sel,'value',{ configurable:true, get:function(){ return dv.get.call(sel); }, set:function(v){ dv.set.call(sel, v); sync(); } });
@@ -1247,7 +1601,7 @@ function enhance(sel, opts){
       if(o.disabled) return;
       var on = o.value === cur;
       menu.appendChild(h('button',{type:'button',class:'ddopt',role:'option','aria-selected':on ? 'true' : 'false',onclick:function(){ choose(o.value); }},[
-        opts.dots ? h('span',{class:hueDot(o.value)}) : null,
+        opts.dots ? mkDot(folderById(o.value)) : null,
         h('span',{class:'ddl'},o.text),
         on ? ico('check') : null
       ]));
@@ -1425,21 +1779,24 @@ function enterDemo(){
   LS_KEY = 'guardaditos-demo';
   state.demo = true;
   state.folders = DEFAULT_FOLDERS.concat([
-    { id:'f_recetas', name:'Recetas', hue:2 },
-    { id:'f_escapadas', name:'Escapadas', hue:4 }
+    { id:'f_recetas', name:'Recetas', color:'naranja', tone:1 },
+    { id:'f_escapadas', name:'Escapadas', color:'verde', tone:1 },
+    { id:'f_unas', name:'Uñas', color:'rosa', tone:2, parentId:'f_belleza' },
+    { id:'f_pelo', name:'Pelo', color:'rosa', tone:3, parentId:'f_belleza' }
   ]);
   state.links = [
     { id:'l_d1', url:'https://www.instagram.com/reel/ejemplo1/', title:'5 webs para aprender a programar gratis', note:'Ejercicios desde cero, probar el de CSS primero.', folderId:'f_programar', tags:['html','css','gratis'], done:false, createdAt:now - 1*day },
     { id:'l_d2', url:'https://developer.mozilla.org/es/', title:'Guía de MDN para empezar con JavaScript', note:'Buena referencia para consultar dudas.', folderId:'f_programar', tags:['js','referencia'], done:true, createdAt:now - 3*day },
-    { id:'l_d3', url:'https://www.tiktok.com/@ejemplo/video/1', title:'Rutina de cuidado del cabello en 3 pasos', note:'', folderId:'f_belleza', tags:['pelo','rutina'], done:false, createdAt:now - 2*day },
+    { id:'l_d3', url:'https://www.tiktok.com/@ejemplo/video/1', title:'Rutina de cuidado del cabello en 3 pasos', note:'', folderId:'f_pelo', tags:['pelo','rutina'], done:false, createdAt:now - 2*day },
     { id:'l_d4', url:'https://www.instagram.com/reel/ejemplo2/', title:'Tortilla de patatas jugosa sin fallar', note:'El truco está en pochar las patatas a fuego bajo.', folderId:'f_recetas', tags:['cena','fácil'], done:false, createdAt:now - 5*day },
     { id:'l_d5', url:'https://maps.app.goo.gl/ejemplo', title:'Calas escondidas en la costa valenciana', note:'Ir en septiembre, menos gente.', folderId:'f_escapadas', tags:['playa','plan'], done:false, createdAt:now - 6*day },
-    { id:'l_d6', url:'https://docs.google.com/document/d/ejemplo/edit', title:'Itinerario de la escapada de otoño', note:'Documento compartido con la lista de planes.', folderId:'f_escapadas', tags:['viaje'], done:false, createdAt:now - 7*day }
+    { id:'l_d6', url:'https://docs.google.com/document/d/ejemplo/edit', title:'Itinerario de la escapada de otoño', note:'Documento compartido con la lista de planes.', folderId:'f_escapadas', tags:['viaje'], done:false, createdAt:now - 7*day },
+    { id:'l_d7', url:'https://www.pinterest.com/pin/ejemplo/', title:'Ideas de uñas para el otoño', note:'Tonos tierra y acabado mate.', folderId:'f_unas', tags:['uñas','otoño'], done:false, createdAt:now - 4*day }
   ];
   state.tasks = [
     { id:'t_d1', text:'Instalar Python', folderId:'f_programar', linkId:'l_d1', done:true, createdAt:now - 1*day },
     { id:'t_d2', text:'Hacer el primer ejercicio de CSS', folderId:'f_programar', linkId:'l_d1', done:false, createdAt:now - 1*day + 1000 },
-    { id:'t_d3', text:'Comprar mascarilla y aceite de argán', folderId:'f_belleza', linkId:'l_d3', done:false, createdAt:now - 2*day },
+    { id:'t_d3', text:'Comprar mascarilla y aceite de argán', folderId:'f_pelo', linkId:'l_d3', done:false, createdAt:now - 2*day },
     { id:'t_d4', text:'Probar la tortilla el domingo', folderId:'f_recetas', linkId:'l_d4', done:false, createdAt:now - 4*day }
   ];
   state.mode = 'local';
