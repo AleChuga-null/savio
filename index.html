@@ -736,7 +736,7 @@ body:not(.view-tasks) #list{grid-auto-rows:1fr}
               <img id="f-imgimg" alt="Vista previa del guardado">
               <button type="button" class="ib sm" id="f-imgdel" aria-label="Quitar imagen" title="Quitar imagen"></button>
             </div>
-            <div class="row-btns"><button type="button" class="btn mini" id="f-imgbtn">Subir foto</button></div>
+            <div class="row-btns"><button type="button" class="btn mini" id="f-imgbtn">Subir foto</button><button type="button" class="btn mini" id="f-imgauto" hidden>Buscar del enlace</button></div>
             <p class="hint" id="f-imghint"></p>
             <input type="file" id="f-imgfile" accept="image/*" hidden>
           </div>
@@ -2878,6 +2878,9 @@ function setDraftImage(v){
 function resetImgDraft(v){
   state.imgTok = (state.imgTok || 0) + 1;
   state.imgBusy = false;
+  state.imgAuto = false; state.imgFor = '';
+  clearTimeout(state.imgTimer);
+  $('f-imgauto').hidden = !autoPreviewOk();
   setDraftImage(v);
   $('f-imghint').textContent = IMG_HINT;
   $('f-imgbox').classList.remove('over');
@@ -2889,6 +2892,7 @@ function handleImageFile(file){
   $('f-imghint').textContent = 'Procesando imagen…';
   readImageFile(file).then(function(d){
     if(tok !== state.imgTok) return;
+    state.imgAuto = false;
     setDraftImage(d);
     $('f-imghint').textContent = IMG_HINT;
   }).catch(function(){
@@ -2905,7 +2909,7 @@ $('f-imgfile').addEventListener('change', function(e){
   e.target.value = '';
   handleImageFile(f);
 });
-$('f-imgdel').addEventListener('click', function(){ resetImgDraft(''); });
+$('f-imgdel').addEventListener('click', function(){ resetImgDraft(''); state.imgFor = canonUrl(el.url.value); });
 $('composer').addEventListener('paste', function(e){
   var items = e.clipboardData && e.clipboardData.items, f = null;
   if(items) for(var i = 0; i < items.length; i++){
@@ -3024,6 +3028,50 @@ $('s-done').addEventListener('click', function(){
     $('s-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
   });
 });
+
+/* ---------- imagen automática: la función «link-preview» de Supabase lee la vista previa del enlace ---------- */
+function autoPreviewOk(){ return !!(sbClient && state.mode === 'db' && !state.demo); }
+function dataUrlToBlob(d){
+  var m = /^data:([^;]+);base64,(.*)$/.exec(d || '');
+  if(!m) return null;
+  var bin = atob(m[2]), arr = new Uint8Array(bin.length);
+  for(var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type:m[1] });
+}
+function autoPreview(force){
+  if(!autoPreviewOk() || $('composer').hidden) return;
+  var url = normUrl(el.url.value), key = canonUrl(el.url.value);
+  if(!url) { if(force) $('f-imghint').textContent = 'Escribe primero un enlace válido.'; return; }
+  if(!force){
+    if(key === state.imgFor) return;
+    if(state.draftImage && !state.imgAuto) return;
+  }
+  state.imgFor = key;
+  var tok = state.imgTok = (state.imgTok || 0) + 1;
+  state.imgBusy = false;
+  $('f-imghint').textContent = 'Buscando la imagen del enlace…';
+  $('f-imgauto').disabled = true;
+  function fin(msg, img){
+    if(tok !== state.imgTok) return;
+    $('f-imgauto').disabled = false;
+    if(img){ state.imgAuto = true; setDraftImage(img); }
+    $('f-imghint').textContent = msg;
+  }
+  sbClient.functions.invoke('link-preview', { body:{ url:url } }).then(function(r){
+    if(tok !== state.imgTok) return;
+    var blob = (!r.error && r.data && r.data.image) ? dataUrlToBlob(r.data.image) : null;
+    if(r.error){ fin('No se pudo buscar la imagen ahora. Puedes subir una a mano.'); return; }
+    if(!blob){ fin('Ese enlace no trae imagen de vista previa. Puedes subir una a mano.'); return; }
+    return readImageFile(blob).then(function(d){
+      fin('Imagen encontrada en el enlace. Puedes cambiarla o quitarla.', d);
+    });
+  }).catch(function(){ fin('No se pudo buscar la imagen ahora. Puedes subir una a mano.'); });
+}
+el.url.addEventListener('input', function(){
+  clearTimeout(state.imgTimer);
+  state.imgTimer = setTimeout(function(){ autoPreview(false); }, 700);
+});
+$('f-imgauto').addEventListener('click', function(){ autoPreview(true); });
 
 /* ---------- arranque ---------- */
 function goLocal(){
