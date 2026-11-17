@@ -165,6 +165,9 @@ h1{margin:0;font:700 clamp(1.5rem,3.6vw,2.2rem)/1.15 var(--f-display);letter-spa
 .tags span{font:400 14.5px/1 var(--f-sub);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.55);color:var(--ink-soft)}
 .actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
 .actions .ask{font-size:14px;color:var(--ink-soft)}
+/* lo de abajo de cada tarjeta va siempre pegado al fondo, a la misma altura que sus vecinas de la fila */
+.card-foot{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.tcard > .actions{margin-top:auto}
 .icons{display:flex;gap:4px}
 .ib{width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.5);color:var(--ink-soft);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
 .ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -411,6 +414,24 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
   .add{min-height:48px;padding:0 18px}
 }
 
+/* ---- etiquetas clicables, ordenar y fijar ---- */
+.tags button{font:400 14.5px/1 var(--f-sub);padding:6px 10px;border:0;border-radius:999px;background:rgba(255,255,255,.55);color:var(--ink-soft);cursor:pointer;transition:background .2s,color .2s,transform .2s var(--ease)}
+.tags button:hover{background:rgba(255,255,255,.95);color:var(--ink);transform:translateY(-1px)}
+.tags button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.tagbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px 12px;padding:0 4px}
+.tagbar .hint{min-height:0}
+.tagpill{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 6px 0 16px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:600;box-shadow:0 8px 18px -10px rgba(13,43,36,.55)}
+.tagpill .ib{background:rgba(255,255,255,.18);color:var(--accent-ink)}
+.tagpill .ib:hover{background:rgba(255,255,255,.34);color:#fff}
+.head-tools{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px}
+.sort{display:flex;align-items:center;gap:8px}
+.sort-lab{font:700 13.5px/1 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.sortdd{flex:none}
+.sortdd .ddbtn{width:auto;min-width:160px;min-height:40px;padding:0 12px 0 16px;border-radius:999px}
+.ctr{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.card.pinned{border-color:rgba(28,83,76,.45)}
+.grid-label{grid-column:1/-1;margin:2px 4px -6px;font:700 13.5px/1 var(--f-sub);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+
 /* ---- aviso de enlace repetido ---- */
 .dup{display:flex;flex-direction:column;gap:10px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.7);border:1px solid var(--edge);border-left:4px solid var(--accent)}
 .dup[hidden]{display:none!important}
@@ -463,6 +484,78 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   body.sel-on .toast{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
   body.sel-on{padding-bottom:210px}
 }
+
+/* ---- copia de seguridad ---- */
+.locked #backupBtn{display:none!important}
+@media (max-width:1040px){ #backupBtn{order:2} }
+@media (max-width:820px){
+  #backupBtn{padding:0;width:40px;min-width:40px}
+  #backupBtn .backup-txt{display:none}
+}
+.dlg-scrim{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(13,43,36,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:fade .2s var(--ease)}
+.dlg{width:min(440px,100%);max-height:calc(100vh - 32px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:26px;
+  background:rgba(246,252,252,.94);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);border:1px solid var(--edge);
+  box-shadow:0 24px 60px -16px rgba(13,43,36,.55),inset 0 1px 0 rgba(255,255,255,.9)}
+.dlg h2{margin:0;font:700 1.15rem/1.2 var(--f-display);letter-spacing:.03em}
+.dlg p{margin:0;line-height:1.5}
+.dlg .hint{min-height:0}
+.dlg-opts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45;color:var(--ink-soft)}
+.dlg-opts b{color:var(--ink)}
+.dlg .row-btns .btn{flex:1 1 auto}
+
+/* ---- perfil de usuario ---- */
+.avatar{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;overflow:hidden;
+  background:linear-gradient(160deg,#2B6B63,#1C534C);color:var(--accent-ink);font:700 1.05rem/1 var(--f-sub);letter-spacing:.02em;text-transform:uppercase}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar svg{width:56%;height:56%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.avatar-btn{flex:none;width:46px;height:46px;padding:3px;border-radius:50%;border:1px solid var(--edge);background:rgba(255,255,255,.7);cursor:pointer;
+  box-shadow:0 6px 16px -10px rgba(13,43,36,.5);transition:background .25s,transform .25s var(--ease),box-shadow .25s}
+.avatar-btn:hover{background:#fff;transform:translateY(-1px)}
+.avatar-btn[aria-pressed="true"]{box-shadow:0 0 0 3px rgba(76,138,134,.45),0 6px 16px -10px rgba(13,43,36,.5)}
+.locked #profileBtn{display:none!important}
+@media (max-width:1040px){ #profileBtn{order:2} }
+body.profile-open .main > :not(#profile){display:none!important}
+.prof-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.prof-av{flex:none;width:88px;height:88px;border-radius:50%;padding:4px;background:rgba(255,255,255,.75);border:1px solid var(--edge);box-shadow:var(--shadow)}
+.prof-av .avatar{font-size:2.2rem}
+.prof-id{min-width:0;display:flex;flex-direction:column;gap:2px}
+.prof-name{margin:0;font:700 1.3rem/1.25 var(--f-sub);overflow-wrap:anywhere}
+.prof-id .hint{min-height:0;overflow-wrap:anywhere}
+.prof-stats{display:flex;flex-wrap:wrap;gap:8px}
+.stat{display:inline-flex;align-items:baseline;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.6);border:1px solid var(--edge);color:var(--ink-soft);font-size:14px}
+.stat b{font:700 1.1rem/1 var(--f-sub);color:var(--ink)}
+.field input[readonly]{background:rgba(255,255,255,.35);color:var(--ink-soft);cursor:default}
+.prof-actions{display:flex;padding-top:6px;border-top:1px solid var(--line)}
+.prof-actions #logoutBtn{color:var(--danger)}
+.prof-actions #logoutBtn:hover:not(:disabled){background:rgba(169,38,30,.1);color:var(--danger)}
+@media (max-width:560px){ .prof-av{width:72px;height:72px} .prof-av .avatar{font-size:1.8rem} }
+
+/* ---- imagen de vista previa de cada guardado ---- */
+.imgfield{display:flex;flex-direction:column;gap:8px;padding:12px;border:1px dashed rgba(28,83,76,.4);border-radius:16px;background:rgba(255,255,255,.35);transition:background .2s,border-color .2s}
+.imgfield.over{background:rgba(255,255,255,.8);border-color:var(--accent)}
+.imgfield .hint{min-height:0}
+.imgprev{position:relative;align-self:flex-start;max-width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--edge);background:rgba(255,255,255,.6);box-shadow:var(--shadow)}
+.imgprev img{display:block;max-width:100%;max-height:220px;width:auto;height:auto}
+.imgprev .ib{position:absolute;top:8px;right:8px;background:rgba(13,43,36,.72);color:#fff}
+.imgprev .ib:hover{background:rgba(13,43,36,.92);color:#fff}
+.thumb{display:block;border-radius:16px;overflow:hidden;aspect-ratio:16/10;background:rgba(255,255,255,.5);border:1px solid var(--edge)}
+.thumb a{display:block;height:100%}
+.thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.card:hover .thumb img{transform:scale(1.03)}
+.card.done .thumb img{opacity:.75}
+.card img{-webkit-user-drag:none;user-select:none}
+
+/* ---- crear cuenta: tarjeta propia en dos pasos ---- */
+#auth.mode-up{border-color:rgba(28,83,76,.4);background:linear-gradient(180deg,rgba(28,83,76,.16),rgba(255,255,255,.42) 60%)}
+.auth-steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;font:700 13px/1 var(--f-sub);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.auth-steps li{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:999px;background:rgba(255,255,255,.5);border:1px solid var(--edge)}
+.auth-steps li span{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(28,83,76,.18);color:var(--ink)}
+.auth-steps li.on{background:rgba(255,255,255,.92);color:var(--ink)}
+.auth-steps li.on span,.auth-steps li.done span{background:var(--accent);color:var(--accent-ink)}
+.auth-sent{display:flex;flex-direction:column;gap:12px}
+.auth-mail{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#2B6B63,#1C534C);color:var(--accent-ink);box-shadow:var(--shadow)}
+.auth-mail svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.auth-sent-msg{margin:0;line-height:1.55;overflow-wrap:anywhere}
 </style>
 
 </head>
@@ -483,7 +576,8 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
     <button type="button" class="view" id="viewTasks" aria-pressed="false">Tareas <span class="n" id="nTasks"></span></button>
   </div>
   <button type="button" class="btn primary add fab" id="fab" disabled>+ Añadir enlace</button>
-  <button type="button" class="btn ghost" id="logoutBtn" hidden>Cerrar sesión</button>
+  <button type="button" class="btn ghost" id="backupBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Copia de seguridad"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h16v3H4zM5.5 10.5V19h13v-8.5M10 14h4"/></svg><span class="backup-txt">Copia de seguridad</span></button>
+  <button type="button" class="avatar-btn" id="profileBtn" aria-label="Mi perfil" title="Mi perfil" aria-pressed="false"><span class="avatar" id="profileAv"></span></button>
 </header>
 
 <div class="app">
@@ -502,6 +596,10 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
     <section class="panel" id="auth" hidden aria-labelledby="authTitle">
       <h2 id="authTitle">Entra en Savio</h2>
       <p class="hint" id="authLead">Tus guardados son privados y se sincronizan en todos tus dispositivos.</p>
+      <ol class="auth-steps" id="a-steps" aria-label="Pasos para crear la cuenta" hidden>
+        <li id="st-1" class="on"><span>1</span>Tus datos</li>
+        <li id="st-2"><span>2</span>Confirmar correo</li>
+      </ol>
       <form id="authForm" style="display:flex;flex-direction:column;gap:12px" novalidate>
         <div class="field">
           <label for="a-email">Correo</label>
@@ -518,7 +616,7 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
         <p class="error" id="a-error" role="alert"></p>
         <p class="hint" id="a-info" role="status"></p>
         <div class="row-btns">
-          <button type="submit" class="btn primary">Entrar</button>
+          <button type="submit" class="btn primary" id="a-submit">Entrar</button>
           <button type="button" class="btn" id="a-signup">Crear cuenta</button>
         </div>
       </form>
@@ -537,11 +635,51 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
           <button type="button" class="btn" id="r-cancel">Cancelar</button>
         </div>
       </form>
+      <div class="auth-sent" id="authSent" hidden>
+        <div class="auth-mail" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 6.5h17v11h-17zM4 7l8 6.2L20 7"/></svg></div>
+        <p class="auth-sent-msg" id="s-msg"></p>
+        <p class="error" id="s-error" role="alert"></p>
+        <p class="hint" id="s-info" role="status"></p>
+        <div class="row-btns">
+          <button type="button" class="btn primary" id="s-done">Ya lo he confirmado</button>
+          <button type="button" class="btn" id="s-resend">Reenviar correo</button>
+        </div>
+        <button type="button" class="linkbtn" id="s-change">Cambiar correo</button>
+      </div>
       <div id="authAlt" style="display:flex;flex-direction:column;gap:12px">
         <div class="or">o</div>
         <div class="row-btns"><button type="button" class="btn demo" id="a-demo">Probar sin cuenta</button></div>
         <p class="hint">Verás la página con datos de ejemplo. No hace falta correo ni contraseña.</p>
       </div>
+    </section>
+
+    <section class="panel" id="profile" hidden aria-labelledby="profTitle">
+      <div class="row-btns"><button type="button" class="btn ghost mini" id="p-back">← Volver</button></div>
+      <div class="prof-head">
+        <div class="prof-av" id="p-av"></div>
+        <div class="prof-id">
+          <h2 id="profTitle">Mi perfil</h2>
+          <p class="prof-name" id="p-label"></p>
+          <p class="hint" id="p-sub"></p>
+        </div>
+      </div>
+      <div class="prof-stats" id="p-stats"></div>
+      <form id="profForm" style="display:flex;flex-direction:column;gap:12px" novalidate>
+        <div class="field">
+          <label for="p-name">Nombre</label>
+          <input id="p-name" type="text" maxlength="40" autocomplete="nickname" placeholder="Cómo quieres que te llamemos">
+        </div>
+        <div class="field">
+          <label for="p-email">Correo</label>
+          <input id="p-email" type="text" readonly>
+        </div>
+        <p class="error" id="p-error" role="alert"></p>
+        <div class="row-btns">
+          <button type="submit" class="btn primary">Guardar perfil</button>
+          <button type="button" class="btn" id="p-photo" disabled>Cambiar foto · próximamente</button>
+        </div>
+      </form>
+      <div class="prof-actions"><button type="button" class="btn ghost" id="logoutBtn" hidden>Cerrar sesión</button></div>
     </section>
 
     <div class="main-head">
@@ -550,9 +688,22 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
         <p class="sub" id="viewSub"></p>
       </div>
       <div class="head-tools">
+        <div class="sort" id="sortWrap">
+          <span class="sort-lab">Ordenar</span>
+          <select id="sortSel" aria-label="Ordenar los guardados">
+            <option value="new">Más recientes</option>
+            <option value="old">Más antiguos</option>
+            <option value="az">Nombre A → Z</option>
+            <option value="za">Nombre Z → A</option>
+          </select>
+        </div>
         <button type="button" class="toggle" id="selBtn" aria-pressed="false">Seleccionar</button>
         <button type="button" class="toggle" id="pendingBtn" aria-pressed="false">Solo por ver</button>
       </div>
+    </div>
+    <div class="tagbar" id="tagbar" hidden>
+      <span class="tagpill"><span id="tagName"></span><button type="button" class="ib sm" id="tagClear" aria-label="Quitar el filtro de etiqueta" title="Quitar etiqueta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></span>
+      <p class="hint">Mostrando todo lo que lleva esta etiqueta, en todas las carpetas.</p>
     </div>
     <div class="subnav" id="subnav" hidden></div>
     <p class="count sr" id="count"></p>
@@ -566,6 +717,18 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
           <input id="f-url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" placeholder="Pega cualquier enlace: una web, un mapa, un documento, un vídeo…">
           <p class="hint" id="f-platform"></p>
           <div class="dup" id="f-dup" role="status" hidden></div>
+        </div>
+        <div class="field">
+          <label for="f-imgbtn">Imagen</label>
+          <div class="imgfield" id="f-imgbox">
+            <div class="imgprev" id="f-imgprev" hidden>
+              <img id="f-imgimg" alt="Vista previa del guardado">
+              <button type="button" class="ib sm" id="f-imgdel" aria-label="Quitar imagen" title="Quitar imagen"></button>
+            </div>
+            <div class="row-btns"><button type="button" class="btn mini" id="f-imgbtn">Subir foto</button></div>
+            <p class="hint" id="f-imghint"></p>
+            <input type="file" id="f-imgfile" accept="image/*" hidden>
+          </div>
         </div>
         <div class="field">
           <label for="f-title">Título</label>
@@ -630,6 +793,7 @@ body.sel-on .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   <button type="button" class="btn mini" id="selDone">Listo</button>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
 
 <form class="inline-form fpop" id="folderForm" role="dialog" aria-labelledby="nf-title" hidden>
   <p class="fp-title" id="nf-title">Nueva carpeta</p>
@@ -664,7 +828,9 @@ var state = {
   selMode:false, sel:{}, selLast:''
 };
 state.collapsed = {}; state.newParent = ''; state.renamingId = ''; state.fmenu = ''; state.undo = null;
+state.tag = ''; state.sort = 'new';
 try{ state.collapsed = JSON.parse(localStorage.getItem('savio-collapsed') || '{}') || {}; }catch(e){}
+try{ var svSort = localStorage.getItem('savio-sort'); if(['new','old','az','za'].indexOf(svSort) >= 0) state.sort = svSort; }catch(e){}
 function saveCollapsed(){ try{ localStorage.setItem('savio-collapsed', JSON.stringify(state.collapsed)); }catch(e){} }
 function expandTo(id){
   var c = folderById(id), g = 0;
@@ -942,11 +1108,31 @@ function scopeTest(){
 }
 function selectFolder(key){
   closeSide(false);
+  closeProfile();
   state.folder = key; state.confirmDel = null; state.confirmTask = null;
-  state.renamingId = '';
+  state.renamingId = ''; state.tag = '';
   expandTo(key);
   closeComposer(); closeTaskComposer();
   renderAll();
+}
+/* etiquetas: al pulsar una, se ve todo lo que la lleva, en todas las carpetas */
+function filterByTag(t){
+  closeSide(false);
+  state.view = 'links'; state.tag = t; state.folder = 'all';
+  state.q = ''; $('q').value = '';
+  state.confirmDel = null; state.renamingId = '';
+  closeComposer(); closeTaskComposer();
+  renderAll();
+  window.scrollTo(0,0);
+}
+function clearTag(){
+  state.tag = '';
+  renderAll();
+}
+function togglePin(l){
+  var nl = Object.assign({}, l, { pinned:!l.pinned });
+  upsert(nl);
+  toast(nl.pinned ? 'Fijado arriba' : 'Ya no está fijado');
 }
 function moveFolder(id, pid){
   if(pid && descIds(id)[pid]) return;
@@ -1024,12 +1210,13 @@ function lsLoad(){
   }catch(e){}
 }
 function lsSave(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify({ folders:state.folders, links:state.links, tasks:state.tasks })); }catch(e){}
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({ folders:state.folders, links:state.links, tasks:state.tasks })); }catch(e){ toast('No se pudo guardar en este navegador: puede que no quede espacio'); }
 }
 function persistLink(l){
   if(state.mode === 'db'){
     var ref = linksRef.doc(l.id);
-    var body = { url:l.url, title:l.title, note:l.note, folderId:l.folderId, tags:l.tags, done:!!l.done, createdAt:l.createdAt };
+    var body = { url:l.url, title:l.title, note:l.note, folderId:l.folderId, tags:l.tags, done:!!l.done, pinned:!!l.pinned, createdAt:l.createdAt };
+    if(l.image) body.image = l.image;
     enqueue(function(){ return ref.set(body); });
   } else lsSave();
 }
@@ -1097,17 +1284,27 @@ function setFolders(fs){
 }
 
 /* ---------- render ---------- */
+function titleKey(l){ return l.title || detect(l.url) || ''; }
 function visible(){
-  var q = state.q.trim().toLowerCase(), inS = scopeTest();
+  var q = state.q.trim().toLowerCase(), inS = scopeTest(), tg = state.tag, sk = state.sort;
   return state.links.filter(function(l){
     if(!inS(l.folderId)) return false;
+    if(tg && (l.tags || []).indexOf(tg) < 0) return false;
     if(state.pending && l.done) return false;
     if(q){
       var hay = [l.title, l.note, (l.tags || []).join(' '), l.url].join(' ').toLowerCase();
       if(hay.indexOf(q) < 0) return false;
     }
     return true;
-  }).sort(function(a,b){ return (b.createdAt || 0) - (a.createdAt || 0); });
+  }).sort(function(a,b){
+    if(!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+    if(sk === 'old') return (a.createdAt || 0) - (b.createdAt || 0);
+    if(sk === 'az' || sk === 'za'){
+      var c = titleKey(a).localeCompare(titleKey(b), 'es', { sensitivity:'base', numeric:true });
+      return sk === 'az' ? c : -c;
+    }
+    return (b.createdAt || 0) - (a.createdAt || 0);
+  });
 }
 function viewItems(){ return state.view === 'tasks' ? state.tasks : state.links; }
 function renderAll(){
@@ -1117,11 +1314,13 @@ function renderAll(){
     if(state.folder === 'none' ? !orphans : !folderById(state.folder)) state.folder = 'all';
   }
   renderViews(); renderCount(); renderHead(); renderStatus(); renderChips(); renderSubnav(); renderList();
+  renderProfileBtn();
+  if(!$('profile').hidden) renderProfileStats();
 }
 function renderHead(){
-  var tv = state.view === 'tasks', f = folderById(state.folder), inS = scopeTest();
-  var title = state.folder === 'none' ? 'Sin carpeta' : (f ? f.name : (tv ? 'Todas las tareas' : 'Todos los guardados'));
-  var items = viewItems().filter(function(x){ return inS(x.folderId); });
+  var tv = state.view === 'tasks', f = folderById(state.folder), inS = scopeTest(), tg = tv ? '' : state.tag;
+  var title = tg ? '#' + tg : (state.folder === 'none' ? 'Sin carpeta' : (f ? f.name : (tv ? 'Todas las tareas' : 'Todos los guardados')));
+  var items = viewItems().filter(function(x){ return inS(x.folderId) && (!tg || (x.tags || []).indexOf(tg) >= 0); });
   var n = items.length, open = items.filter(function(x){ return !x.done; }).length;
   var up = (f && f.parentId && folderById(f.parentId)) ? pathOf(folderById(f.parentId)) + ' · ' : '';
   $('viewTitle').textContent = title;
@@ -1141,6 +1340,9 @@ function renderViews(){
   $('selBtn').hidden = t;
   $('q').placeholder = t ? 'Buscar tareas' : 'Buscar por título, nota o etiqueta';
   $('fab').textContent = t ? '+ Nueva tarea' : '+ Añadir enlace';
+  $('sortWrap').hidden = t;
+  $('tagbar').hidden = t || !state.tag;
+  $('tagName').textContent = state.tag ? '#' + state.tag : '';
 }
 function renderCount(){
   if(state.view === 'tasks'){
@@ -1299,8 +1501,13 @@ var ICONS = {
   chevR:'<path d="M9.5 6l6 6-6 6"/>',
   back:'<path d="M15 6l-6 6 6 6"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  download:'<path d="M12 4v11M7.5 11L12 15.5L16.5 11M5 19.5h14"/>',
+  upload:'<path d="M12 15V4M7.5 8L12 3.5L16.5 8M5 19.5h14"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  user:'<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
   more:'<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
-  folder:'<path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h4l2 2.5h8a1.5 1.5 0 0 1 1.5 1.5v7.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/>'
+  folder:'<path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h4l2 2.5h8a1.5 1.5 0 0 1 1.5 1.5v7.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/>',
+  pin:'<path d="M9 4.5h6M10 4.5l-.5 5.2L7 12.2V14h10v-1.8l-2.5-2.5-.5-5.2"/><path d="M12 14v6"/>'
 };
 function ico(n){
   var s = document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -1313,6 +1520,12 @@ function iconBtn(name, label, fn, pressed){
   if(pressed !== undefined) a['aria-pressed'] = pressed ? 'true' : 'false';
   return h('button', a, ico(name));
 }
+function thumbFor(l, href){
+  var src = validImage(l.image);
+  if(!src) return null;
+  var img = h('img',{src:src,alt:'',loading:'lazy',decoding:'async',draggable:'false'});
+  return h('div',{class:'thumb'}, href ? h('a',{href:href,target:'_blank',rel:'noopener noreferrer',tabindex:'-1','aria-hidden':'true',draggable:'false'},img) : img);
+}
 function card(l){
   var f = folderById(l.folderId), href = normUrl(l.url), ts = taskStat(l);
   var move = h('select',{class:'move','aria-label':'Cambiar la carpeta de «' + l.title + '»',onchange:function(e){
@@ -1321,6 +1534,8 @@ function card(l){
   }}, [h('option',{value:'__none'},'Sin carpeta')].concat(folderOpts().map(function(o){ return h('option',{value:o.id},o.label); })));
   move.value = f ? f.id : '__none';
   var pick = h('span',{class:'pick'},[mkDot(f), enhance(move,{compact:true,dots:true})]);
+  var pin = iconBtn('pin', l.pinned ? 'Fijado arriba: pulsa para soltarlo' : 'Fijar arriba', function(){ togglePin(l); }, !!l.pinned);
+  pin.classList.add('sm');
   var actions;
   if(state.confirmDel === l.id){
     actions = h('div',{class:'actions'},[
@@ -1344,15 +1559,20 @@ function card(l){
   var title = l.title || detect(l.url) || 'Sin título';
   var selOn = state.selMode, isSel = selOn && !!state.sel[l.id];
   var selbox = selOn ? h('button',{type:'button',class:'selbox','aria-pressed':isSel ? 'true' : 'false','aria-label':'Seleccionar «' + title + '»'},[ico('check')]) : null;
-  return h('article',{class:'card' + (l.done ? ' done' : '') + (isSel ? ' sel' : ''),'data-id':l.id,
+  return h('article',{class:'card' + (l.done ? ' done' : '') + (l.pinned ? ' pinned' : '') + (isSel ? ' sel' : ''),'data-id':l.id,
     onclick:selOn ? function(e){ e.preventDefault(); toggleSel(l.id, e.shiftKey); } : null},[
-    h('div',{class:'card-top'},[selbox, pick, l.done ? h('span',{class:'seen'},'Visto ✓') : h('span',{class:'date'},fmtDate(l.createdAt))]),
+    h('div',{class:'card-top'},[selbox, pick, h('span',{class:'ctr'},[l.done ? h('span',{class:'seen'},'Visto ✓') : h('span',{class:'date'},fmtDate(l.createdAt)), pin])]),
+    thumbFor(l, href),
     h('h3',null, href ? h('a',{href:href,target:'_blank',rel:'noopener noreferrer',draggable:'false'},title) : title),
     h('p',{class:'src'},detect(l.url)),
     l.note ? h('p',{class:'note'},l.note) : null,
-    (l.tags && l.tags.length) ? h('div',{class:'tags'},l.tags.map(function(t){ return h('span',null,'#' + t); })) : null,
-    ts.n ? h('button',{type:'button',class:'btn ghost mini tcount',onclick:function(){ goTasks(l); }},'Tareas ' + ts.d + '/' + ts.n) : null,
-    actions
+    (l.tags && l.tags.length) ? h('div',{class:'tags'},l.tags.map(function(t){
+      return h('button',{type:'button','aria-pressed':state.tag === t ? 'true' : 'false',title:'Ver todo lo que lleva #' + t,onclick:function(){ filterByTag(t); }},'#' + t);
+    })) : null,
+    h('div',{class:'card-foot'},[
+      ts.n ? h('button',{type:'button',class:'btn ghost mini tcount',onclick:function(){ goTasks(l); }},'Tareas ' + ts.d + '/' + ts.n) : null,
+      actions
+    ])
   ]);
 }
 function emptyBlock(){
@@ -1375,7 +1595,14 @@ function renderListInner(){
   if(!state.links.length){ box.appendChild(emptyBlock()); return; }
   var items = visible();
   if(!items.length){ box.appendChild(h('p',{class:'none'},'No hay nada que coincida con este filtro.')); return; }
-  items.forEach(function(l){ box.appendChild(card(l)); });
+  var hasPin = items.some(function(x){ return x.pinned; }), hasRest = items.some(function(x){ return !x.pinned; });
+  items.forEach(function(l, i){
+    if(hasPin && hasRest){
+      if(i === 0) box.appendChild(h('p',{class:'grid-label'},'Fijados'));
+      else if(!l.pinned && items[i - 1].pinned) box.appendChild(h('p',{class:'grid-label'},'El resto'));
+    }
+    box.appendChild(card(l));
+  });
 }
 
 /* ---------- tareas ---------- */
@@ -1499,11 +1726,13 @@ function closeTaskComposer(){
 }
 function resetView(){
   closeSide(false);
-  state.confirmDel = null; state.confirmTask = null; state.renamingId = '';
+  closeProfile();
+  state.confirmDel = null; state.confirmTask = null; state.renamingId = ''; state.tag = '';
   state.pending = false; $('pendingBtn').setAttribute('aria-pressed','false');
   closeComposer(); closeTaskComposer();
 }
 function setView(v){
+  closeProfile();
   if(state.view === v) return;
   state.view = v;
   resetView();
@@ -1565,6 +1794,7 @@ function openComposer(link){
   el.note.value = link ? (link.note || '') : '';
   el.folder.value = link ? (link.folderId || '') : (folderById(state.folder) ? state.folder : '');
   el.err.textContent = '';
+  resetImgDraft(link ? validImage(link.image) : '');
   updatePlatform();
   $('composer').hidden = false;
   $('fab').hidden = true;
@@ -1575,6 +1805,7 @@ function closeComposer(){
   $('composer').hidden = true;
   syncFab();
   $('linkForm').reset();
+  resetImgDraft('');
   state.editing = null;
   el.err.textContent = '';
   el.plat.textContent = '';
@@ -1653,6 +1884,7 @@ $('linkForm').addEventListener('submit', function(e){
     toast('Ya tienes este enlace guardado');
     return;
   }
+  if(state.imgBusy){ el.err.textContent = 'Espera a que termine de procesarse la imagen.'; return; }
   var prev = null;
   if(state.editing) prev = state.links.filter(function(l){ return l.id === state.editing; })[0] || null;
   var link = {
@@ -1663,8 +1895,10 @@ $('linkForm').addEventListener('submit', function(e){
     folderId: el.folder.value,
     tags: parseTags(el.tags.value),
     done: prev ? !!prev.done : false,
+    pinned: prev ? !!prev.pinned : false,
     createdAt: prev ? (prev.createdAt || Date.now()) : Date.now()
   };
+  if(state.draftImage) link.image = state.draftImage;
   var f = folderById(link.folderId);
   var wasEdit = !!prev;
   closeComposer();
@@ -1673,6 +1907,7 @@ $('linkForm').addEventListener('submit', function(e){
 });
 $('f-cancel').addEventListener('click', closeComposer);
 $('fab').addEventListener('click', function(){
+  closeProfile();
   if(state.view === 'tasks') openTaskComposer({ folderId: folderById(state.folder) ? state.folder : '' });
   else openComposer(null);
 });
@@ -1684,6 +1919,7 @@ $('pendingBtn').addEventListener('click', function(){
   this.setAttribute('aria-pressed', state.pending ? 'true' : 'false');
   renderList();
 });
+$('tagClear').addEventListener('click', clearTag);
 $('newFolderBtn').addEventListener('click', function(){
   if(!$('folderForm').hidden && !state.newParent && state.formFrom === 'bottom') closeFolderForm(); else openFolderForm('', 'bottom');
 });
@@ -1709,7 +1945,7 @@ $('folderForm').addEventListener('submit', function(e){
   var par = folderById(parent);
   var nf = { id: rid('f_'), name: name, color: par ? famIdOf(par) : pickFamily(), tone: par ? pickTone(parent) : 1 };
   if(parent) nf.parentId = parent;
-  state.folder = nf.id;
+  state.folder = nf.id; state.tag = '';
   if(parent){ delete state.collapsed[parent]; saveCollapsed(); }
   closeSide(false);
   closeComposer(); closeTaskComposer();
@@ -1741,6 +1977,7 @@ document.addEventListener('keydown', function(e){
   }
   if(e.key !== 'Escape') return;
   if(document.body.classList.contains('menu-open')){ closeSide(true); return; }
+  if(!$('profile').hidden){ closeProfile(); return; }
   if(state.renamingId){ cancelRename(); return; }
   if(!$('composer').hidden) closeComposer();
   else if(!$('taskComposer').hidden) closeTaskComposer();
@@ -1863,6 +2100,14 @@ function enhance(sel, opts){
 enhance($('f-folder'),{ dots:true });
 enhance($('t-folder'),{ dots:true });
 enhance($('t-link'));
+/* ordenar los guardados: por fecha o por nombre (los fijados siempre quedan arriba) */
+$('sortSel').value = state.sort;
+enhance($('sortSel')).classList.add('sortdd');
+$('sortSel').addEventListener('change', function(){
+  state.sort = this.value;
+  try{ localStorage.setItem('savio-sort', state.sort); }catch(e){}
+  renderList();
+});
 
 /* ---------- menú desplegable de opciones de carpeta («⋯») ---------- */
 function placeMenu(menu, btn){
@@ -2264,6 +2509,505 @@ $('selAll').addEventListener('click', function(){
 $('selMove').addEventListener('click', openBulkMove);
 $('selDel').addEventListener('click', bulkDelete);
 
+/* ---------- copia de seguridad: exportar e importar todo en un archivo ---------- */
+var BACKUP_KEY = 'savio-last-backup';
+function backupReady(){
+  if(state.mode === 'db' && !state.got){ toast('Espera a que carguen tus guardados'); return false; }
+  if(state.mode === 'loading'){ toast('Espera a que cargue la página'); return false; }
+  return true;
+}
+function exportBackup(){
+  if(!backupReady()) return;
+  var now = new Date();
+  var data = {
+    app:'savio', version:1, exportedAt:now.toISOString(),
+    folders:JSON.parse(JSON.stringify(state.folders)),
+    links:JSON.parse(JSON.stringify(state.links)),
+    tasks:JSON.parse(JSON.stringify(state.tasks))
+  };
+  var pad = function(n){ return (n < 10 ? '0' : '') + n; };
+  var name = 'savio-copia-' + now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '.json';
+  try{
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = h('a',{ href:url, download:name });
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    try{ localStorage.setItem(BACKUP_KEY, String(now.getTime())); }catch(e){}
+    toast('Copia exportada: ' + plural(data.links.length,'guardado','guardados') + ', ' + plural(data.tasks.length,'tarea','tareas') + ' y ' + plural(data.folders.length,'carpeta','carpetas'));
+  }catch(e){
+    toast('No se pudo descargar la copia');
+  }
+}
+/* se lee el archivo como datos: solo se conservan los campos conocidos y con su tipo correcto */
+function cleanStr(v, max){ return typeof v === 'string' ? v.trim().slice(0, max) : ''; }
+function cleanId(v){ return (typeof v === 'string' && /^[\w.\-]{1,64}$/.test(v)) ? v : ''; }
+function sanitizeBackup(raw){
+  if(!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  if(typeof raw.app === 'string' && raw.app !== 'savio') return null;
+  if(!Array.isArray(raw.folders) && !Array.isArray(raw.links) && !Array.isArray(raw.tasks)) return null;
+  var skipped = 0, fams = {};
+  FAMILIES.forEach(function(f){ fams[f.id] = 1; });
+  var seenF = {}, folders = [];
+  (Array.isArray(raw.folders) ? raw.folders : []).forEach(function(f){
+    var id = f && cleanId(f.id), name = f && cleanStr(f.name, 40);
+    if(!id || !name || seenF[id]){ skipped++; return; }
+    seenF[id] = 1;
+    var o = { id:id, name:name, color:(typeof f.color === 'string' && fams[f.color]) ? f.color : 'turquesa' };
+    if(typeof f.tone === 'number' && isFinite(f.tone)) o.tone = Math.max(0, Math.min(4, Math.round(f.tone)));
+    else if(typeof f.hue === 'number' && isFinite(f.hue)) o.hue = Math.round(f.hue);
+    else o.tone = 2;
+    var pid = cleanId(f.parentId);
+    if(pid) o.parentId = pid;
+    folders.push(o);
+  });
+  folders.forEach(function(f){ if(f.parentId && (!seenF[f.parentId] || f.parentId === f.id)) delete f.parentId; });
+  var seenL = {}, links = [];
+  (Array.isArray(raw.links) ? raw.links : []).forEach(function(l){
+    var url = l && cleanStr(l.url, 2000);
+    var id = l && (cleanId(l.id) || rid('l_'));
+    if(!url || seenL[id]){ skipped++; return; }
+    seenL[id] = 1;
+    links.push({
+      id:id, url:url, title:cleanStr(l.title, 120), note:cleanStr(l.note, 500), folderId:cleanId(l.folderId),
+      tags:parseTags(Array.isArray(l.tags) ? l.tags.filter(function(t){ return typeof t === 'string'; }).join(',') : ''),
+      done:l.done === true, pinned:l.pinned === true, createdAt:(typeof l.createdAt === 'number' && isFinite(l.createdAt)) ? l.createdAt : Date.now()
+    });
+    var im = validImage(l.image);
+    if(im) links[links.length - 1].image = im;
+  });
+  var seenT = {}, tasks = [];
+  (Array.isArray(raw.tasks) ? raw.tasks : []).forEach(function(t){
+    var text = t && cleanStr(t.text, 140);
+    var id = t && (cleanId(t.id) || rid('t_'));
+    if(!text || seenT[id]){ skipped++; return; }
+    seenT[id] = 1;
+    tasks.push({
+      id:id, text:text, folderId:cleanId(t.folderId), linkId:cleanId(t.linkId),
+      done:t.done === true, createdAt:(typeof t.createdAt === 'number' && isFinite(t.createdAt)) ? t.createdAt : Date.now()
+    });
+  });
+  return { folders:folders, links:links, tasks:tasks, skipped:skipped, exportedAt:(typeof raw.exportedAt === 'string') ? raw.exportedAt : '' };
+}
+/* si dos carpetas se apuntaran como padre una a otra, se rompe el ciclo para que no desaparezcan */
+function fixTree(fs){
+  var by = {};
+  fs.forEach(function(f){ by[f.id] = f; });
+  return fs.map(function(f){
+    if(!f.parentId) return f;
+    var cur = f, g = 0, bad = false;
+    while(cur.parentId && g++ < 60){
+      var p = by[cur.parentId];
+      if(!p) break;
+      if(p.id === f.id){ bad = true; break; }
+      cur = p;
+    }
+    if(!bad) return f;
+    var n = Object.assign({}, f); delete n.parentId; return n;
+  });
+}
+function doImport(d, mode){
+  var before = snap(), merge = mode !== 'replace';
+  if(state.selMode) setSelMode(false);
+  var has = function(list){ var o = {}; list.forEach(function(x){ o[x.id] = 1; }); return o; };
+  var hasF = has(state.folders), hasL = has(state.links), hasT = has(state.tasks);
+  var inF = merge ? d.folders.filter(function(f){ return !hasF[f.id]; }) : d.folders;
+  var inL = merge ? d.links.filter(function(l){ return !hasL[l.id]; }) : d.links;
+  var inT = merge ? d.tasks.filter(function(t){ return !hasT[t.id]; }) : d.tasks;
+  var folders = fixTree((merge ? state.folders : []).concat(inF).map(function(f){ return Object.assign({}, f); }));
+  var fOk = has(folders);
+  inL = inL.map(function(l){ return (l.folderId && !fOk[l.folderId]) ? Object.assign({}, l, { folderId:'' }) : l; });
+  var links = (merge ? state.links : []).concat(inL);
+  var lOk = has(links);
+  inT = inT.map(function(t){
+    var n = t;
+    if(t.folderId && !fOk[t.folderId]) n = Object.assign({}, n, { folderId:'' });
+    if(t.linkId && !lOk[t.linkId]) n = Object.assign({}, n, { linkId:'' });
+    return n;
+  });
+  var tasks = (merge ? state.tasks : []).concat(inT);
+  if(merge && !inF.length && !inL.length && !inT.length){ toast('La copia no traía nada nuevo'); return; }
+  restore({ folders:folders, links:links, tasks:tasks, folder:'all' });
+  var msg = merge
+    ? 'Copia combinada: +' + plural(inL.length,'guardado','guardados') + ', +' + plural(inT.length,'tarea','tareas') + ', +' + plural(inF.length,'carpeta','carpetas')
+    : 'Copia importada: ' + plural(links.length,'guardado','guardados') + ', ' + plural(tasks.length,'tarea','tareas') + ' y ' + plural(folders.length,'carpeta','carpetas');
+  showUndo(msg, before);
+}
+function showImportDialog(d){
+  var prev = document.activeElement;
+  var when = d.exportedAt && !isNaN(Date.parse(d.exportedAt)) ? fmtDate(Date.parse(d.exportedAt)) : '';
+  var scrim = h('div',{class:'dlg-scrim'});
+  function close(){
+    document.removeEventListener('keydown', onKey, true);
+    scrim.remove();
+    if(prev && prev.focus) prev.focus({ preventScroll:true });
+  }
+  var bMerge = h('button',{type:'button',class:'btn primary',onclick:function(){ close(); doImport(d, 'merge'); }},'Combinar');
+  var bRep = h('button',{type:'button',class:'btn danger',onclick:function(){ close(); doImport(d, 'replace'); }},'Reemplazar todo');
+  var bCan = h('button',{type:'button',class:'btn',onclick:close},'Cancelar');
+  function onKey(e){
+    if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); close(); return; }
+    if(e.key !== 'Tab') return;
+    var btns = [bMerge, bRep, bCan], i = btns.indexOf(document.activeElement);
+    e.preventDefault();
+    btns[(i + (e.shiftKey ? -1 : 1) + btns.length) % btns.length].focus();
+  }
+  var dlg = h('div',{class:'dlg',role:'dialog','aria-modal':'true','aria-labelledby':'dlg-title'},[
+    h('h2',{id:'dlg-title'},'Importar copia'),
+    h('p',null,'La copia' + (when ? ' del ' + when : '') + ' tiene ' + plural(d.links.length,'guardado','guardados') + ', ' + plural(d.tasks.length,'tarea','tareas') + ' y ' + plural(d.folders.length,'carpeta','carpetas') + '.'),
+    h('p',{class:'hint'},'Ahora tienes ' + plural(state.links.length,'guardado','guardados') + ', ' + plural(state.tasks.length,'tarea','tareas') + ' y ' + plural(state.folders.length,'carpeta','carpetas') + '.'),
+    h('ul',{class:'dlg-opts'},[
+      h('li',null,[h('b',null,'Combinar: '), 'añade lo que te falta y conserva lo que ya tienes.']),
+      h('li',null,[h('b',null,'Reemplazar todo: '), 'deja tu cuenta exactamente como la copia; lo que no esté en ella se borra.'])
+    ]),
+    h('p',{class:'hint'},'Después podrás deshacerlo desde el aviso.'),
+    d.skipped ? h('p',{class:'hint'},plural(d.skipped,'elemento','elementos') + ' de la copia no se podía leer y se ha ignorado.') : null,
+    h('div',{class:'row-btns'},[bMerge, bRep, bCan])
+  ]);
+  scrim.appendChild(dlg);
+  scrim.addEventListener('mousedown', function(e){ if(e.target === scrim) close(); });
+  document.addEventListener('keydown', onKey, true);
+  document.body.appendChild(scrim);
+  bMerge.focus({ preventScroll:true });
+}
+$('importFile').addEventListener('change', function(e){
+  var input = e.target, file = input.files && input.files[0];
+  input.value = '';
+  if(!file) return;
+  if(file.size > 25 * 1024 * 1024){ toast('El archivo es demasiado grande para ser una copia de Savio'); return; }
+  var fr = new FileReader();
+  fr.onerror = function(){ toast('No se pudo leer el archivo'); };
+  fr.onload = function(){
+    var raw = null;
+    try{ raw = JSON.parse(String(fr.result)); }catch(x){}
+    var d = sanitizeBackup(raw);
+    if(!d){ toast('Este archivo no parece una copia de Savio'); return; }
+    if(!d.folders.length && !d.links.length && !d.tasks.length){ toast('La copia está vacía'); return; }
+    if(backupReady()) showImportDialog(d);
+  };
+  fr.readAsText(file);
+});
+function openBackupMenu(btn){
+  closeMenu(false);
+  var menu = h('div',{class:'ddmenu fmenu',role:'menu'});
+  var last = 0;
+  try{ last = parseInt(localStorage.getItem(BACKUP_KEY) || '0', 10) || 0; }catch(e){}
+  document.body.appendChild(menu);
+  openMenu = { el:menu, btn:btn };
+  btn.setAttribute('aria-expanded','true');
+  menu.appendChild(h('div',{class:'fmtitle'},[h('span',null,'Copia de seguridad')]));
+  menu.appendChild(fmItem('download','Exportar todo (.json)',function(){ closeMenu(false); exportBackup(); }));
+  menu.appendChild(fmItem('upload','Importar copia…',function(){ closeMenu(false); $('importFile').click(); }));
+  menu.appendChild(h('div',{class:'fmsep',role:'separator'}));
+  menu.appendChild(h('p',{class:'fmmsg'},'Guarda carpetas, guardados y tareas en un archivo tuyo, para no depender solo de la cuenta.' + (last ? ' Última copia exportada: ' + fmtDate(last) + '.' : '')));
+  menu.addEventListener('keydown', function(e){
+    var items = Array.prototype.slice.call(menu.querySelectorAll('button')), i = items.indexOf(document.activeElement);
+    if(e.key === 'ArrowDown'){ e.preventDefault(); items[Math.min(items.length - 1, i + 1)].focus(); }
+    else if(e.key === 'ArrowUp'){ e.preventDefault(); items[Math.max(0, i - 1)].focus(); }
+    else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); closeMenu(true); }
+    else if(e.key === 'Tab'){ closeMenu(false); }
+  });
+  placeMenu(menu, btn);
+  var first = menu.querySelector('.ddopt');
+  if(first) first.focus({ preventScroll:true });
+}
+$('backupBtn').addEventListener('click', function(e){
+  var b = e.currentTarget;
+  if(openMenu && openMenu.btn === b){ closeMenu(true); return; }
+  openBackupMenu(b);
+});
+
+/* ---------- perfil de usuario ---------- */
+var NAME_KEY = 'savio-profile-name';
+function setUser(u){
+  var m = (u && u.user_metadata) || {};
+  state.user = {
+    id:u.id, email:u.email || '',
+    name:cleanStr(m.display_name || m.name || m.full_name || '', 40),
+    avatar:cleanStr(m.avatar_url || m.picture || '', 2000)
+  };
+  renderProfileBtn();
+}
+function profInfo(){
+  var u = state.user, acct = !!(u && u.id) && !state.demo;
+  var name = acct ? u.name : '';
+  if(!acct){ try{ name = localStorage.getItem(NAME_KEY) || ''; }catch(e){} }
+  var email = acct ? (u.email || '') : '';
+  var label = name || (email ? email.split('@')[0] : '') || (state.demo ? 'Prueba' : '');
+  return { acct:acct, name:name, email:email, label:label, avatar:acct ? (u.avatar || '') : '' };
+}
+function avatarFallback(info){
+  var ch = Array.from((info.label || info.email || '').trim())[0];
+  return ch ? document.createTextNode(ch.toUpperCase()) : ico('user');
+}
+/* la foto se pondrá más adelante; por ahora se usa la inicial, o la imagen si la cuenta ya trae una (solo https) */
+function fillAvatar(box, info){
+  box.textContent = '';
+  var url = info.avatar ? normUrl(info.avatar) : '';
+  if(url && /^https:/.test(url)){
+    var img = h('img',{src:url,alt:'',referrerpolicy:'no-referrer',draggable:'false'});
+    img.addEventListener('error', function(){ box.textContent = ''; box.appendChild(avatarFallback(info)); });
+    box.appendChild(img);
+  } else box.appendChild(avatarFallback(info));
+}
+function renderProfileBtn(){
+  var info = profInfo(), av = $('profileAv');
+  var key = info.avatar + '|' + Array.from(info.label || info.email || '')[0];
+  if(av.getAttribute('data-k') === key && av.firstChild) return;
+  av.setAttribute('data-k', key);
+  fillAvatar(av, info);
+  $('profileBtn').title = info.label ? 'Perfil de ' + info.label : 'Mi perfil';
+}
+function renderProfileStats(){
+  var box = $('p-stats');
+  box.textContent = '';
+  [[state.links.length,'guardado','guardados'],[state.tasks.length,'tarea','tareas'],[state.folders.length,'carpeta','carpetas']].forEach(function(r){
+    box.appendChild(h('span',{class:'stat'},[h('b',null,String(r[0])), r[0] === 1 ? r[1] : r[2]]));
+  });
+}
+function renderProfile(){
+  var info = profInfo();
+  fillAvatar($('p-av'), info);
+  $('p-label').textContent = info.label || 'Sin nombre';
+  $('p-sub').textContent = info.acct ? info.email : (state.demo ? 'Modo prueba: datos de ejemplo que solo viven en este navegador.' : 'Sin cuenta conectada: tus guardados se quedan solo en este navegador.');
+  $('p-name').value = info.name;
+  $('p-email').value = info.acct ? (info.email || 'Cuenta conectada') : (state.demo ? 'Modo prueba' : 'Sin cuenta conectada');
+  $('p-error').textContent = '';
+  renderProfileStats();
+}
+function openProfile(){
+  if(state.selMode) setSelMode(false);
+  closeMenu(false); closeSide(false); closeComposer(); closeTaskComposer();
+  renderProfile();
+  $('profile').hidden = false;
+  document.body.classList.add('profile-open');
+  $('profileBtn').setAttribute('aria-pressed','true');
+  window.scrollTo(0,0);
+}
+function closeProfile(){
+  if($('profile').hidden) return;
+  $('profile').hidden = true;
+  document.body.classList.remove('profile-open');
+  $('profileBtn').setAttribute('aria-pressed','false');
+}
+$('profileBtn').addEventListener('click', function(){ if($('profile').hidden) openProfile(); else closeProfile(); });
+$('p-back').addEventListener('click', closeProfile);
+$('q').addEventListener('focus', closeProfile);
+$('profForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var name = $('p-name').value.trim().slice(0,40), info = profInfo(), b = $('profForm').querySelector('button[type="submit"]');
+  $('p-error').textContent = '';
+  if(info.acct && sbClient){
+    b.disabled = true;
+    sbClient.auth.updateUser({ data:{ display_name:name } }).then(function(r){
+      b.disabled = false;
+      if(r.error){ $('p-error').textContent = authMsg(r.error); return; }
+      setUser(r.data.user);
+      renderProfile();
+      toast('Perfil guardado');
+    }).catch(function(){
+      b.disabled = false;
+      $('p-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
+    });
+  } else {
+    try{ if(name) localStorage.setItem(NAME_KEY, name); else localStorage.removeItem(NAME_KEY); }catch(x){}
+    renderProfileBtn();
+    renderProfile();
+    toast('Perfil guardado');
+  }
+});
+
+/* ---------- imagen de vista previa de los guardados ---------- */
+/* se guarda dentro del propio guardado, reducida y comprimida (unos 30-60 KB), para que viaje también en la copia de seguridad */
+var IMG_HINT = 'Opcional. Sube una foto, pega una captura (Ctrl+V) o arrástrala aquí.';
+function validImage(v){
+  return (typeof v === 'string' && v.length <= 400000 && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(v)) ? v : '';
+}
+function readImageFile(file){
+  return new Promise(function(resolve, reject){
+    if(!file || !/^image\/(jpeg|png|webp|gif|avif|bmp)$/i.test(file.type)){ reject(new Error('tipo')); return; }
+    if(file.size > 20 * 1024 * 1024){ reject(new Error('grande')); return; }
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function(){
+      URL.revokeObjectURL(url);
+      try{
+        var w = img.naturalWidth, hh = img.naturalHeight, best = '';
+        if(!w || !hh) throw new Error('vacia');
+        [[640,.8],[640,.65],[520,.6],[420,.55]].some(function(c){
+          var sc = Math.min(1, c[0] / Math.max(w, hh)), cw = Math.max(1, Math.round(w * sc)), ch = Math.max(1, Math.round(hh * sc));
+          var cv = document.createElement('canvas');
+          cv.width = cw; cv.height = ch;
+          var cx = cv.getContext('2d');
+          cx.fillStyle = '#fff'; cx.fillRect(0, 0, cw, ch);
+          cx.drawImage(img, 0, 0, cw, ch);
+          best = cv.toDataURL('image/jpeg', c[1]);
+          return best.length <= 90000;
+        });
+        resolve(best);
+      }catch(e){ reject(e); }
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('lectura')); };
+    img.src = url;
+  });
+}
+function setDraftImage(v){
+  state.draftImage = v || '';
+  $('f-imgprev').hidden = !state.draftImage;
+  if(state.draftImage) $('f-imgimg').src = state.draftImage; else $('f-imgimg').removeAttribute('src');
+  $('f-imgbtn').textContent = state.draftImage ? 'Cambiar foto' : 'Subir foto';
+}
+function resetImgDraft(v){
+  state.imgTok = (state.imgTok || 0) + 1;
+  state.imgBusy = false;
+  setDraftImage(v);
+  $('f-imghint').textContent = IMG_HINT;
+  $('f-imgbox').classList.remove('over');
+}
+function handleImageFile(file){
+  if(!file) return;
+  var tok = state.imgTok = (state.imgTok || 0) + 1;
+  state.imgBusy = true;
+  $('f-imghint').textContent = 'Procesando imagen…';
+  readImageFile(file).then(function(d){
+    if(tok !== state.imgTok) return;
+    setDraftImage(d);
+    $('f-imghint').textContent = IMG_HINT;
+  }).catch(function(){
+    if(tok !== state.imgTok) return;
+    $('f-imghint').textContent = 'No se pudo usar esa imagen. Prueba con un JPG, PNG o WebP.';
+  }).then(function(){
+    if(tok === state.imgTok) state.imgBusy = false;
+  });
+}
+$('f-imgdel').appendChild(ico('x'));
+$('f-imgbtn').addEventListener('click', function(){ $('f-imgfile').click(); });
+$('f-imgfile').addEventListener('change', function(e){
+  var f = e.target.files && e.target.files[0];
+  e.target.value = '';
+  handleImageFile(f);
+});
+$('f-imgdel').addEventListener('click', function(){ resetImgDraft(''); });
+$('composer').addEventListener('paste', function(e){
+  var items = e.clipboardData && e.clipboardData.items, f = null;
+  if(items) for(var i = 0; i < items.length; i++){
+    if(items[i].kind === 'file' && /^image\//.test(items[i].type)){ f = items[i].getAsFile(); break; }
+  }
+  if(f){ e.preventDefault(); handleImageFile(f); }
+});
+(function(){
+  var box = $('f-imgbox');
+  function hasFiles(e){ return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], 'Files') >= 0; }
+  box.addEventListener('dragover', function(e){ if(!hasFiles(e)) return; e.preventDefault(); box.classList.add('over'); });
+  box.addEventListener('dragleave', function(){ box.classList.remove('over'); });
+  box.addEventListener('drop', function(e){
+    if(!hasFiles(e)) return;
+    e.preventDefault();
+    box.classList.remove('over');
+    handleImageFile(e.dataTransfer.files && e.dataTransfer.files[0]);
+  });
+})();
+
+/* ---------- crear cuenta: tarjeta propia, correo de confirmación y entrada ---------- */
+var authMode = 'in', sentTimer = null;
+var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function authRedirect(){ return /^https?:$/.test(location.protocol) ? { emailRedirectTo: location.origin + location.pathname } : {}; }
+function setAuthMode(m){
+  authMode = m;
+  var up = m === 'up', sent = m === 'sent';
+  if(!sent && sentTimer){ clearInterval(sentTimer); sentTimer = null; }
+  $('auth').classList.toggle('mode-up', up || sent);
+  $('authForm').hidden = sent;
+  $('authSent').hidden = !sent;
+  $('authAlt').hidden = m !== 'in';
+  $('a-steps').hidden = m === 'in';
+  $('st-1').className = sent ? 'done' : 'on';
+  $('st-1').firstChild.textContent = sent ? '✓' : '1';
+  $('st-2').className = sent ? 'on' : '';
+  $('a-forgot').hidden = m !== 'in';
+  $('authTitle').textContent = sent ? 'Revisa tu correo' : (up ? 'Crea tu cuenta' : 'Entra en Savio');
+  $('authLead').textContent = sent ? 'Un último paso para activar tu cuenta.'
+    : (up ? 'Elige un correo y una contraseña. Te enviaremos un mensaje para confirmar que el correo es tuyo.' : 'Tus guardados son privados y se sincronizan en todos tus dispositivos.');
+  $('a-submit').textContent = up ? 'Crear cuenta' : 'Entrar';
+  $('a-signup').textContent = up ? 'Ya tengo cuenta' : 'Crear cuenta';
+  $('a-pass').setAttribute('autocomplete', up ? 'new-password' : 'current-password');
+  $('a-error').textContent = ''; $('a-info').textContent = '';
+  $('s-error').textContent = ''; $('s-info').textContent = '';
+  if(!sent) ($('a-email').value ? $('a-pass') : $('a-email')).focus();
+}
+function startResendCooldown(){
+  clearInterval(sentTimer);
+  var left = 60, b = $('s-resend');
+  b.disabled = true; b.textContent = 'Reenviar correo (' + left + ')';
+  sentTimer = setInterval(function(){
+    left--;
+    if(left <= 0){ clearInterval(sentTimer); sentTimer = null; b.disabled = false; b.textContent = 'Reenviar correo'; }
+    else b.textContent = 'Reenviar correo (' + left + ')';
+  }, 1000);
+}
+function showSent(email){
+  setAuthMode('sent');
+  $('s-msg').textContent = 'Hemos enviado un enlace de confirmación a ' + email + '. Ábrelo y tu cuenta quedará activada. Si no lo ves, mira también en el correo no deseado.';
+  startResendCooldown();
+  $('s-done').focus();
+}
+function doSignUp(){
+  var email = $('a-email').value.trim(), pass = $('a-pass').value;
+  $('a-error').textContent = ''; $('a-info').textContent = '';
+  if(!EMAIL_RE.test(email)){ $('a-error').textContent = 'Escribe un correo válido, por ejemplo nombre@correo.com.'; $('a-email').focus(); return; }
+  if(pass.length < 8){ $('a-error').textContent = 'La contraseña necesita al menos 8 caracteres.'; $('a-pass').focus(); return; }
+  setAuthBusy(true);
+  sbClient.auth.signUp({ email:email, password:pass, options:authRedirect() }).then(function(r){
+    setAuthBusy(false);
+    if(r.error){ $('a-error').textContent = authMsg(r.error); return; }
+    var u = r.data && r.data.user;
+    if(r.data && r.data.session){ enterApp(r.data.session.user); return; }
+    /* con la confirmación activada, un correo ya registrado no da error: llega sin identidades */
+    if(u && Array.isArray(u.identities) && u.identities.length === 0){
+      $('a-error').textContent = 'Ese correo ya tiene cuenta. Pulsa «Ya tengo cuenta» para entrar.';
+      return;
+    }
+    showSent(email);
+  }).catch(function(){
+    setAuthBusy(false);
+    $('a-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
+  });
+}
+$('s-change').addEventListener('click', function(){ setAuthMode('up'); });
+$('s-resend').addEventListener('click', function(){
+  var email = $('a-email').value.trim();
+  $('s-error').textContent = ''; $('s-info').textContent = '';
+  if(!sbClient) return;
+  $('s-resend').disabled = true;
+  sbClient.auth.resend({ type:'signup', email:email, options:authRedirect() }).then(function(r){
+    if(r.error){ $('s-error').textContent = authMsg(r.error); $('s-resend').disabled = false; return; }
+    $('s-info').textContent = 'Te hemos enviado otro correo.';
+    startResendCooldown();
+  }).catch(function(){
+    $('s-resend').disabled = false;
+    $('s-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
+  });
+});
+$('s-done').addEventListener('click', function(){
+  var email = $('a-email').value.trim(), pass = $('a-pass').value, b = $('s-done');
+  $('s-error').textContent = ''; $('s-info').textContent = '';
+  if(!sbClient) return;
+  b.disabled = true;
+  sbClient.auth.signInWithPassword({ email:email, password:pass }).then(function(r){
+    b.disabled = false;
+    if(r.error){
+      $('s-error').textContent = /email not confirmed/i.test(String(r.error.message || ''))
+        ? 'Todavía no se ha confirmado. Abre el enlace del correo y vuelve a pulsar aquí.' : authMsg(r.error);
+      return;
+    }
+    if(r.data && r.data.session) enterApp(r.data.session.user);
+  }).catch(function(){
+    b.disabled = false;
+    $('s-error').textContent = 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.';
+  });
+});
+
 /* ---------- arranque ---------- */
 function goLocal(){
   state.mode = 'local';
@@ -2379,6 +3123,9 @@ function showAuth(){
   $('a-email').focus();
 }
 function enterApp(user){
+  if(state.entered) return;
+  state.entered = true;
+  setUser(user);
   $('auth').hidden = true;
   document.body.classList.remove('locked');
   $('logoutBtn').hidden = false;
@@ -2397,8 +3144,8 @@ function enterDemo(){
     { id:'f_pelo', name:'Pelo', color:'rosa', tone:3, parentId:'f_belleza' }
   ]);
   state.links = [
-    { id:'l_d1', url:'https://www.instagram.com/reel/ejemplo1/', title:'5 webs para aprender a programar gratis', note:'Ejercicios desde cero, probar el de CSS primero.', folderId:'f_programar', tags:['html','css','gratis'], done:false, createdAt:now - 1*day },
-    { id:'l_d2', url:'https://developer.mozilla.org/es/', title:'Guía de MDN para empezar con JavaScript', note:'Buena referencia para consultar dudas.', folderId:'f_programar', tags:['js','referencia'], done:true, createdAt:now - 3*day },
+    { id:'l_d1', url:'https://www.instagram.com/reel/ejemplo1/', title:'5 webs para aprender a programar gratis', note:'Ejercicios desde cero, probar el de CSS primero.', folderId:'f_programar', tags:['html','css','gratis'], done:false, pinned:true, createdAt:now - 1*day },
+    { id:'l_d2', url:'https://developer.mozilla.org/es/', title:'Guía de MDN para empezar con JavaScript', note:'Buena referencia para consultar dudas.', folderId:'f_programar', tags:['js','referencia','css'], done:true, createdAt:now - 3*day },
     { id:'l_d3', url:'https://www.tiktok.com/@ejemplo/video/1', title:'Rutina de cuidado del cabello en 3 pasos', note:'', folderId:'f_pelo', tags:['pelo','rutina'], done:false, createdAt:now - 2*day },
     { id:'l_d4', url:'https://www.instagram.com/reel/ejemplo2/', title:'Tortilla de patatas jugosa sin fallar', note:'El truco está en pochar las patatas a fuego bajo.', folderId:'f_recetas', tags:['cena','fácil'], done:false, createdAt:now - 5*day },
     { id:'l_d5', url:'https://maps.app.goo.gl/ejemplo', title:'Calas escondidas en la costa valenciana', note:'Ir en septiembre, menos gente.', folderId:'f_escapadas', tags:['playa','plan'], done:false, createdAt:now - 6*day },
@@ -2474,8 +3221,8 @@ function startSupabase(){
   var recovering = /type=recovery/.test(hash);
   var linkError = /error_code=|error=access_denied/.test(hash);
   sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  $('authForm').addEventListener('submit', function(e){ e.preventDefault(); doAuth('in'); });
-  $('a-signup').addEventListener('click', function(){ doAuth('up'); });
+  $('authForm').addEventListener('submit', function(e){ e.preventDefault(); if(authMode === 'up') doSignUp(); else doAuth('in'); });
+  $('a-signup').addEventListener('click', function(){ setAuthMode(authMode === 'up' ? 'in' : 'up'); });
   $('a-forgot').addEventListener('click', function(){
     var email = $('a-email').value.trim(), btn = $('a-forgot');
     $('a-error').textContent = ''; $('a-info').textContent = '';
@@ -2515,9 +3262,11 @@ function startSupabase(){
     });
   });
   $('r-cancel').addEventListener('click', function(){ sbClient.auth.signOut(); });
-  sbClient.auth.onAuthStateChange(function(ev){
+  sbClient.auth.onAuthStateChange(function(ev, sess){
     if(ev === 'SIGNED_OUT') location.reload();
     if(ev === 'PASSWORD_RECOVERY') showRecovery();
+    /* si confirmas el correo desde otra pestaña de este mismo navegador, entras sin hacer nada más */
+    if(ev === 'SIGNED_IN' && sess && authMode === 'sent' && !recovering) enterApp(sess.user);
   });
   sbClient.auth.getSession().then(function(r){
     var sess = r && r.data && r.data.session;
@@ -2626,6 +3375,7 @@ function boot(){
     if(!db || !user){ goLocal(); return null; }
     return user.id().then(function(uid){
       if(!uid){ goLocal(); return; }
+      state.user = { id:uid, email:'', name:'', avatar:'' };
       startDb(db, uid);
     });
   }).catch(function(){ goLocal(); });
