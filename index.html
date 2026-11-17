@@ -538,7 +538,7 @@ body.profile-open .main > :not(#profile){display:none!important}
 .imgprev img{display:block;max-width:100%;max-height:220px;width:auto;height:auto}
 .imgprev .ib{position:absolute;top:8px;right:8px;background:rgba(13,43,36,.72);color:#fff}
 .imgprev .ib:hover{background:rgba(13,43,36,.92);color:#fff}
-.thumb{display:block;border-radius:16px;overflow:hidden;aspect-ratio:16/10;background:rgba(255,255,255,.5);border:1px solid var(--edge)}
+.thumb{display:block;flex:none;height:150px;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.5);border:1px solid var(--edge)}
 .thumb a{display:block;height:100%}
 .thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
 .card:hover .thumb img{transform:scale(1.03)}
@@ -556,6 +556,17 @@ body.profile-open .main > :not(#profile){display:none!important}
 .auth-mail{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#2B6B63,#1C534C);color:var(--accent-ink);box-shadow:var(--shadow)}
 .auth-mail svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .auth-sent-msg{margin:0;line-height:1.55;overflow-wrap:anywhere}
+
+/* ---- todas las tarjetas del mismo tamaño: hueco de imagen siempre presente, textos acotados y filas iguales ---- */
+body:not(.view-tasks) #list{grid-auto-rows:1fr}
+.card h3{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+.card .note{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+.card .tags{max-height:60px;overflow:hidden;align-content:flex-start}
+.thumb.ph{position:relative;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,color-mix(in srgb,var(--ft) 55%,rgba(255,255,255,.7)),color-mix(in srgb,var(--ft) 28%,rgba(255,255,255,.35)));border-color:color-mix(in srgb,var(--fs) 22%,transparent)}
+.thumb.ph a,.thumb.ph .phin{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:100%;padding:12px;text-align:center;color:var(--fs);text-decoration:none}
+.thumb.ph svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.thumb.ph .phtxt{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 13px/1.2 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;opacity:.85}
 </style>
 
 </head>
@@ -1504,6 +1515,7 @@ var ICONS = {
   download:'<path d="M12 4v11M7.5 11L12 15.5L16.5 11M5 19.5h14"/>',
   upload:'<path d="M12 15V4M7.5 8L12 3.5L16.5 8M5 19.5h14"/>',
   x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
   user:'<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
   more:'<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
   folder:'<path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h4l2 2.5h8a1.5 1.5 0 0 1 1.5 1.5v7.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/>',
@@ -1522,9 +1534,14 @@ function iconBtn(name, label, fn, pressed){
 }
 function thumbFor(l, href){
   var src = validImage(l.image);
-  if(!src) return null;
-  var img = h('img',{src:src,alt:'',loading:'lazy',decoding:'async',draggable:'false'});
-  return h('div',{class:'thumb'}, href ? h('a',{href:href,target:'_blank',rel:'noopener noreferrer',tabindex:'-1','aria-hidden':'true',draggable:'false'},img) : img);
+  var linkAttrs = { href:href, target:'_blank', rel:'noopener noreferrer', tabindex:'-1', 'aria-hidden':'true', draggable:'false' };
+  if(src){
+    var img = h('img',{src:src,alt:'',loading:'lazy',decoding:'async',draggable:'false'});
+    return h('div',{class:'thumb'}, href ? h('a',linkAttrs,img) : img);
+  }
+  /* sin foto: carátula con el color de la carpeta y el nombre de la plataforma, para que todas las tarjetas midan lo mismo */
+  var inner = [ico('link'), h('span',{class:'phtxt'}, detect(l.url) || 'Enlace')];
+  return h('div',{class:'thumb ph',style:colorVars(folderById(l.folderId))}, href ? h('a',linkAttrs,inner) : h('div',{class:'phin'},inner));
 }
 function card(l){
   var f = folderById(l.folderId), href = normUrl(l.url), ts = taskStat(l);
@@ -1563,7 +1580,7 @@ function card(l){
     onclick:selOn ? function(e){ e.preventDefault(); toggleSel(l.id, e.shiftKey); } : null},[
     h('div',{class:'card-top'},[selbox, pick, h('span',{class:'ctr'},[l.done ? h('span',{class:'seen'},'Visto ✓') : h('span',{class:'date'},fmtDate(l.createdAt)), pin])]),
     thumbFor(l, href),
-    h('h3',null, href ? h('a',{href:href,target:'_blank',rel:'noopener noreferrer',draggable:'false'},title) : title),
+    h('h3',{title:title}, href ? h('a',{href:href,target:'_blank',rel:'noopener noreferrer',draggable:'false'},title) : title),
     h('p',{class:'src'},detect(l.url)),
     l.note ? h('p',{class:'note'},l.note) : null,
     (l.tags && l.tags.length) ? h('div',{class:'tags'},l.tags.map(function(t){
