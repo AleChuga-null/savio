@@ -567,6 +567,16 @@ body:not(.view-tasks) #list{grid-auto-rows:1fr}
 .thumb.ph a,.thumb.ph .phin{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:100%;padding:12px;text-align:center;color:var(--fs);text-decoration:none}
 .thumb.ph svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
 .thumb.ph .phtxt{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 13px/1.2 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+
+/* ---- elegir qué parte de la imagen se ve en la tarjeta ---- */
+.imgprev img{max-height:260px}
+.imgprev.canpos{touch-action:none;cursor:pointer}
+.imgframe{position:absolute;left:0;right:0;border:2px solid #fff;border-radius:8px;box-shadow:0 0 0 999px rgba(13,43,36,.55);pointer-events:none}
+.imgframe.drag{border-color:#BFE6E0}
+.imgpos{display:flex;flex-direction:column;gap:6px}
+.imgpos label{font:700 13px/1.2 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.imgpos input[type=range]{width:100%;max-width:380px;accent-color:var(--accent)}
+.imgpos .hint{min-height:0}
 </style>
 
 </head>
@@ -734,7 +744,13 @@ body:not(.view-tasks) #list{grid-auto-rows:1fr}
           <div class="imgfield" id="f-imgbox">
             <div class="imgprev" id="f-imgprev" hidden>
               <img id="f-imgimg" alt="Vista previa del guardado">
+              <div class="imgframe" id="f-imgframe" hidden></div>
               <button type="button" class="ib sm" id="f-imgdel" aria-label="Quitar imagen" title="Quitar imagen"></button>
+            </div>
+            <div class="imgpos" id="f-imgpos" hidden>
+              <label for="f-imgy">Parte que se ve en la tarjeta</label>
+              <input type="range" id="f-imgy" min="0" max="100" step="1" value="50" aria-label="Parte de la imagen que se ve en la tarjeta, de arriba a abajo">
+              <p class="hint">Arrastra el recuadro o usa el deslizador para elegir qué parte se ve: arriba, en medio o abajo.</p>
             </div>
             <div class="row-btns"><button type="button" class="btn mini" id="f-imgbtn">Subir foto</button><button type="button" class="btn mini" id="f-imgauto" hidden>Buscar del enlace</button></div>
             <p class="hint" id="f-imghint"></p>
@@ -1227,7 +1243,7 @@ function persistLink(l){
   if(state.mode === 'db'){
     var ref = linksRef.doc(l.id);
     var body = { url:l.url, title:l.title, note:l.note, folderId:l.folderId, tags:l.tags, done:!!l.done, pinned:!!l.pinned, createdAt:l.createdAt };
-    if(l.image) body.image = l.image;
+    if(l.image){ body.image = l.image; if(typeof l.imageY === 'number') body.imageY = l.imageY; }
     enqueue(function(){ return ref.set(body); });
   } else lsSave();
 }
@@ -1537,6 +1553,7 @@ function thumbFor(l, href){
   var linkAttrs = { href:href, target:'_blank', rel:'noopener noreferrer', tabindex:'-1', 'aria-hidden':'true', draggable:'false' };
   if(src){
     var img = h('img',{src:src,alt:'',loading:'lazy',decoding:'async',draggable:'false'});
+    if(typeof l.imageY === 'number' && isFinite(l.imageY)) img.style.objectPosition = '50% ' + Math.max(0, Math.min(100, l.imageY)) + '%';
     return h('div',{class:'thumb'}, href ? h('a',linkAttrs,img) : img);
   }
   /* sin foto: carátula con el color de la carpeta y el nombre de la plataforma, para que todas las tarjetas midan lo mismo */
@@ -1812,8 +1829,10 @@ function openComposer(link){
   el.folder.value = link ? (link.folderId || '') : (folderById(state.folder) ? state.folder : '');
   el.err.textContent = '';
   resetImgDraft(link ? validImage(link.image) : '');
+  if(link && typeof link.imageY === 'number') setDraftImageY(link.imageY);
   updatePlatform();
   $('composer').hidden = false;
+  layoutFrame();
   $('fab').hidden = true;
   $('composer').scrollIntoView({ block:'start' });
   el.url.focus({ preventScroll:true });
@@ -1915,7 +1934,10 @@ $('linkForm').addEventListener('submit', function(e){
     pinned: prev ? !!prev.pinned : false,
     createdAt: prev ? (prev.createdAt || Date.now()) : Date.now()
   };
-  if(state.draftImage) link.image = state.draftImage;
+  if(state.draftImage){
+    link.image = state.draftImage;
+    if(state.draftImageY !== 50) link.imageY = state.draftImageY;
+  }
   var f = folderById(link.folderId);
   var wasEdit = !!prev;
   closeComposer();
@@ -2593,7 +2615,10 @@ function sanitizeBackup(raw){
       done:l.done === true, pinned:l.pinned === true, createdAt:(typeof l.createdAt === 'number' && isFinite(l.createdAt)) ? l.createdAt : Date.now()
     });
     var im = validImage(l.image);
-    if(im) links[links.length - 1].image = im;
+    if(im){
+      links[links.length - 1].image = im;
+      if(typeof l.imageY === 'number' && isFinite(l.imageY)) links[links.length - 1].imageY = Math.max(0, Math.min(100, Math.round(l.imageY)));
+    }
   });
   var seenT = {}, tasks = [];
   (Array.isArray(raw.tasks) ? raw.tasks : []).forEach(function(t){
@@ -2871,9 +2896,11 @@ function readImageFile(file){
 }
 function setDraftImage(v){
   state.draftImage = v || '';
+  state.draftImageY = 50;
   $('f-imgprev').hidden = !state.draftImage;
   if(state.draftImage) $('f-imgimg').src = state.draftImage; else $('f-imgimg').removeAttribute('src');
   $('f-imgbtn').textContent = state.draftImage ? 'Cambiar foto' : 'Subir foto';
+  layoutFrame();
 }
 function resetImgDraft(v){
   state.imgTok = (state.imgTok || 0) + 1;
@@ -3072,6 +3099,49 @@ el.url.addEventListener('input', function(){
   state.imgTimer = setTimeout(function(){ autoPreview(false); }, 700);
 });
 $('f-imgauto').addEventListener('click', function(){ autoPreview(true); });
+
+/* ---------- elegir qué parte de la imagen se ve en la tarjeta ---------- */
+var THUMB_RATIO = 2.4; /* proporción aproximada del hueco de imagen de la tarjeta (ancho / alto) */
+function layoutFrame(){
+  var img = $('f-imgimg'), fr = $('f-imgframe'), pos = $('f-imgpos'), box = $('f-imgprev');
+  var w = img.clientWidth, hh = img.clientHeight, fh = w / THUMB_RATIO;
+  var ok = !!state.draftImage && w > 0 && hh > 0 && fh < hh - 2;
+  fr.hidden = !ok; pos.hidden = !ok;
+  box.classList.toggle('canpos', ok);
+  if(!ok) return;
+  fr.style.height = fh + 'px';
+  fr.style.top = (state.draftImageY / 100 * (hh - fh)) + 'px';
+  $('f-imgy').value = String(state.draftImageY);
+}
+function setDraftImageY(y){
+  y = Math.max(0, Math.min(100, Math.round(Number(y))));
+  state.draftImageY = isFinite(y) ? y : 50;
+  layoutFrame();
+}
+$('f-imgimg').addEventListener('load', layoutFrame);
+window.addEventListener('resize', layoutFrame);
+$('f-imgy').addEventListener('input', function(e){ setDraftImageY(e.target.value); });
+(function(){
+  var box = $('f-imgprev'), fr = $('f-imgframe'), drag = null;
+  function move(e){
+    if(!drag) return;
+    var span = drag.h - drag.fh;
+    setDraftImageY(span > 0 ? (e.clientY - drag.top - drag.off) / span * 100 : 50);
+  }
+  function end(){ drag = null; fr.classList.remove('drag'); }
+  box.addEventListener('pointerdown', function(e){
+    if(fr.hidden || (e.target.closest && e.target.closest('#f-imgdel'))) return;
+    var r = $('f-imgimg').getBoundingClientRect(), fh = fr.offsetHeight, top = parseFloat(fr.style.top) || 0, y = e.clientY - r.top;
+    drag = { top:r.top, h:r.height, fh:fh, off:(y >= top && y <= top + fh) ? y - top : fh / 2 };
+    try{ box.setPointerCapture(e.pointerId); }catch(x){}
+    fr.classList.add('drag');
+    e.preventDefault();
+    move(e);
+  });
+  box.addEventListener('pointermove', move);
+  box.addEventListener('pointerup', end);
+  box.addEventListener('pointercancel', end);
+})();
 
 /* ---------- arranque ---------- */
 function goLocal(){
