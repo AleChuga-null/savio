@@ -38,7 +38,7 @@ body{min-height:100vh;color:var(--ink);font:15px/1.6 var(--f-body);padding-block
 /* rayos de luz, estáticos, como el sol sobre un vaso */
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:linear-gradient(118deg,transparent 18%,rgba(255,255,255,.38) 26%,rgba(255,255,255,0) 34%,transparent 52%,rgba(255,255,255,.28) 58%,rgba(255,255,255,0) 66%)}
-body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:var(--grain);opacity:.06;mix-blend-mode:multiply}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:var(--grain);opacity:.06}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 button,select,input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
@@ -86,7 +86,7 @@ button,select,input,textarea{font:inherit;color:inherit}
 .app{position:relative;z-index:2;width:100%;margin:18px auto 0;display:grid;grid-template-columns:250px minmax(0,1fr);gap:20px;align-items:start}
 .side{position:sticky;top:96px;border-radius:26px;padding:16px;display:flex;flex-direction:column;gap:10px}
 .side-title{margin:0 4px;font:700 13.5px/1 var(--f-sub);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
-.chips{display:flex;flex-direction:column;gap:2px}
+.chips{display:flex;flex-direction:column;gap:2px;--cgap:2px}
 .chip{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:0 12px;border:0;border-radius:14px;background:transparent;cursor:pointer;text-align:left;font-weight:500;color:var(--ink);transition:background .2s}
 .chip:hover{background:rgba(255,255,255,.5)}
 .chip span:nth-child(2){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -393,11 +393,11 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
   .side-close{display:inline-flex;align-items:center;justify-content:center;position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.7);color:var(--ink);cursor:pointer}
   .side-close:hover{background:#fff}
   .side-close svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-  .chips{flex-direction:column;overflow:visible;padding-bottom:0;gap:4px}
+  .chips{flex-direction:column;overflow:visible;padding-bottom:0;gap:4px;--cgap:4px}
   .chip{width:100%;min-height:50px;padding:0 14px;border:1px solid transparent;border-radius:16px;background:transparent;font-size:16px;white-space:normal}
   .chip .dot{width:13px;height:13px}
   .fk{width:40px;height:40px}
-  body.menu-open .chip{animation:chipIn .45s var(--ease) backwards;animation-delay:calc(var(--i,0) * 45ms + 120ms)}
+  body.side-intro .chip{animation:chipIn .45s var(--ease) backwards;animation-delay:calc(var(--i,0) * 45ms + 120ms)}
 }
 
 /* ---- móvil ---- */
@@ -558,7 +558,8 @@ body.profile-open .main > :not(#profile){display:none!important}
 .auth-sent-msg{margin:0;line-height:1.55;overflow-wrap:anywhere}
 
 /* ---- todas las tarjetas del mismo tamaño: hueco de imagen siempre presente, textos acotados y filas iguales ---- */
-body:not(.view-tasks) #list{grid-auto-rows:1fr}
+/* todas las tarjetas miden lo que la más alta (se calcula en equalizeCards); las etiquetas «Fijados» y «El resto» no cuentan */
+body:not(.view-tasks) #list > .card{min-height:var(--card-h,0px)}
 .card h3{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
 .card .note{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
 .card .tags{max-height:60px;overflow:hidden;align-content:flex-start}
@@ -577,6 +578,31 @@ body:not(.view-tasks) #list{grid-auto-rows:1fr}
 .imgpos label{font:700 13px/1.2 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
 .imgpos input[type=range]{width:100%;max-width:380px;accent-color:var(--accent)}
 .imgpos .hint{min-height:0}
+
+/* ---- carpetas: las subcarpetas se despliegan/recogen desde su carpeta; las nuevas crecen y las borradas se encogen ---- */
+.csub{display:grid;grid-template-rows:1fr;margin-top:0;transition:grid-template-rows .32s var(--ease),margin-top .32s var(--ease),opacity .25s ease}
+.csub.closed{grid-template-rows:0fr;margin-top:calc(var(--cgap,2px) * -1);opacity:0;visibility:hidden;
+  transition:grid-template-rows .32s var(--ease),margin-top .32s var(--ease),opacity .2s ease,visibility 0s linear .32s}
+.csub-in{min-height:0;display:flex;flex-direction:column;gap:var(--cgap,2px);transition:transform .32s var(--ease)}
+.csub.anim > .csub-in,.csub.closed > .csub-in{overflow:hidden}
+.csub.closed > .csub-in{transform:translateY(-8px)}
+@keyframes rowIn{from{opacity:0;transform:scale(.55);max-height:0}to{opacity:1;transform:none;max-height:64px}}
+@keyframes rowOut{from{opacity:1;transform:none;max-height:64px}to{opacity:0;transform:scale(.55);max-height:0}}
+.crow.pop-in{animation:rowIn .36s var(--ease) backwards;overflow:hidden;transform-origin:35% 50%}
+.crow.pop-out{animation:rowOut .24s ease-in forwards;overflow:hidden;transform-origin:35% 50%;pointer-events:none}
+
+/* ---- fluidez en móvil: sin desenfoques de fondo (se ve casi igual sobre un degradado liso, pero cuestan mucho al animar) ---- */
+@media (max-width:820px){
+  .card,.panel,.status,.topbar,.empty,.fpop,.ddmenu,.dlg{-webkit-backdrop-filter:none;backdrop-filter:none}
+  .card,.panel,.empty{background:rgba(255,255,255,.5)}
+  .scrim{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(13,43,36,.5)}
+  .side{-webkit-backdrop-filter:none;backdrop-filter:none;will-change:transform;background:#EEF8F8}
+  body.view-tasks .side{background:linear-gradient(180deg,rgba(28,83,76,.2),rgba(28,83,76,.2)),#E4F2F2}
+  .ddmenu,.fpop{background:rgba(246,252,252,.97)}
+  .dlg-scrim{-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+
+body.menu-open .toast{z-index:80}
 </style>
 
 </head>
@@ -1421,27 +1447,57 @@ function renameForm(f){
   setTimeout(function(){ inp.focus(); inp.select(); }, 0);
   return form;
 }
+function toggleSub(id, btn){
+  var row = btn.closest('.crow'), sub = row && row.nextElementSibling;
+  if(!sub || !sub.classList.contains('csub')) return;
+  var willOpen = sub.classList.contains('closed'), f = folderById(id);
+  state.collapsed[id] = !willOpen; saveCollapsed();
+  sub.classList.add('anim');
+  sub.classList.toggle('closed', !willOpen);
+  btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+  btn.setAttribute('aria-label', (willOpen ? 'Ocultar' : 'Mostrar') + ' las subcarpetas de «' + (f ? f.name : '') + '»');
+  clearTimeout(sub._t);
+  sub._t = setTimeout(function(){ sub.classList.remove('anim'); }, 400);
+}
+/* al borrar una carpeta: primero se encoge y después se borra de verdad */
+function animateFolderOut(id, done){
+  var row = reduced ? null : document.querySelector('#chips .crow[data-fid="' + id + '"]');
+  if(!row || !row.getClientRects().length){ done(); return; }
+  row.classList.add('pop-out');
+  setTimeout(done, 240);
+}
 function renderChips(){
   var box = $('chips');
   box.textContent = '';
   var tv = state.view === 'tasks', items = viewItems();
   function cntIn(set){ return items.filter(function(x){ return (!tv || !x.done) && (set === null || !!(x.folderId && set[x.folderId])); }).length; }
   box.appendChild(chip('all','Todos',cntIn(null),null));
-  var seen = {};
-  (function walk(pid, d){
+  /* solo las carpetas que no estaban en el pintado anterior «crecen»; la primera vez que hay datos no se anima nada */
+  var ready = state.mode === 'local' || (state.mode === 'db' && state.got);
+  var prev = ready ? state.chipIds : null, now = {}, seen = {};
+  function build(pid, d, into){
     kidsOf(pid).forEach(function(f){
       if(seen[f.id]) return;
-      seen[f.id] = 1;
+      seen[f.id] = 1; now[f.id] = 1;
       var kids = kidsOf(f.id), isOpen = !state.collapsed[f.id], renaming = state.renamingId === f.id;
-      box.appendChild(h('div',{class:'crow','data-fid':f.id,style:'--lvl:' + d},[
+      var isNew = !!prev && !prev[f.id] && !reduced;
+      var row = h('div',{class:'crow' + (isNew ? ' pop-in' : ''),'data-fid':f.id,style:'--lvl:' + d},[
         kids.length ? h('button',{type:'button',class:'ctog','aria-expanded':isOpen ? 'true' : 'false','aria-label':(isOpen ? 'Ocultar' : 'Mostrar') + ' las subcarpetas de «' + f.name + '»',
-          onclick:function(){ state.collapsed[f.id] = isOpen; saveCollapsed(); renderChips(); }}, ico('chev')) : h('span',{class:'ctog-sp'}),
+          onclick:function(e){ toggleSub(f.id, e.currentTarget); }}, ico('chev')) : h('span',{class:'ctog-sp'}),
         renaming ? renameForm(f) : chip(f.id, f.name, cntIn(descIds(f.id)), f),
         renaming ? null : kebab(f)
-      ]));
-      if(kids.length && isOpen) walk(f.id, d + 1);
+      ]);
+      if(isNew) row.addEventListener('animationend', function(e){ if(e.target === row) row.classList.remove('pop-in'); });
+      into.appendChild(row);
+      if(kids.length){
+        var inner = h('div',{class:'csub-in'});
+        build(f.id, d + 1, inner);
+        into.appendChild(h('div',{class:'csub' + (isOpen ? '' : ' closed'),'data-sub':f.id}, inner));
+      }
     });
-  })('', 0);
+  }
+  build('', 0, box);
+  if(ready) state.chipIds = now;
   var hasOrphans = items.some(function(x){ return !folderById(x.folderId); });
   if(hasOrphans) box.appendChild(chip('none','Sin carpeta',items.filter(function(x){ return (!tv || !x.done) && !folderById(x.folderId); }).length,null));
   Array.prototype.forEach.call(box.children, function(c, i){ c.style.setProperty('--i', i); });
@@ -1637,7 +1693,29 @@ function renderListInner(){
     }
     box.appendChild(card(l));
   });
+  equalizeCards();
 }
+function equalizeCards(){
+  var box = $('list');
+  if(state.view === 'tasks') return;
+  var cards = Array.prototype.filter.call(box.children, function(c){ return c.classList.contains('card'); });
+  box.style.removeProperty('--card-h');
+  if(!cards.length) return;
+  var m = 0;
+  cards.forEach(function(c){ m = Math.max(m, c.getBoundingClientRect().height); });
+  box.style.setProperty('--card-h', Math.ceil(m) + 'px');
+}
+(function(){
+  var lastW = 0, t = null;
+  function again(){ clearTimeout(t); t = setTimeout(equalizeCards, 60); }
+  if('ResizeObserver' in window){
+    new ResizeObserver(function(){
+      var w = Math.round($('list').getBoundingClientRect().width);
+      if(w !== lastW){ lastW = w; again(); }
+    }).observe($('list'));
+  } else window.addEventListener('resize', again);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+})();
 
 /* ---------- tareas ---------- */
 function linkById(id){
@@ -1985,22 +2063,30 @@ $('folderForm').addEventListener('submit', function(e){
   var nf = { id: rid('f_'), name: name, color: par ? famIdOf(par) : pickFamily(), tone: par ? pickTone(parent) : 1 };
   if(parent) nf.parentId = parent;
   state.folder = nf.id; state.tag = '';
-  if(parent){ delete state.collapsed[parent]; saveCollapsed(); }
-  closeSide(false);
+  if(parent){ expandTo(parent); delete state.collapsed[parent]; saveCollapsed(); }
+  /* el cajón de carpetas se queda abierto: la página pasa a la carpeta nueva y esta queda seleccionada en la lista */
+  closeProfile();
   closeComposer(); closeTaskComposer();
   setFolders(state.folders.concat([nf]));
   closeFolderForm();
+  /* se desplaza la lista hasta la fila nueva cuando ya ha terminado de crecer */
+  setTimeout(function(){
+    var row = document.querySelector('#chips .crow[data-fid="' + nf.id + '"]');
+    if(row && row.scrollIntoView) row.scrollIntoView({ block:'nearest', behavior: reduced ? 'auto' : 'smooth' });
+  }, reduced ? 0 : 400);
   toast(parent ? 'Subcarpeta «' + name + '» creada' : 'Carpeta «' + name + '» creada');
 });
 function openSide(){
-  document.body.classList.add('menu-open');
+  document.body.classList.add('menu-open','side-intro');
+  clearTimeout(state.introT);
+  state.introT = setTimeout(function(){ document.body.classList.remove('side-intro'); }, 1100);
   $('menuBtn').setAttribute('aria-expanded','true');
   setTimeout(function(){ $('sideClose').focus({ preventScroll:true }); }, 80);
 }
 function closeSide(refocus){
   if(!document.body.classList.contains('menu-open')) return;
   closeFolderForm();
-  document.body.classList.remove('menu-open');
+  document.body.classList.remove('menu-open','side-intro');
   $('menuBtn').setAttribute('aria-expanded','false');
   if(refocus) $('menuBtn').focus({ preventScroll:true });
 }
@@ -2256,7 +2342,7 @@ function openFolderMenu(id, btn){
         + (own || subs ? '¿Borrar la carpeta?' : '¿Borrar la carpeta vacía?');
       menu.appendChild(h('p',{class:'fmmsg'},msg));
       menu.appendChild(h('div',{class:'fmbtns'},[
-        h('button',{type:'button',class:'btn danger mini',onclick:function(){ closeMenu(false); deleteFolder(id); }},'Sí, borrar'),
+        h('button',{type:'button',class:'btn danger mini',onclick:function(){ closeMenu(false); animateFolderOut(id, function(){ deleteFolder(id); }); }},'Sí, borrar'),
         h('button',{type:'button',class:'btn mini',onclick:function(){ show('main'); }},'No')
       ]));
     }
