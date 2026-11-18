@@ -1,6 +1,6 @@
 // Savio · service worker mínimo: hace la app instalable y guarda lo estático para abrirla más rápido.
 // Los datos (Supabase) nunca se guardan aquí: siempre van a la red.
-const CACHE = 'savio-v1';
+const CACHE = 'savio-v2';
 const SHELL = ['./', 'icon.svg', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).catch(() => {})); self.skipWaiting(); });
 self.addEventListener('activate', e => {
