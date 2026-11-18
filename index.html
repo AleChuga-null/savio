@@ -719,6 +719,18 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
 .dp-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 .dp-foot .btn{min-height:32px;padding:0 12px;font-size:14px}
 .dp-foot .dp-clear{color:var(--danger)}
+/* ---- copia de seguridad dentro del perfil ---- */
+.prof-backup{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--line)}
+.prof-backup h3{margin:0;font:700 14px/1.3 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.prof-backup .hint{min-height:0}
+.prof-backup .btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* ---- carpetas: sangrado más corto y sin barra horizontal ---- */
+.crow{padding-left:calc(var(--lvl,0) * 8px)}
+.ctog,.ctog-sp{width:22px}
+.side nav{overflow-x:hidden}
+.chips{min-width:0}
+.csub{grid-template-columns:minmax(0,1fr)}
+.csub-in{min-width:0}
 </style>
 
 </head>
@@ -740,7 +752,6 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
     <button type="button" class="view" id="viewToday" aria-pressed="false">Hoy <span class="n" id="nToday"></span></button>
   </div>
   <button type="button" class="btn primary add fab" id="fab" disabled>+ Añadir enlace</button>
-  <button type="button" class="btn ghost" id="backupBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Copia de seguridad"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h16v3H4zM5.5 10.5V19h13v-8.5M10 14h4"/></svg><span class="backup-txt">Copia de seguridad</span></button>
   <button type="button" class="avatar-btn" id="profileBtn" aria-label="Mi perfil" title="Mi perfil" aria-pressed="false"><span class="avatar" id="profileAv"></span></button>
 </header>
 
@@ -843,6 +854,15 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
           <button type="button" class="btn" id="p-photo" disabled>Cambiar foto · próximamente</button>
         </div>
       </form>
+      <section class="prof-backup" aria-labelledby="p-backup-title">
+        <h3 id="p-backup-title">Copia de seguridad</h3>
+        <p class="hint">Guarda carpetas, guardados y tareas en un archivo tuyo, para no depender solo de la cuenta.</p>
+        <div class="row-btns">
+          <button type="button" class="btn" id="p-export"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg>Exportar todo (.json)</button>
+          <button type="button" class="btn" id="p-import"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 19h14"/></svg>Importar copia…</button>
+        </div>
+        <p class="hint" id="p-backup-last"></p>
+      </section>
       <div class="prof-actions"><button type="button" class="btn ghost" id="logoutBtn" hidden>Cerrar sesión</button></div>
     </section>
 
@@ -3214,11 +3234,19 @@ function openBackupMenu(btn){
   var first = menu.querySelector('.ddopt');
   if(first) first.focus({ preventScroll:true });
 }
-$('backupBtn').addEventListener('click', function(e){
+if($('backupBtn')) $('backupBtn').addEventListener('click', function(e){
   var b = e.currentTarget;
   if(openMenu && openMenu.btn === b){ closeMenu(true); return; }
   openBackupMenu(b);
 });
+/* la copia de seguridad vive ahora en «Mi perfil» */
+function renderBackupLast(){
+  var last = 0;
+  try{ last = parseInt(localStorage.getItem(BACKUP_KEY) || '0', 10) || 0; }catch(e){}
+  $('p-backup-last').textContent = last ? 'Última copia exportada: ' + fmtDate(last) + '.' : 'Todavía no has exportado ninguna copia.';
+}
+$('p-export').addEventListener('click', function(){ exportBackup(); setTimeout(renderBackupLast, 50); });
+$('p-import').addEventListener('click', function(){ $('importFile').click(); });
 
 /* ---------- perfil de usuario ---------- */
 var NAME_KEY = 'savio-profile-name';
@@ -3267,6 +3295,7 @@ function renderProfileStats(){
   [[state.links.length,'guardado','guardados'],[state.tasks.length,'tarea','tareas'],[state.folders.length,'carpeta','carpetas']].forEach(function(r){
     box.appendChild(h('span',{class:'stat'},[h('b',null,String(r[0])), r[0] === 1 ? r[1] : r[2]]));
   });
+  if($('p-backup-last') && typeof renderBackupLast === 'function') renderBackupLast();
 }
 function renderProfile(){
   var info = profInfo();
