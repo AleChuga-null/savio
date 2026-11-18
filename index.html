@@ -96,8 +96,6 @@ button,select,input,textarea{font:inherit;color:inherit}
 .h0{background:var(--h0-bg);color:var(--h0-fg)} .h1{background:var(--h1-bg);color:var(--h1-fg)} .h2{background:var(--h2-bg);color:var(--h2-fg)}
 .h3{background:var(--h3-bg);color:var(--h3-fg)} .h4{background:var(--h4-bg);color:var(--h4-fg)}
 .h-none{background:rgba(255,255,255,.7);color:var(--ink-soft)}
-.newfolder{min-height:42px;padding:0 12px;border:1px dashed rgba(28,83,76,.4);border-radius:14px;background:transparent;cursor:pointer;color:var(--link);font-weight:600;text-align:left;transition:background .2s}
-.newfolder:hover{background:rgba(255,255,255,.55)}
 .inline-form{display:flex;flex-direction:column;gap:8px}
 .inline-form input{width:100%;min-height:42px;padding:0 14px;border:1px solid var(--edge);border-radius:14px;background:rgba(255,255,255,.7)}
 .inline-form .row-btns .btn{flex:1}
@@ -245,7 +243,6 @@ body.view-tasks .chip[aria-pressed="true"]{background:var(--accent);color:var(--
 body.view-tasks .chip[aria-pressed="true"] .n{color:inherit;opacity:.85}
 body.view-tasks .chip .dot{border-radius:4px}
 body.view-tasks .chip[aria-pressed="true"] .dot{box-shadow:0 0 0 2px rgba(255,255,255,.85)}
-body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
 .card.tcard{--fc:#1C534C;--fi:#F2FAFA;--fs:#1C534C;--ft:#8ABDBE;border-radius:16px;background:color-mix(in srgb,var(--ft) 26%,transparent);border-color:color-mix(in srgb,var(--fs) 32%,transparent)}
 .card.tcard:hover{background:color-mix(in srgb,var(--ft) 40%,transparent)}
 .tcard .pick.static{background:var(--fc);border-color:transparent;color:var(--fi)}
@@ -731,6 +728,56 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
 .chips{min-width:0}
 .csub{grid-template-columns:minmax(0,1fr)}
 .csub-in{min-width:0}
+/* ---- vista Calendario ---- */
+.calwrap{grid-column:1/-1;display:grid;grid-template-columns:minmax(310px,400px) minmax(0,1fr);gap:16px;align-items:start}
+.calside{position:sticky;top:96px;min-width:0}
+.calagenda{display:flex;flex-direction:column;gap:16px;min-width:0}
+.calcard{padding:18px 16px 14px;gap:8px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px}
+.cal-head .dp-month{flex:1;text-align:center;font:700 15.5px/1.2 var(--f-sub);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.cal-head .dp-nav{width:36px;height:36px;flex:none}
+.cal-head .dp-nav svg{width:16px;height:16px}
+.cal-head .dp-prev svg{transform:rotate(90deg)}
+.cal-head .dp-next svg{transform:rotate(-90deg)}
+.cal-week,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.cal-week span{text-align:center;font:700 12.5px/1 var(--f-sub);letter-spacing:.08em;color:var(--ink-soft);padding:6px 0}
+.cal-day{position:relative;min-width:0;min-height:50px;padding:6px 0 5px;border:1px solid transparent;border-radius:14px;background:transparent;cursor:pointer;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:2px;touch-action:manipulation;
+  transition:background .18s,transform .18s var(--ease),box-shadow .18s}
+.cal-day:hover{background:rgba(76,138,134,.16)}
+.cal-day:active{transform:scale(.94)}
+.cal-n{font:500 15px/1.1 var(--f-body)}
+.cal-day.out{color:var(--ink-soft)}
+.cal-day.out .cal-n{opacity:.5}
+.cal-day.has{background:rgba(255,255,255,.55)}
+.cal-day.has-late{background:rgba(169,38,30,.12);border-color:rgba(169,38,30,.3)}
+.cal-day.today{box-shadow:inset 0 0 0 1.8px var(--accent)}
+.cal-day.today .cal-n{font-weight:700}
+.cal-day.sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cal-day.sel .cal-n{opacity:1;font-weight:700}
+.cal-day:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.cal-dots{display:flex;align-items:center;justify-content:center;gap:3px;height:8px}
+.cal-dots i,.cal-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
+.cal-dots b{font:700 10px/1 var(--f-sub);margin-left:1px}
+.cd-late{background:#C0392B}
+.cd-todo{background:#2B6B63}
+.cd-done{background:#9AA9A6}
+.cal-day.sel .cd-todo{background:#BFE6E0}
+.cal-day.sel .cd-done{background:rgba(255,255,255,.7)}
+.cal-day.sel .cd-late{background:#FFB4AA}
+.cal-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;padding-top:10px;border-top:1px solid var(--line)}
+.cal-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font:600 12.5px/1 var(--f-sub);letter-spacing:.04em;color:var(--ink-soft)}
+.cal-legend span{display:inline-flex;align-items:center;gap:5px}
+.cal-selbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px}
+.cal-selttl{font:700 14.5px/1.3 var(--f-sub);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.agenda-day{margin:12px 0 2px;padding:0 2px;font:700 13.5px/1.3 var(--f-sub);letter-spacing:.08em;text-transform:uppercase;color:var(--fs)}
+.agenda-day:first-of-type{margin-top:4px}
+.due-card .agenda-day + .tlist .task:first-child{padding-top:6px}
+@media (max-width:980px){
+  .calwrap{grid-template-columns:minmax(0,1fr)}
+  .calside{position:static}
+  .cal-day{min-height:46px}
+}
 </style>
 
 </head>
@@ -749,7 +796,7 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
   <div class="views" id="views" role="group" aria-label="Vista">
     <button type="button" class="view" id="viewLinks" aria-pressed="true">Guardados <span class="n" id="nLinks"></span></button>
     <button type="button" class="view" id="viewTasks" aria-pressed="false">Tareas <span class="n" id="nTasks"></span></button>
-    <button type="button" class="view" id="viewToday" aria-pressed="false">Hoy <span class="n" id="nToday"></span></button>
+    <button type="button" class="view" id="viewToday" aria-pressed="false">Calendario <span class="n" id="nToday"></span></button>
   </div>
   <button type="button" class="btn primary add fab" id="fab" disabled>+ Añadir enlace</button>
   <button type="button" class="avatar-btn" id="profileBtn" aria-label="Mi perfil" title="Mi perfil" aria-pressed="false"><span class="avatar" id="profileAv"></span></button>
@@ -764,7 +811,6 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
       <button type="button" class="ib sm side-add" id="sideAdd" aria-label="Nueva carpeta" title="Nueva carpeta" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
     </div>
     <nav aria-label="Carpetas"><div class="chips" id="chips"></div></nav>
-    <button type="button" class="newfolder" id="newFolderBtn" aria-haspopup="dialog">+ Nueva carpeta</button>
   </aside>
 
   <main class="main">
@@ -1026,7 +1072,7 @@ var state = {
   folder:'all', pending:false, q:'',
   editing:null, confirmDel:null,
   view:'links', tasks:[], confirmTask:null, loaded:{},
-  selMode:false, sel:{}, selLast:''
+  selMode:false, sel:{}, selLast:'', calMonth:'', calSel:''
 };
 state.collapsed = {}; state.newParent = ''; state.renamingId = ''; state.fmenu = ''; state.undo = null;
 state.tag = ''; state.sort = 'new';
@@ -1659,7 +1705,7 @@ function renderAll(){
 }
 function renderHead(){
   var tv = state.view === 'tasks', f = folderById(state.folder), inS = scopeTest(), tg = tv ? '' : state.tag;
-  var title = isToday() ? 'Hoy' : (tg ? '#' + tg : (state.folder === 'none' ? 'Sin carpeta' : (f ? f.name : (tv ? 'Todas las tareas' : 'Todos los guardados'))));
+  var title = isToday() ? 'Calendario' : (tg ? '#' + tg : (state.folder === 'none' ? 'Sin carpeta' : (f ? f.name : (tv ? 'Todas las tareas' : 'Todos los guardados'))));
   var items = viewItems().filter(function(x){ return inS(x.folderId) && (!tg || (x.tags || []).indexOf(tg) >= 0); });
   var n = items.length, open = items.filter(function(x){ return !x.done; }).length;
   var up = '';
@@ -1846,7 +1892,7 @@ function renderSubnav(){
 function formAnchor(){
   var a = null;
   if(state.newParent) a = document.querySelector('.fk[data-fid="' + state.newParent + '"]');
-  return a || $(state.formFrom === 'top' ? 'sideAdd' : 'newFolderBtn');
+  return a || $('sideAdd');
 }
 function placeFolderForm(){
   var f = $('folderForm');
@@ -2115,36 +2161,133 @@ function dueCard(title, tone, list, icon){
     h('ul',{class:'tlist'},list.map(function(t){ return taskRow(t, true); }))
   ]);
 }
-function renderToday(){
-  var box = $('list'), q = state.q.trim().toLowerCase(), inS = scopeTest();
+/* ---------- vista Calendario: mes con marcas + agenda de todas las tareas con fecha ---------- */
+function longDay(str){
+  var p = str.split('-');
+  try{
+    var t = new Intl.DateTimeFormat('es', { weekday:'long', day:'numeric', month:'long' }).format(new Date(+p[0], +p[1] - 1, +p[2]));
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }catch(e){ return str; }
+}
+function dayHead(str){
+  var d = daysUntil(str), base = longDay(str);
+  return d === 0 ? 'Hoy · ' + base : d === 1 ? 'Mañana · ' + base : d === -1 ? 'Ayer · ' + base : base;
+}
+function agendaCard(title, tone, icon, groups, total){
+  var kids = [h('div',{class:'card-top'},[
+    h('span',{class:'pick static'},[ico(icon), h('span',{class:'ddtxt'},title)]),
+    h('span',{class:'date'}, plural(total, 'tarea', 'tareas'))
+  ])];
+  groups.forEach(function(g){
+    if(g.label) kids.push(h('p',{class:'agenda-day'},g.label));
+    kids.push(h('ul',{class:'tlist'},g.tasks.map(function(t){ return taskRow(t, true); })));
+  });
+  return h('article',{class:'card tcard due-card tone-' + tone},kids);
+}
+function groupByDate(list, labeler){
+  var out = [], idx = {};
+  list.forEach(function(t){
+    if(!idx.hasOwnProperty(t.due)){ idx[t.due] = out.length; out.push({ date:t.due, label:labeler(t.due), tasks:[] }); }
+    out[idx[t.due]].tasks.push(t);
+  });
+  return out;
+}
+function calGrid(byDate){
+  var today = todayStr(), ym = state.calMonth || today.slice(0, 7), y = +ym.slice(0, 4), m = +ym.slice(5, 7) - 1;
+  function go(n){ var d = new Date(y, m + n, 1); state.calMonth = d.getFullYear() + '-' + pad2(d.getMonth() + 1); renderList(); }
+  var prev = iconBtn('chev','Mes anterior',function(){ go(-1); }), next = iconBtn('chev','Mes siguiente',function(){ go(1); });
+  prev.classList.add('dp-nav','dp-prev'); next.classList.add('dp-nav','dp-next');
+  var monthTasks = 0;
+  var head = h('div',{class:'cal-head'},[
+    prev, h('div',{class:'dp-month','aria-live':'polite'}, monthLabel(y, m)), next
+  ]);
+  var wk = h('div',{class:'cal-week','aria-hidden':'true'});
+  ['L','M','X','J','V','S','D'].forEach(function(x){ wk.appendChild(h('span',null,x)); });
+  var grid = h('div',{class:'cal-grid',role:'grid'}), first = new Date(y, m, 1), off = (first.getDay() + 6) % 7;
+  for(var i = 0; i < 42; i++){
+    var d = new Date(y, m, 1 - off + i), ds = dateStr(d), list = byDate[ds] || [], inMonth = d.getMonth() === m;
+    if(inMonth) monthTasks += list.length;
+    var late = list.filter(function(t){ return dueInfo(t).state === 'late'; }).length;
+    var todo = list.filter(function(t){ return !t.done; }).length - late, done = list.filter(function(t){ return t.done; }).length;
+    var dots = [];
+    for(var a = 0; a < late && dots.length < 3; a++) dots.push('late');
+    for(var b2 = 0; b2 < todo && dots.length < 3; b2++) dots.push('todo');
+    for(var c2 = 0; c2 < done && dots.length < 3; c2++) dots.push('done');
+    var label = longDate(ds) + (ds === today ? ' (hoy)' : '') + (list.length ? ': ' + plural(list.length, 'tarea', 'tareas') + (late ? ', ' + plural(late, 'vencida', 'vencidas') : '') : ': sin tareas');
+    grid.appendChild(h('button',{type:'button','data-d':ds,'aria-label':label,'aria-pressed':state.calSel === ds ? 'true' : 'false',
+      class:'cal-day' + (inMonth ? '' : ' out') + (ds === today ? ' today' : '') + (state.calSel === ds ? ' sel' : '') + (late ? ' has-late' : list.length ? ' has' : ''),
+      onclick:(function(v, same){ return function(){
+        state.calSel = state.calSel === v ? '' : v;
+        if(!same){ state.calMonth = v.slice(0, 7); }
+        renderList();
+      }; })(ds, inMonth)},[
+      h('span',{class:'cal-n'}, String(d.getDate())),
+      h('span',{class:'cal-dots','aria-hidden':'true'}, dots.map(function(k){ return h('i',{class:'cd-' + k}); }).concat(list.length > 3 ? [h('b',null,'+')] : []))
+    ]));
+  }
+  var foot = h('div',{class:'cal-foot'},[
+    h('button',{type:'button',class:'btn mini',onclick:function(){ state.calMonth = today.slice(0, 7); state.calSel = today; renderList(); }},'Hoy'),
+    h('div',{class:'cal-legend','aria-hidden':'true'},[
+      h('span',null,[h('i',{class:'cd-late'}),'Vencida']), h('span',null,[h('i',{class:'cd-todo'}),'Por hacer']), h('span',null,[h('i',{class:'cd-done'}),'Hecha'])
+    ])
+  ]);
+  var card = h('article',{class:'card calcard'},[head, wk, grid, foot]);
+  return { el:card, count:monthTasks };
+}
+function renderCalendar(){
+  var box = $('list'), q = state.q.trim().toLowerCase(), inS = scopeTest(), today = todayStr();
   var mine = state.tasks.filter(function(t){
     if(!inS(t.folderId)) return false;
+    if(state.pending && t.done) return false;
     if(q){ var l = linkById(t.linkId); if((t.text + ' ' + (l ? l.title : '')).toLowerCase().indexOf(q) < 0) return false; }
     return true;
   });
-  function by(fn){ return mine.filter(fn); }
-  function st(t){ return dueInfo(t).state; }
-  var late = by(function(t){ return st(t) === 'late'; }).sort(function(a,b){ return a.due < b.due ? -1 : a.due > b.due ? 1 : (a.createdAt || 0) - (b.createdAt || 0); });
-  var td = by(function(t){ return validDue(t.due) && daysUntil(t.due) === 0 && !(state.pending && t.done); }).sort(function(a,b){ return (!!a.done - !!b.done) || ((a.createdAt || 0) - (b.createdAt || 0)); });
-  var next = by(function(t){ var d = validDue(t.due) ? daysUntil(t.due) : -1; return !t.done && d >= 1 && d <= 7; }).sort(function(a,b){ return a.due < b.due ? -1 : a.due > b.due ? 1 : (a.createdAt || 0) - (b.createdAt || 0); });
-  if(late.length) box.appendChild(dueCard('Con retraso', 'late', late, 'alert'));
-  if(td.length) box.appendChild(dueCard('Para hoy', 'today', td, 'cal'));
-  if(!late.length && !td.length){
-    box.appendChild(h('div',{class:'empty'},[
-      h('h3',null,'Nada para hoy'),
-      h('p',null,state.tasks.some(function(t){ return validDue(t.due); })
-        ? 'No tienes tareas con fecha de hoy ni retrasadas. Buen momento para adelantar lo próximo o para descansar.'
-        : 'Ponle fecha a una tarea y aparecerá aquí cuando toque. También puedes crear una nueva ya con la fecha de hoy.'),
-      h('button',{type:'button',class:'btn primary',onclick:function(){ openTaskComposer({ folderId: folderById(state.folder) ? state.folder : '', due:todayStr() }); }},'+ Tarea para hoy')
+  var dated = mine.filter(function(t){ return validDue(t.due); }).sort(function(a,b){ return a.due < b.due ? -1 : a.due > b.due ? 1 : ((!!a.done - !!b.done) || ((a.createdAt || 0) - (b.createdAt || 0))); });
+  var byDate = {};
+  dated.forEach(function(t){ (byDate[t.due] = byDate[t.due] || []).push(t); });
+  var wrap = h('div',{class:'calwrap'});
+  var cg = calGrid(byDate);
+  var side = h('div',{class:'calside'},[cg.el]);
+  var agenda = h('div',{class:'calagenda'});
+  if(state.calSel){
+    var day = byDate[state.calSel] || [];
+    agenda.appendChild(h('div',{class:'cal-selbar'},[
+      h('span',{class:'cal-selttl'}, dayHead(state.calSel)),
+      h('button',{type:'button',class:'btn ghost mini',onclick:function(){ state.calSel = ''; renderList(); }},'Ver todas')
     ]));
+    if(day.length){
+      var dl = day.filter(function(t){ return dueInfo(t).state === 'late'; });
+      agenda.appendChild(agendaCard(dayHead(state.calSel), dl.length ? 'late' : (state.calSel === today ? 'today' : 'next'), dl.length ? 'alert' : 'cal', [{ label:'', tasks:day }], day.length));
+    } else {
+      agenda.appendChild(h('div',{class:'empty'},[
+        h('h3',null,'Nada este día'),
+        h('p',null,'No hay tareas con esta fecha' + (q || state.pending ? ' con el filtro actual' : '') + '.'),
+        h('button',{type:'button',class:'btn primary',onclick:function(){ openTaskComposer({ folderId: folderById(state.folder) ? state.folder : '', due:state.calSel }); }},'+ Tarea para este día')
+      ]));
+    }
+  } else {
+    var late = dated.filter(function(t){ return dueInfo(t).state === 'late'; });
+    var up = dated.filter(function(t){ return daysUntil(t.due) >= 0; });
+    var past = dated.filter(function(t){ return daysUntil(t.due) < 0 && t.done; }).reverse();
+    if(late.length) agenda.appendChild(agendaCard('Con retraso', 'late', 'alert', groupByDate(late, dayHead), late.length));
+    if(up.length) agenda.appendChild(agendaCard('Hoy y próximos días', 'today', 'cal', groupByDate(up, dayHead), up.length));
+    if(past.length) agenda.appendChild(agendaCard('Hechas con fecha pasada', 'next', 'check', groupByDate(past, dayHead), past.length));
+    if(!dated.length){
+      agenda.appendChild(h('div',{class:'empty'},[
+        h('h3',null,'Aún no hay tareas con fecha'),
+        h('p',null, state.tasks.some(function(t){ return validDue(t.due); }) ? 'Ninguna tarea con fecha coincide con el filtro actual.' : 'Ponle fecha a una tarea y la verás aquí, en el calendario. También puedes crear una nueva con fecha.'),
+        h('button',{type:'button',class:'btn primary',onclick:function(){ openTaskComposer({ folderId: folderById(state.folder) ? state.folder : '', due:today }); }},'+ Tarea con fecha')
+      ]));
+    }
   }
-  if(next.length) box.appendChild(dueCard('Próximos 7 días', 'next', next, 'cal'));
   var undated = state.tasks.filter(function(t){ return !t.done && !validDue(t.due) && inS(t.folderId); }).length;
-  if(undated) box.appendChild(h('p',{class:'todaynote'}, plural(undated, 'tarea pendiente sin fecha', 'tareas pendientes sin fecha') + '. Las encuentras en «Tareas», donde puedes ponerles una.'));
+  if(undated) agenda.appendChild(h('p',{class:'todaynote'}, plural(undated, 'tarea pendiente sin fecha', 'tareas pendientes sin fecha') + '. Las encuentras en «Tareas», donde puedes ponerles una.'));
+  wrap.appendChild(side); wrap.appendChild(agenda);
+  box.appendChild(wrap);
 }
 function renderTasks(){
   var box = $('list');
-  if(isToday()){ renderToday(); return; }
+  if(isToday()){ renderCalendar(); return; }
   var q = state.q.trim().toLowerCase();
   function match(t){
     if(state.pending && t.done) return false;
@@ -2410,7 +2553,7 @@ $('linkForm').addEventListener('submit', function(e){
 $('f-cancel').addEventListener('click', closeComposer);
 $('fab').addEventListener('click', function(){
   closeProfile();
-  if(state.view === 'tasks') openTaskComposer({ folderId: folderById(state.folder) ? state.folder : '', due: isToday() ? todayStr() : '' });
+  if(state.view === 'tasks') openTaskComposer({ folderId: folderById(state.folder) ? state.folder : '', due: isToday() ? (state.calSel || todayStr()) : '' });
   else openComposer(null);
 });
 
@@ -2425,16 +2568,13 @@ $('pendingBtn').addEventListener('click', function(){
   }catch(e){}
 });
 $('tagClear').addEventListener('click', clearTag);
-$('newFolderBtn').addEventListener('click', function(){
-  if(!$('folderForm').hidden && !state.newParent && state.formFrom === 'bottom') closeFolderForm(); else openFolderForm('', 'bottom');
-});
 $('sideAdd').addEventListener('click', function(){
   if(!$('folderForm').hidden && !state.newParent && state.formFrom === 'top') closeFolderForm(); else openFolderForm('', 'top');
 });
 document.addEventListener('mousedown', function(e){
   var f = $('folderForm');
   if(f.hidden || f.contains(e.target)) return;
-  if(e.target.closest && e.target.closest('#newFolderBtn,#sideAdd')) return;
+  if(e.target.closest && e.target.closest('#sideAdd')) return;
   closeFolderForm();
 });
 window.addEventListener('scroll', placeFolderForm, true);
