@@ -7,6 +7,13 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Savio</title>
 <link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1C534C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Savio">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@300;400;700&family=Cinzel+Decorative:wght@400;700;900&family=Prompt:wght@300;400;500;600&display=swap">
@@ -4200,6 +4207,45 @@ function checkDay(){
 }
 setInterval(checkDay, 60000);
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) checkDay(); });
+/* ---------- recibir enlaces desde «Compartir» (Android) o desde un Atajo (iPhone) ---------- */
+/* llegan como ?url=…&text=…&title=…; se guardan, se limpia la dirección y se abre «Nuevo guardado» en cuanto la app está lista */
+(function(){
+  var KEY = 'savio-share', share = null;
+  function firstUrl(s){ var m = /https?:\/\/[^\s<>"']+/i.exec(s || ''); return m ? m[0].replace(/[).,;!?]+$/, '') : ''; }
+  try{
+    var qs = new URLSearchParams(location.search);
+    if(qs.has('url') || qs.has('text') || qs.has('title')){
+      var u = firstUrl(qs.get('url')) || firstUrl(qs.get('text')) || firstUrl(qs.get('title'));
+      var t = (qs.get('title') || '').trim();
+      if(!u && qs.get('url')) u = qs.get('url').trim();
+      if(firstUrl(t) || t === u) t = '';
+      if(u){ share = { url:u, title:t.slice(0,120) }; try{ sessionStorage.setItem(KEY, JSON.stringify(share)); }catch(e){} }
+      qs.delete('url'); qs.delete('text'); qs.delete('title');
+      var rest = qs.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+    } else {
+      try{ share = JSON.parse(sessionStorage.getItem(KEY) || 'null'); }catch(e){}
+    }
+  }catch(e){}
+  if(!share || !share.url) return;
+  var tries = 0, timer = setInterval(function(){
+    if(++tries > 240){ clearInterval(timer); return; }
+    if(state.mode === 'loading' || document.body.classList.contains('locked') || !$('auth').hidden) return;
+    clearInterval(timer);
+    try{ sessionStorage.removeItem(KEY); }catch(e){}
+    selectFolder('all');
+    openComposer(null);
+    el.url.value = share.url;
+    if(share.title) el.title.value = share.title;
+    el.url.dispatchEvent(new Event('input', { bubbles:true }));
+    updatePlatform();
+    $('composer').scrollIntoView({ block:'start' });
+    (share.title ? el.folder : el.title).focus({ preventScroll:true });
+  }, 250);
+})();
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
 boot();
 })();
 </script>
