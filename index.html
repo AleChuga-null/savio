@@ -191,23 +191,17 @@ h1{margin:0;font:700 clamp(1.5rem,3.6vw,2.2rem)/1.15 var(--f-display);letter-spa
 .meta{display:flex;justify-content:space-between;gap:8px;font:700 13.5px/1.3 var(--f-sub);color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase}
 .none{grid-column:1/-1;margin:0;color:var(--ink-soft)}
 .empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:36px 28px;border-radius:28px;background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-.guide{grid-column:1/-1;display:flex;flex-direction:column;gap:14px;padding:24px 26px;border-radius:28px;background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-.guide-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.guide h3{margin:0;font:700 1.3rem/1.25 var(--f-display);letter-spacing:.03em}
-.guide-sub{margin:2px 0 0;font:700 13px/1.3 var(--f-sub);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
-.guide-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
-.gstep{display:flex;gap:14px;align-items:flex-start;opacity:.62}
-.gstep.cur{opacity:1}
-.gstep.done{opacity:.8}
-.gnum{flex:none;width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:2px solid color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent);font:700 14px/1 var(--f-sub)}
-.gstep.cur .gnum{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.gstep.done .gnum{background:color-mix(in srgb,var(--accent) 16%,transparent);border-color:transparent}
-.gnum svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.gbody{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;padding-top:3px}
-.gbody strong{font:700 15.5px/1.3 var(--f-sub);letter-spacing:.02em}
-.gbody p{margin:0;max-width:60ch;color:var(--ink-soft);font-size:14.5px;line-height:1.5}
-.guide-tip{margin:0;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--accent) 30%,transparent);color:var(--ink-soft);font-size:13.5px}
-@media (min-width:821px){ .guide-tip{display:none} }
+.coach-ring{position:fixed;z-index:94;pointer-events:none;box-shadow:0 0 0 2px var(--accent),0 0 0 6px rgba(76,138,134,.28);animation:coachPulse 1.8s ease-in-out infinite}
+@keyframes coachPulse{0%,100%{box-shadow:0 0 0 2px var(--accent),0 0 0 5px rgba(76,138,134,.3)}50%{box-shadow:0 0 0 2px var(--accent),0 0 0 11px rgba(76,138,134,.08)}}
+.coach{position:fixed;z-index:95;display:flex;align-items:center;gap:8px;max-width:min(260px,calc(100vw - 20px));padding:9px 8px 9px 14px;border-radius:14px;background:#0F3A33;color:#F2FAFA;font:600 14px/1.25 var(--f-body);box-shadow:0 14px 32px -12px rgba(13,43,36,.6);animation:coachIn .3s var(--ease)}
+.coach::after{content:"";position:absolute;left:var(--ax,50%);width:12px;height:12px;background:#0F3A33;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.coach.below::after{top:-5px}
+.coach.above::after{bottom:-5px}
+.coach-t{min-width:0}
+.coach-x{flex:none;width:26px;height:26px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#F2FAFA;font:400 18px/1 var(--f-body);cursor:pointer}
+.coach-x:hover{background:rgba(255,255,255,.28)}
+@keyframes coachIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.coach-ring,.coach{animation:none}}
 .empty h3{margin:0;font:700 1.3rem/1.25 var(--f-display);letter-spacing:.03em}
 .empty p{margin:0;max-width:52ch;color:var(--ink-soft)}
 .tlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;min-width:0}
@@ -762,6 +756,14 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
 .dp-foot .btn{min-height:32px;padding:0 12px;font-size:14px}
 .dp-foot .dp-clear{color:var(--danger)}
 /* ---- copia de seguridad dentro del perfil ---- */
+.prof-danger{padding-top:6px;color:var(--ink-soft)}
+.prof-danger summary{cursor:pointer;list-style:none;display:inline-block;padding:6px 2px;font:600 13.5px/1.3 var(--f-sub);letter-spacing:.04em;color:var(--ink-soft);opacity:.75;text-decoration:underline;text-underline-offset:3px}
+.prof-danger summary::-webkit-details-marker{display:none}
+.prof-danger summary:hover{opacity:1;color:var(--danger)}
+.prof-danger[open] summary{opacity:1;color:var(--danger)}
+.prof-danger .hint{margin:6px 0 12px;min-height:0}
+.dlg .confirm-in{width:100%;height:46px;padding:0 14px;border:1px solid var(--edge);border-radius:14px;background:rgba(255,255,255,.8);color:var(--ink);font:600 15px/1 var(--f-body);letter-spacing:.04em}
+.dlg .confirm-in:focus{outline:none;box-shadow:0 0 0 3px rgba(169,38,30,.28);border-color:rgba(169,38,30,.5)}
 .prof-backup{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--line)}
 .prof-backup h3{margin:0;font:700 14px/1.3 var(--f-sub);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
 .prof-backup .hint{min-height:0}
@@ -955,6 +957,11 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
         <p class="hint" id="p-backup-last"></p>
       </section>
       <div class="prof-actions"><button type="button" class="btn ghost" id="logoutBtn" hidden>Cerrar sesión</button></div>
+      <details class="prof-danger" id="p-danger" hidden>
+        <summary>Eliminar cuenta</summary>
+        <p class="hint">Se borran para siempre tu cuenta y todo lo que hay en ella: carpetas, guardados y tareas. No se puede deshacer.</p>
+        <button type="button" class="btn danger" id="p-delete">Eliminar mi cuenta…</button>
+      </details>
     </section>
 
     <div class="main-head">
@@ -1749,6 +1756,7 @@ function renderAll(){
   renderViews(); renderCount(); renderHead(); renderStatus(); renderChips(); renderSubnav(); renderList();
   renderProfileBtn();
   if(!$('profile').hidden) renderProfileStats();
+  coachSoon();
 }
 function renderHead(){
   var tv = state.view === 'tasks', f = folderById(state.folder), inS = scopeTest(), tg = tv ? '' : state.tag;
@@ -2084,53 +2092,94 @@ function card(l){
     ])
   ]);
 }
-/* ---------- guía de primeros pasos ---------- */
+/* ---------- guía de primeros pasos: globos que señalan cada botón ---------- */
 var GUIDE_KEY = 'savio-guide-off';
 function guideOff(){ try{ return localStorage.getItem(GUIDE_KEY) === '1'; }catch(e){ return false; } }
-function guideSteps(){
-  return [
-    { done: state.folders.length > 0, title:'Crea tu primera carpeta', text:'Las carpetas son tus cajones: «Recetas», «Viajes», «Para ver más tarde»… Luego puedes crear subcarpetas, cambiarles el color o el nombre con el botón ⋯ que tienen al lado.', btn:'Crear carpeta', run:function(){
-      var sm = window.matchMedia('(max-width:820px)').matches;
-      if(sm){ openSide(); setTimeout(function(){ openFolderForm('', 'top'); }, 380); } else openFolderForm('', 'top');
-    } },
-    { done: state.links.length > 0, title:'Guarda tu primer enlace', text:'Pega cualquier enlace —un reel, un vídeo, una web— y ponle un título. Si tienes la cuenta conectada, la imagen se busca sola.', btn:'Añadir enlace', run:function(){ openComposer(null); } },
-    { done: state.links.some(function(l){ return !!folderById(l.folderId); }), title:'Ordénalo en una carpeta', text:'Al guardar elige la carpeta, o cámbiala después desde la etiqueta de arriba de cada tarjeta. Para ver una carpeta, ábrela en el menú de carpetas.', btn:'', run:null }
-  ];
+var coachTip = null, coachRing = null, coachKey = '', GUIDE_ON = 'savio-guide-on';
+function guideOn(){ try{ return localStorage.getItem(GUIDE_ON) === '1'; }catch(e){ return false; } }
+function guideStop(){
+  try{ localStorage.setItem(GUIDE_KEY, '1'); }catch(e){}
+  coachHide();
 }
-function guideActive(){
-  if(state.demo || guideOff() || state.view !== 'links' || state.q || state.tag) return false;
-  return guideSteps().some(function(st){ return !st.done; });
+function coachHide(){
+  if(coachTip){ coachTip.remove(); coachTip = null; }
+  if(coachRing){ coachRing.remove(); coachRing = null; }
+  coachKey = '';
 }
-function guideBlock(){
-  var steps = guideSteps(), cur = -1;
-  steps.forEach(function(st, i){ if(cur < 0 && !st.done) cur = i; });
-  var done = steps.filter(function(st){ return st.done; }).length;
-  return h('section',{class:'guide','aria-label':'Primeros pasos'},[
-    h('div',{class:'guide-head'},[
-      h('div',null,[
-        h('h3',null,'Primeros pasos'),
-        h('p',{class:'guide-sub'}, done + ' de ' + steps.length + ' hechos')
-      ]),
-      h('button',{type:'button',class:'btn ghost mini',onclick:function(){
-        try{ localStorage.setItem(GUIDE_KEY, '1'); }catch(e){}
-        renderList(); toast('Guía oculta');
-      }},'Ocultar')
-    ]),
-    h('ol',{class:'guide-steps'}, steps.map(function(st, i){
-      return h('li',{class:'gstep' + (st.done ? ' done' : '') + (i === cur ? ' cur' : '')},[
-        h('span',{class:'gnum','aria-hidden':'true'}, st.done ? '✓' : String(i + 1)),
-        h('div',{class:'gbody'},[
-          h('strong',null,st.title),
-          i === cur ? h('p',null,st.text) : null,
-          (i === cur && st.btn) ? h('button',{type:'button',class:'btn primary mini',onclick:st.run},st.btn) : null
-        ])
-      ]);
-    })),
-    h('p',{class:'guide-tip'},'Truco: en el móvil, mantén pulsada una tarjeta para seleccionar varias a la vez.')
-  ]);
+function visibleEl(el){
+  if(!el || el.hidden) return false;
+  var r = el.getBoundingClientRect();
+  return r.width > 0 && r.height > 0;
 }
+/* qué hay que señalar ahora (o nada) */
+function coachStep(){
+  if(state.demo || guideOff() || !(state.mode === 'local' || (state.mode === 'db' && state.got))) return null;
+  if(document.body.classList.contains('locked') || !$('profile').hidden || !$('composer').hidden || !$('taskComposer').hidden || !$('folderForm').hidden || state.selMode || state.view !== 'links') return null;
+  if(!guideOn()){
+    /* solo se activa para cuentas recién creadas: sin carpetas, sin guardados y sin tareas al entrar */
+    if(!state.folders.length && !state.links.length && !state.tasks.length){ try{ localStorage.setItem(GUIDE_ON, '1'); }catch(e){} }
+    else return null;
+  }
+  var sm = window.matchMedia('(max-width:820px)').matches, drawer = document.body.classList.contains('menu-open');
+  if(!state.folders.length){
+    if(sm && !drawer) return { key:'menu', el:$('menuBtn'), text:'Abre tus carpetas' };
+    return { key:'folder', el:$('sideAdd'), text:'Crea tu primera carpeta' };
+  }
+  if(!state.links.length){
+    if(sm && drawer) return null;
+    return { key:'link', el:$('fab'), text:'Guarda tu primer enlace' };
+  }
+  if(!state.links.some(function(l){ return !!folderById(l.folderId); })){
+    if(sm && drawer) return null;
+    return { key:'pick', el:document.querySelector('#list .card .pick'), text:'Elige su carpeta aquí' };
+  }
+  guideStop();
+  return null;
+}
+function renderCoach(){
+  var st = null;
+  try{ st = coachStep(); }catch(e){ st = null; }
+  if(!st || !visibleEl(st.el)){ coachHide(); return; }
+  var el = st.el, r = el.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+  if(st.key === 'pick' && (r.bottom < 70 || r.top > vh - 90) && coachKey !== 'pick-scrolled'){
+    coachKey = 'pick-scrolled';
+    el.scrollIntoView({ block:'center', behavior:'auto' });
+    r = el.getBoundingClientRect();
+  }
+  if(!coachRing){
+    coachRing = h('div',{class:'coach-ring','aria-hidden':'true'});
+    document.body.appendChild(coachRing);
+  }
+  if(!coachTip){
+    coachTip = h('div',{class:'coach',role:'status'},[
+      h('span',{class:'coach-t'}),
+      h('button',{type:'button',class:'coach-x','aria-label':'Cerrar guía',title:'Cerrar guía',onclick:guideStop},'×')
+    ]);
+    document.body.appendChild(coachTip);
+  }
+  coachTip.firstChild.textContent = st.text;
+  var pad = 5;
+  coachRing.style.cssText = 'left:' + (r.left - pad) + 'px;top:' + (r.top - pad) + 'px;width:' + (r.width + pad * 2) + 'px;height:' + (r.height + pad * 2) + 'px;border-radius:' + (getComputedStyle(el).borderRadius === '0px' ? '12px' : '999px');
+  var tw = coachTip.offsetWidth, th = coachTip.offsetHeight;
+  var below = r.bottom + th + 18 < vh - 8;
+  var cx = r.left + r.width / 2;
+  var left = Math.max(10, Math.min(cx - tw / 2, vw - tw - 10));
+  var top = below ? r.bottom + pad + 10 : r.top - pad - 10 - th;
+  coachTip.className = 'coach ' + (below ? 'below' : 'above');
+  coachTip.style.left = left + 'px';
+  coachTip.style.top = Math.max(8, top) + 'px';
+  coachTip.style.setProperty('--ax', Math.max(18, Math.min(cx - left, tw - 18)) + 'px');
+  if(coachKey !== 'pick-scrolled') coachKey = st.key;
+}
+var coachTimer = 0;
+function coachSoon(){ cancelAnimationFrame(coachTimer); coachTimer = requestAnimationFrame(renderCoach); }
+window.addEventListener('resize', coachSoon);
+window.addEventListener('scroll', coachSoon, true);
+if('MutationObserver' in window){
+  new MutationObserver(function(){ coachSoon(); setTimeout(coachSoon, 420); }).observe(document.body, { attributes:true, attributeFilter:['class'] });
+}
+document.addEventListener('click', function(){ setTimeout(coachSoon, 60); }, true);
 function emptyBlock(){
-  if(guideActive()) return guideBlock();
   return h('div',{class:'empty'},[
     h('h3',null,'Aquí guardarás tus enlaces'),
     h('p',null,'Pega cualquier enlace —una web, un mapa, un documento, un vídeo— y ordénalo en carpetas para encontrarlo cuando lo necesites.'),
@@ -2148,7 +2197,6 @@ function renderListInner(){
   if(!ready) return;
   if(state.view === 'tasks'){ renderTasks(); return; }
   if(!state.links.length){ box.appendChild(emptyBlock()); return; }
-  if(guideActive()) box.appendChild(guideBlock());
   var items = visible();
   if(!items.length){ box.appendChild(h('p',{class:'none'},'No hay nada que coincida con este filtro.')); return; }
   var hasPin = items.some(function(x){ return x.pinned; }), hasRest = items.some(function(x){ return !x.pinned; });
@@ -3539,6 +3587,8 @@ function renderProfile(){
   $('p-name').value = info.name;
   $('p-email').value = info.acct ? (info.email || 'Cuenta conectada') : (state.demo ? 'Modo prueba' : 'Sin cuenta conectada');
   $('p-error').textContent = '';
+  $('p-danger').hidden = !info.acct;
+  $('p-danger').open = false;
   renderProfileStats();
 }
 function openProfile(){
@@ -4275,12 +4325,68 @@ eyeBtns.forEach(function(b){
   });
 });
 $('a-demo').addEventListener('click', enterDemo);
+var DELETE_PHRASE = 'ELIMINAR MI CUENTA';
+function showDeleteDialog(){
+  var prev = document.activeElement;
+  var scrim = h('div',{class:'dlg-scrim'});
+  var busy = false;
+  function close(){
+    document.removeEventListener('keydown', onKey, true);
+    scrim.remove();
+    if(prev && prev.focus) prev.focus({ preventScroll:true });
+  }
+  var inp = h('input',{type:'text',class:'confirm-in',id:'del-confirm',autocomplete:'off',autocapitalize:'characters',spellcheck:'false',placeholder:DELETE_PHRASE,'aria-describedby':'del-help'});
+  var err = h('p',{class:'error',role:'alert'});
+  var bDel = h('button',{type:'button',class:'btn danger',disabled:'disabled'},'Eliminar para siempre');
+  var bCan = h('button',{type:'button',class:'btn',onclick:function(){ if(!busy) close(); }},'Cancelar');
+  var bExp = h('button',{type:'button',class:'btn ghost mini',onclick:function(){ exportBackup(); }},'Descargar una copia antes');
+  function ok(){ return inp.value.trim() === DELETE_PHRASE; }
+  inp.addEventListener('input', function(){ bDel.disabled = busy || !ok(); err.textContent = ''; });
+  inp.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); if(ok()) go(); } });
+  bDel.addEventListener('click', go);
+  function go(){
+    if(busy || !ok() || !sbClient) return;
+    busy = true; bDel.disabled = true; inp.disabled = true; bCan.disabled = true; bDel.textContent = 'Eliminando…'; err.textContent = '';
+    sbClient.functions.invoke('delete-account', { body:{ confirm:DELETE_PHRASE } }).then(function(r){
+      if(r && r.error) throw r.error;
+      if(r && r.data && r.data.error) throw new Error(r.data.error);
+      try{ localStorage.removeItem(LS_KEY); localStorage.removeItem(GUIDE_KEY); localStorage.removeItem(GUIDE_ON); }catch(e){}
+      var done = function(){ try{ sessionStorage.setItem('savio-deleted', '1'); }catch(e){} location.reload(); };
+      Promise.resolve(sbClient.auth.signOut()).then(done, done);
+    }).catch(function(){
+      busy = false; inp.disabled = false; bCan.disabled = false; bDel.textContent = 'Eliminar para siempre'; bDel.disabled = !ok();
+      err.textContent = 'No se pudo eliminar la cuenta ahora. Inténtalo de nuevo en un rato; si sigue fallando, escríbenos.';
+    });
+  }
+  function onKey(e){
+    if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); if(!busy) close(); return; }
+    if(e.key !== 'Tab') return;
+    var f = [inp, bExp, bDel, bCan].filter(function(x){ return !x.disabled; }), i = f.indexOf(document.activeElement);
+    e.preventDefault();
+    f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+  }
+  var dlg = h('div',{class:'dlg',role:'alertdialog','aria-modal':'true','aria-labelledby':'del-title'},[
+    h('h2',{id:'del-title'},'Eliminar cuenta'),
+    h('p',null,'Vas a borrar para siempre tu cuenta, tus carpetas, tus guardados y tus tareas. No hay forma de recuperarlos.'),
+    h('div',{class:'row-btns'},[bExp]),
+    h('p',{class:'hint',id:'del-help'},'Para confirmar, escribe ' + DELETE_PHRASE + ' en el recuadro.'),
+    inp, err,
+    h('div',{class:'row-btns'},[bDel, bCan])
+  ]);
+  scrim.appendChild(dlg);
+  scrim.addEventListener('mousedown', function(e){ if(e.target === scrim && !busy) close(); });
+  document.addEventListener('keydown', onKey, true);
+  document.body.appendChild(scrim);
+  inp.focus({ preventScroll:true });
+}
+$('p-delete').addEventListener('click', function(){ if(sbClient && !state.demo) showDeleteDialog(); });
 $('logoutBtn').addEventListener('click', function(){
   if(state.demo || !sbClient){ location.reload(); return; }
   sbClient.auth.signOut();
 });
 function boot(){
   renderAll();
+  try{ if(sessionStorage.getItem('savio-deleted')){ sessionStorage.removeItem('savio-deleted'); setTimeout(function(){ toast('Tu cuenta se ha eliminado'); }, 600); } }catch(e){}
   if(!(window.claude && window.claude.use)){
     if(supaReady()) startSupabase(); else goLocal();
     return;
