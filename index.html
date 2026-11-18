@@ -2174,10 +2174,10 @@ function dayHead(str){
   return d === 0 ? 'Hoy · ' + base : d === 1 ? 'Mañana · ' + base : d === -1 ? 'Ayer · ' + base : base;
 }
 function agendaCard(title, tone, icon, groups, total){
-  var kids = [h('div',{class:'card-top'},[
+  var kids = title ? [h('div',{class:'card-top'},[
     h('span',{class:'pick static'},[ico(icon), h('span',{class:'ddtxt'},title)]),
     h('span',{class:'date'}, plural(total, 'tarea', 'tareas'))
-  ])];
+  ])] : [];
   groups.forEach(function(g){
     if(g.label) kids.push(h('p',{class:'agenda-day'},g.label));
     kids.push(h('ul',{class:'tlist'},g.tasks.map(function(t){ return taskRow(t, true); })));
@@ -2257,7 +2257,7 @@ function renderCalendar(){
     ]));
     if(day.length){
       var dl = day.filter(function(t){ return dueInfo(t).state === 'late'; });
-      agenda.appendChild(agendaCard(dayHead(state.calSel), dl.length ? 'late' : (state.calSel === today ? 'today' : 'next'), dl.length ? 'alert' : 'cal', [{ label:'', tasks:day }], day.length));
+      agenda.appendChild(agendaCard(dayHead(state.calSel), dl.length ? 'late' : 'next', dl.length ? 'alert' : 'cal', [{ label:'', tasks:day }], day.length));
     } else {
       agenda.appendChild(h('div',{class:'empty'},[
         h('h3',null,'Nada este día'),
@@ -2270,7 +2270,7 @@ function renderCalendar(){
     var up = dated.filter(function(t){ return daysUntil(t.due) >= 0; });
     var past = dated.filter(function(t){ return daysUntil(t.due) < 0 && t.done; }).reverse();
     if(late.length) agenda.appendChild(agendaCard('Con retraso', 'late', 'alert', groupByDate(late, dayHead), late.length));
-    if(up.length) agenda.appendChild(agendaCard('Hoy y próximos días', 'today', 'cal', groupByDate(up, dayHead), up.length));
+    if(up.length) agenda.appendChild(agendaCard('', 'next', 'cal', groupByDate(up, dayHead), up.length));
     if(past.length) agenda.appendChild(agendaCard('Hechas con fecha pasada', 'next', 'check', groupByDate(past, dayHead), past.length));
     if(!dated.length){
       agenda.appendChild(h('div',{class:'empty'},[
