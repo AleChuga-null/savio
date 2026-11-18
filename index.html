@@ -105,6 +105,12 @@ button,select,input,textarea{font:inherit;color:inherit}
 .main{min-width:0;display:flex;flex-direction:column;gap:16px}
 .main-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:4px 4px 0}
 h1{margin:0;font:700 clamp(1.5rem,3.6vw,2.2rem)/1.15 var(--f-display);letter-spacing:.03em;overflow-wrap:anywhere}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:2px 4px;margin:0 0 6px;font:600 13px/1.2 var(--f-sub);color:var(--ink-soft)}
+.crumbs[hidden]{display:none}
+.crumbs button{display:inline-flex;align-items:center;gap:4px;min-height:22px;padding:0 6px;margin:0 -2px 0 -6px;border:0;border-radius:999px;background:transparent;color:inherit;font:inherit;cursor:pointer;opacity:.85;transition:background .2s,opacity .2s,color .2s}
+.crumbs button:hover{background:rgba(255,255,255,.55);opacity:1;color:var(--ink)}
+.crumbs button:first-child svg{width:13px;height:13px}
+.crumbs .sep{opacity:.5;padding:0 2px 0 0}
 .sub{margin:6px 0 0;font:700 14.5px/1.3 var(--f-sub);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);min-height:1.3em}
 .status{margin:0;padding:12px 18px;border-radius:18px;color:var(--ink-soft);font-size:14px}
 
@@ -373,7 +379,6 @@ body.view-tasks .newfolder{border-color:rgba(28,83,76,.55)}
   .menu-btn i{display:block;height:2px;border-radius:2px;background:currentColor;width:18px;transition:width .3s var(--ease)}
   .menu-btn i:nth-child(2){width:12px}
   .menu-btn:hover i:nth-child(2){width:18px}
-  .menu-btn.on::after{content:"";position:absolute;top:7px;right:7px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px #fff}
   .views{order:4;flex:1 1 0;min-width:0}
 
   .scrim{display:block;position:fixed;inset:0;z-index:55;background:rgba(13,43,36,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s}
@@ -674,10 +679,46 @@ button,a,select,summary,[role="button"],.chip,.crow,.fk{-webkit-tap-highlight-co
   .sortdd .ddbtn,#pendingBtn{background:rgba(255,255,255,.34);border:1px solid rgba(255,255,255,.6);box-shadow:none;color:var(--ink);-webkit-backdrop-filter:none;backdrop-filter:none}
   #pendingBtn[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 62%,transparent);border-color:color-mix(in srgb,var(--accent) 70%,transparent);color:var(--accent-ink)}
   .toast{text-align:center;justify-content:center;width:max-content;max-width:calc(100% - 48px);padding:9px 18px;font-size:13.5px;background:rgba(13,43,36,.72)}
+  /* cabecera en dos filas: [logo · buscar · archivo · perfil] y [carpetas · Guardados | Tareas] */
+  .topbar{gap:8px 8px;padding:10px 12px;border-radius:22px;align-items:center}
+  .topbar::after{content:"";order:5;flex:0 0 100%;height:0;margin-top:-8px}
+  .brand{order:1;margin-right:0}
+  .brand-logo{height:24px}
+  .search{order:2;flex:1 1 0;min-width:0}
+  .search input{height:40px}
+  #backupBtn{order:3;width:36px;min-width:36px;min-height:36px}
+  #profileBtn.avatar-btn{order:4;width:38px;height:38px}
+  .menu-btn{order:6;width:40px;height:40px}
+  .views{order:7;flex:1 1 0;min-width:0}
+  .view{min-height:32px}
   .card{-webkit-touch-callout:none}
   .card a,.card img{-webkit-touch-callout:none}
 }
 body.lp-hold .card{-webkit-user-select:none;user-select:none}
+/* ---- calendario propio (sustituye al del navegador) ---- */
+.duerow .dpbtn{flex:1 1 170px;width:auto;min-width:0}
+.dpbtn>svg{flex:none;width:17px;height:17px;fill:none;stroke:var(--ink-soft);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.dpbtn.empty-val .ddtxt{color:var(--ink-soft)}
+.dpick{position:fixed;z-index:60;box-sizing:border-box;padding:14px 14px 12px;border-radius:24px;background:#F6FCFC;border:1px solid var(--edge);
+  box-shadow:0 22px 44px -14px rgba(13,43,36,.5),inset 0 1px 0 rgba(255,255,255,.9);animation:fade .18s var(--ease);user-select:none;-webkit-user-select:none}
+.dp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.dp-month{flex:1;text-align:center;font:700 15px/1.2 var(--f-sub);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.dp-nav{width:34px;height:34px;flex:none}
+.dp-nav svg{width:16px;height:16px}
+.dp-prev svg{transform:rotate(90deg)}
+.dp-next svg{transform:rotate(-90deg)}
+.dp-week,.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dp-week span{text-align:center;font:700 12.5px/1 var(--f-sub);letter-spacing:.08em;color:var(--ink-soft);padding:6px 0}
+.dp-day{aspect-ratio:1;min-width:0;border:0;border-radius:50%;background:transparent;cursor:pointer;font:500 14.5px/1 var(--f-body);color:var(--ink);padding:0;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:background .15s,color .15s,transform .15s var(--ease)}
+.dp-day:hover{background:rgba(76,138,134,.18)}
+.dp-day:active{transform:scale(.9)}
+.dp-day.out{color:var(--ink-soft);opacity:.45}
+.dp-day.today{box-shadow:inset 0 0 0 1.6px var(--accent);font-weight:700}
+.dp-day.sel{background:var(--accent);color:var(--accent-ink);font-weight:700;opacity:1}
+.dp-day:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.dp-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.dp-foot .btn{min-height:32px;padding:0 12px;font-size:14px}
+.dp-foot .dp-clear{color:var(--danger)}
 </style>
 
 </head>
@@ -807,6 +848,7 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
 
     <div class="main-head">
       <div>
+        <nav class="crumbs" id="crumbs" aria-label="Ruta de carpetas" hidden></nav>
         <h1 id="viewTitle">Todos los guardados</h1>
         <p class="sub" id="viewSub"></p>
       </div>
@@ -903,9 +945,10 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
           </div>
         </div>
         <div class="field">
-          <label for="t-due">Fecha (opcional)</label>
+          <label for="t-due-btn">Fecha (opcional)</label>
           <div class="duerow">
-            <input id="t-due" type="date">
+            <input id="t-due" type="hidden">
+            <button type="button" class="ddbtn dpbtn" id="t-due-btn" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg><span class="ddtxt" id="t-due-txt">Sin fecha</span></button>
             <button type="button" class="btn mini" id="t-due-today">Hoy</button>
             <button type="button" class="btn mini" id="t-due-tom">Mañana</button>
             <button type="button" class="btn ghost mini" id="t-due-clear">Quitar fecha</button>
@@ -1486,16 +1529,96 @@ function setTaskDue(t, v){
   var n = Object.assign({}, t, { due: validDue(v) ? v : '' });
   upsertTask(n);
 }
+/* ---------- calendario propio ---------- */
+function monthLabel(y, m){
+  try{ var t = new Intl.DateTimeFormat('es', { month:'long', year:'numeric' }).format(new Date(y, m, 1)); return t.charAt(0).toUpperCase() + t.slice(1); }
+  catch(e){ return (m + 1) + '/' + y; }
+}
+function longDate(str){
+  var p = str.split('-');
+  try{ return new Intl.DateTimeFormat('es', { weekday:'long', day:'numeric', month:'long', year:'numeric' }).format(new Date(+p[0], +p[1] - 1, +p[2])); }
+  catch(e){ return str; }
+}
+function openDatePicker(btn, current, onPick){
+  if(openMenu && openMenu.btn === btn){ closeMenu(true); return; }
+  closeMenu(false);
+  var today = todayStr(), sel = validDue(current) ? current : '';
+  var focus = sel || today;                       /* día con el foco del teclado */
+  var vp = focus.split('-'), vy = +vp[0], vm = +vp[1] - 1;
+  var menu = h('div',{class:'dpick',role:'dialog','aria-label':'Elegir fecha'});
+  function pick(v){ closeMenu(true); onPick(v); }
+  function shiftMonth(n){
+    var d = new Date(vy, vm + n, 1); vy = d.getFullYear(); vm = d.getMonth();
+    var fp = focus.split('-'), day = Math.min(+fp[2], new Date(vy, vm + 1, 0).getDate());
+    focus = vy + '-' + pad2(vm + 1) + '-' + pad2(day);
+    draw(true);
+  }
+  function draw(keepFocus){
+    var had = keepFocus || menu.contains(document.activeElement);
+    menu.textContent = '';
+    var prev = iconBtn('chev','Mes anterior',function(){ shiftMonth(-1); }), next = iconBtn('chev','Mes siguiente',function(){ shiftMonth(1); });
+    prev.classList.add('dp-nav','dp-prev'); next.classList.add('dp-nav','dp-next');
+    menu.appendChild(h('div',{class:'dp-head'},[prev, h('div',{class:'dp-month','aria-live':'polite'}, monthLabel(vy, vm)), next]));
+    var wk = h('div',{class:'dp-week','aria-hidden':'true'});
+    ['L','M','X','J','V','S','D'].forEach(function(x){ wk.appendChild(h('span',null,x)); });
+    menu.appendChild(wk);
+    var grid = h('div',{class:'dp-grid',role:'grid'}), first = new Date(vy, vm, 1), off = (first.getDay() + 6) % 7;
+    for(var i = 0; i < 42; i++){
+      var d = new Date(vy, vm, 1 - off + i), ds = dateStr(d);
+      grid.appendChild(h('button',{type:'button','data-d':ds,tabindex:ds === focus ? '0' : '-1','aria-label':longDate(ds) + (ds === today ? ' (hoy)' : ''),'aria-pressed':ds === sel ? 'true' : 'false',
+        class:'dp-day' + (d.getMonth() !== vm ? ' out' : '') + (ds === today ? ' today' : '') + (ds === sel ? ' sel' : ''),
+        onclick:(function(v){ return function(){ pick(v); }; })(ds)}, String(d.getDate())));
+    }
+    menu.appendChild(grid);
+    menu.appendChild(h('div',{class:'dp-foot'},[
+      h('button',{type:'button',class:'btn mini',onclick:function(){ pick(today); }},'Hoy'),
+      h('button',{type:'button',class:'btn mini',onclick:function(){ pick(addDays(today, 1)); }},'Mañana'),
+      h('button',{type:'button',class:'btn ghost mini dp-clear',disabled:sel ? null : 'disabled',onclick:function(){ pick(''); }},'Quitar')
+    ]));
+    if(had){ var f = menu.querySelector('.dp-day[data-d="' + focus + '"]'); if(f) f.focus({ preventScroll:true }); }
+  }
+  menu.addEventListener('keydown', function(e){
+    var t = e.target;
+    if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); closeMenu(true); return; }
+    if(e.key === 'Tab'){ closeMenu(false); return; }
+    if(!t.classList || !t.classList.contains('dp-day')) return;
+    var step = { ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7 }[e.key], nd = null;
+    if(step) nd = addDays(focus, step);
+    else if(e.key === 'Home') nd = addDays(focus, -((new Date(+focus.slice(0,4), +focus.slice(5,7) - 1, +focus.slice(8)).getDay() + 6) % 7));
+    else if(e.key === 'End') nd = addDays(focus, 6 - ((new Date(+focus.slice(0,4), +focus.slice(5,7) - 1, +focus.slice(8)).getDay() + 6) % 7));
+    else if(e.key === 'PageUp' || e.key === 'PageDown'){ e.preventDefault(); shiftMonth(e.key === 'PageUp' ? -1 : 1); return; }
+    if(!nd) return;
+    e.preventDefault();
+    focus = nd;
+    var np = nd.split('-'); vy = +np[0]; vm = +np[1] - 1;
+    draw(true);
+  });
+  document.body.appendChild(menu);
+  draw(false);
+  /* el calendario sigue a su botón si la página se desplaza o cambia de tamaño, en vez de cerrarse */
+  function place(){
+    var r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    var w = Math.min(310, vw - 16);
+    menu.style.width = w + 'px';
+    var mh = menu.offsetHeight;
+    menu.style.left = Math.min(Math.max(8, r.left), Math.max(8, vw - w - 8)) + 'px';
+    var below = vh - r.bottom - 8, above = r.top - 8;
+    if(below >= mh || below >= above) menu.style.top = Math.max(8, Math.min(r.bottom + 6, vh - mh - 8)) + 'px';
+    else menu.style.top = Math.max(8, r.top - mh - 6) + 'px';
+  }
+  place();
+  btn.setAttribute('aria-expanded','true');
+  openMenu = { el:menu, btn:btn, reposition:place };
+  var f = menu.querySelector('.dp-day[data-d="' + focus + '"]'); if(f) f.focus({ preventScroll:true });
+}
 function dueChip(t){
   var info = dueInfo(t), wrap = h('span',{class:'due-wrap'});
   if(info.state === 'none' && t.done) return null;
-  var inp = h('input',{type:'date',class:'due-input',value:validDue(t.due) ? t.due : '',tabindex:'-1','aria-hidden':'true'});
-  inp.addEventListener('change', function(){ setTaskDue(t, inp.value); });
   var btn = h('button',{type:'button',class:'due due-' + (info.state === 'none' ? 'none' : info.state),
     'aria-label':info.state === 'none' ? 'Poner fecha a «' + t.text + '»' : 'Cambiar la fecha de «' + t.text + '»: ' + info.label,
-    onclick:function(){ try{ inp.showPicker(); }catch(e){ inp.focus(); inp.click(); } }},
+    'aria-haspopup':'dialog','aria-expanded':'false',onclick:function(e){ openDatePicker(e.currentTarget, t.due, function(v){ setTaskDue(t, v); }); }},
     info.state === 'none' ? [ico('cal'), '+ Fecha'] : [ico(info.state === 'late' ? 'alert' : 'cal'), info.label]);
-  wrap.appendChild(inp); wrap.appendChild(btn);
+  wrap.appendChild(btn);
   if(info.state !== 'none'){
     var x = iconBtn('x','Quitar la fecha',function(){ setTaskDue(t, ''); });
     x.classList.add('due-x');
@@ -1519,7 +1642,20 @@ function renderHead(){
   var title = isToday() ? 'Hoy' : (tg ? '#' + tg : (state.folder === 'none' ? 'Sin carpeta' : (f ? f.name : (tv ? 'Todas las tareas' : 'Todos los guardados'))));
   var items = viewItems().filter(function(x){ return inS(x.folderId) && (!tg || (x.tags || []).indexOf(tg) >= 0); });
   var n = items.length, open = items.filter(function(x){ return !x.done; }).length;
-  var up = (f && f.parentId && folderById(f.parentId)) ? pathOf(folderById(f.parentId)) + ' · ' : '';
+  var up = '';
+  var cr = $('crumbs'), trail = [];
+  if(f){ var c = f, g = 0; while(c && c.parentId && folderById(c.parentId) && g++ < 20){ c = folderById(c.parentId); trail.unshift(c); } }
+  cr.textContent = '';
+  if(state.folder !== 'all' || tg){
+    var mk = function(label, key){
+      var b = h('button',{type:'button','data-crumb':key,'aria-label':'Ir a ' + label}, label);
+      return b;
+    };
+    cr.appendChild(mk(tv ? 'Todas las tareas' : 'Todos', 'all'));
+    trail.forEach(function(t){ cr.appendChild(h('span',{class:'sep','aria-hidden':'true'},'›')); cr.appendChild(mk(t.name, t.id)); });
+    if(tg && state.folder !== 'all'){ cr.appendChild(h('span',{class:'sep','aria-hidden':'true'},'›')); }
+    cr.hidden = false;
+  } else cr.hidden = true;
   $('viewTitle').textContent = title;
   if(isToday()){
     var sc = items.filter(function(x){ var s = dueInfo(x).state; return s === 'late' || s === 'today'; }), lt = lateCount(sc), td = sc.filter(function(x){ return dueInfo(x).state === 'today'; }).length;
@@ -1532,6 +1668,13 @@ function renderHead(){
   $('viewSub').textContent = !n ? up.replace(/ · $/, '') : up + (tv ? plural(n,'tarea','tareas') + ' · ' + open + (open === 1 ? ' pendiente' : ' pendientes') : plural(n,'guardado','guardados') + ' · ' + open + ' por ver');
 }
 function td0(){ return isToday(); }
+window.matchMedia('(max-width:820px)').addEventListener('change', function(){ renderViews(); });
+$('crumbs').addEventListener('click', function(e){
+  var b = e.target.closest('button[data-crumb]'); if(!b) return;
+  var k = b.getAttribute('data-crumb');
+  if(state.tag && k === 'all'){ clearTag(); return; }
+  selectFolder(k);
+});
 function renderViews(){
   var t = state.view === 'tasks';
   document.body.classList.toggle('view-tasks', t);
@@ -1552,7 +1695,8 @@ function renderViews(){
   $('pendingBtn').textContent = t ? 'Solo pendientes' : 'Solo por ver';
   $('pendingBtn').title = $('pendingBtn').textContent;
   $('selBtn').hidden = t;
-  $('q').placeholder = t ? 'Buscar tareas' : 'Buscar por título, nota o etiqueta';
+  var sm = window.matchMedia('(max-width:820px)').matches;
+  $('q').placeholder = t ? 'Buscar tareas' : (sm ? 'Buscar…' : 'Buscar por título, nota o etiqueta');
   $('fab').textContent = t ? '+ Nueva tarea' : '+ Añadir enlace';
   $('sortWrap').hidden = t;
   $('tagbar').hidden = t || !state.tag;
@@ -1662,7 +1806,6 @@ function renderChips(){
   var hasOrphans = items.some(function(x){ return !folderById(x.folderId); });
   if(hasOrphans) box.appendChild(chip('none','Sin carpeta',items.filter(function(x){ return (!tv || !x.done) && !folderById(x.folderId); }).length,null));
   Array.prototype.forEach.call(box.children, function(c, i){ c.style.setProperty('--i', i); });
-  $('menuBtn').classList.toggle('on', state.folder !== 'all');
 }
 function renderSubnav(){
   var box = $('subnav');
@@ -2008,6 +2151,15 @@ function renderTasks(){
   }
 }
 var tel = { text:$('t-text'), folder:$('t-folder'), link:$('t-link'), due:$('t-due'), err:$('t-error') };
+function syncDueBtn(){
+  var v = validDue(tel.due.value) ? tel.due.value : '';
+  if(!v) tel.due.value = '';
+  $('t-due-txt').textContent = v ? (daysUntil(v) === 0 ? 'Hoy' : daysUntil(v) === 1 ? 'Mañana' : longDate(v)) : 'Sin fecha';
+  $('t-due-btn').classList.toggle('empty-val', !v);
+}
+$('t-due-btn').addEventListener('click', function(e){
+  openDatePicker(e.currentTarget, tel.due.value, function(v){ tel.due.value = v; syncDueBtn(); });
+});
 function syncFab(){ $('fab').hidden = !$('composer').hidden || !$('taskComposer').hidden || state.selMode; }
 function fillTaskLinks(){
   var fid = tel.folder.value, prev = tel.link.value;
@@ -2031,6 +2183,7 @@ function openTaskComposer(pre){
   if(pre.linkId){ tel.link.value = pre.linkId; if(tel.link.selectedIndex < 0) tel.link.selectedIndex = 0; }
   tel.text.value = '';
   tel.due.value = validDue(pre.due) ? pre.due : '';
+  syncDueBtn();
   tel.err.textContent = '';
   $('taskComposer').hidden = false;
   $('fab').hidden = true;
@@ -2081,9 +2234,9 @@ $('viewTasks').addEventListener('click', function(){ setView('tasks', false); })
 $('viewToday').addEventListener('click', function(){ setView('tasks', true); });
 tel.folder.addEventListener('change', fillTaskLinks);
 $('t-cancel').addEventListener('click', closeTaskComposer);
-$('t-due-today').addEventListener('click', function(){ tel.due.value = todayStr(); });
-$('t-due-tom').addEventListener('click', function(){ tel.due.value = addDays(todayStr(), 1); });
-$('t-due-clear').addEventListener('click', function(){ tel.due.value = ''; });
+$('t-due-today').addEventListener('click', function(){ tel.due.value = todayStr(); syncDueBtn(); });
+$('t-due-tom').addEventListener('click', function(){ tel.due.value = addDays(todayStr(), 1); syncDueBtn(); });
+$('t-due-clear').addEventListener('click', function(){ tel.due.value = ''; syncDueBtn(); });
 $('taskForm').addEventListener('submit', function(e){
   e.preventDefault();
   var text = tel.text.value.trim().slice(0,140);
@@ -2355,8 +2508,12 @@ function closeMenu(refocus){
 document.addEventListener('mousedown', function(e){
   if(openMenu && !openMenu.el.contains(e.target) && !openMenu.btn.contains(e.target)) closeMenu(false);
 });
-window.addEventListener('resize', function(){ closeMenu(false); });
-window.addEventListener('scroll', function(e){ if(openMenu && !openMenu.el.contains(e.target)) closeMenu(false); }, true);
+window.addEventListener('resize', function(){ if(openMenu && openMenu.reposition) openMenu.reposition(); else closeMenu(false); });
+window.addEventListener('scroll', function(e){
+  if(!openMenu || openMenu.el.contains(e.target)) return;
+  if(openMenu.reposition){ if(openMenu.btn.isConnected) openMenu.reposition(); else closeMenu(false); }
+  else closeMenu(false);
+}, true);
 function enhance(sel, opts){
   opts = opts || {};
   var dv = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value');
