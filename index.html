@@ -763,6 +763,11 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
 .prof-danger[open] summary{opacity:1;color:var(--danger)}
 .prof-danger .hint{margin:6px 0 12px;min-height:0}
 .dlg.sheet{gap:10px}
+.fs{display:flex;flex-direction:column;gap:10px}
+.fs-inline{margin-top:8px;padding:12px;border-radius:16px;background:rgba(255,255,255,.7);border:1px solid var(--edge);animation:fade .22s var(--ease)}
+.fs-inline .fs-list{max-height:min(34vh,260px)}
+.field label .opt{text-transform:none;letter-spacing:.02em;font-weight:400;opacity:.8}
+.imgpos{margin:0}
 .fs-path{margin:0;font:600 14px/1.3 var(--f-sub);letter-spacing:.04em;color:var(--ink-soft)}
 .fs-list{display:flex;flex-direction:column;gap:2px;max-height:min(52vh,420px);overflow-y:auto;margin:0 -6px;padding:2px 6px}
 .fs-row,.fs-back{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 12px;border:0;border-radius:14px;background:transparent;cursor:pointer;text-align:left;font:500 15.5px/1.2 var(--f-body);color:var(--ink);transition:background .2s}
@@ -1032,40 +1037,34 @@ body.modal-open{overflow:hidden}
           <div class="dup" id="f-dup" role="status" hidden></div>
         </div>
         <div class="field">
-          <label for="f-imgbtn">Imagen</label>
+          <label for="f-title">Título</label>
+          <input id="f-title" type="text" maxlength="120" autocomplete="off" placeholder="Opcional. Por ejemplo: 5 webs para aprender a programar">
+        </div>
+        <div class="field">
+          <label for="f-folder">Carpeta</label>
+          <select id="f-folder"></select>
+        </div>
+        <div class="field">
+          <label for="f-tags">Etiquetas</label>
+          <input id="f-tags" type="text" autocomplete="off" placeholder="html, css, gratis">
+        </div>
+        <div class="field">
+          <label for="f-note">Nota</label>
+          <textarea id="f-note" maxlength="500" placeholder="Qué te interesó de este enlace"></textarea>
+        </div>
+        <div class="field">
+          <label for="f-imgbtn">Imagen <span class="opt">(opcional)</span></label>
           <div class="imgfield" id="f-imgbox">
             <div class="imgprev" id="f-imgprev" hidden>
               <img id="f-imgimg" alt="Vista previa del guardado">
               <div class="imgframe" id="f-imgframe" hidden></div>
               <button type="button" class="ib sm" id="f-imgdel" aria-label="Quitar imagen" title="Quitar imagen"></button>
             </div>
-            <div class="imgpos" id="f-imgpos" hidden>
-              <label for="f-imgy">Parte que se ve en la tarjeta</label>
-              <input type="range" id="f-imgy" min="0" max="100" step="1" value="50" aria-label="Parte de la imagen que se ve en la tarjeta, de arriba a abajo">
-              <p class="hint">Arrastra el recuadro o usa el deslizador para elegir qué parte se ve: arriba, en medio o abajo.</p>
-            </div>
+            <p class="hint imgpos" id="f-imgpos" hidden>Arrastra sobre la foto para elegir qué parte se ve en la tarjeta.</p>
             <div class="row-btns"><button type="button" class="btn mini" id="f-imgbtn">Subir foto</button><button type="button" class="btn mini" id="f-imgauto" hidden>Buscar del enlace</button></div>
             <p class="hint" id="f-imghint"></p>
             <input type="file" id="f-imgfile" accept="image/*" hidden>
           </div>
-        </div>
-        <div class="field">
-          <label for="f-title">Título</label>
-          <input id="f-title" type="text" maxlength="120" autocomplete="off" placeholder="Opcional. Por ejemplo: 5 webs para aprender a programar">
-        </div>
-        <div class="row2">
-          <div class="field">
-            <label for="f-folder">Carpeta</label>
-            <select id="f-folder"></select>
-          </div>
-          <div class="field">
-            <label for="f-tags">Etiquetas</label>
-            <input id="f-tags" type="text" autocomplete="off" placeholder="html, css, gratis">
-          </div>
-        </div>
-        <div class="field">
-          <label for="f-note">Nota</label>
-          <textarea id="f-note" maxlength="500" placeholder="Qué te interesó de este enlace"></textarea>
         </div>
         <p class="error" id="f-error" role="alert"></p>
         <div class="row-btns">
@@ -2594,6 +2593,7 @@ $('taskForm').addEventListener('submit', function(e){
 var el = { url:$('f-url'), title:$('f-title'), folder:$('f-folder'), tags:$('f-tags'), note:$('f-note'), err:$('f-error'), plat:$('f-platform'), dup:$('f-dup') };
 function openComposer(link){
   closeTaskComposer();
+  (function(w){ if(w && w._closeInline) w._closeInline(false); })(el.folder.parentNode);
   state.editing = link ? link.id : null;
   state.dupOk = false;
   $('composerTitle').textContent = link ? 'Editar guardado' : 'Nuevo guardado';
@@ -2852,7 +2852,7 @@ window.addEventListener('scroll', function(e){
   else closeMenu(false);
 }, true);
 /* selector de carpeta por niveles: tocas una carpeta (se marca y, si tiene subcarpetas, se muestran), y no se aplica hasta pulsar «Aceptar» */
-function openFolderSheet(sel, btn, apply){
+function buildFolderPicker(sel, done){
   var allowed = {}, noneVal = '';
   Array.prototype.forEach.call(sel.options, function(o){
     if(o.value === '' || o.value === '__none') noneVal = o.value; else allowed[o.value] = true;
@@ -2861,20 +2861,14 @@ function openFolderSheet(sel, btn, apply){
   function kids(pid){ return kidsOf(pid).filter(function(f){ return allowed[f.id]; }); }
   var lvl = '';
   if(pending){ lvl = kids(pending).length ? pending : (folderById(pending).parentId || ''); if(lvl && !allowed[lvl]) lvl = ''; }
-  var prev = document.activeElement, scrim = h('div',{class:'dlg-scrim sheet'}), list = h('div',{class:'fs-list',role:'listbox'});
-  var pathEl = h('p',{class:'fs-path'}), titleEl = h('h2',{id:'fs-title'},'Elegir carpeta');
-  var bOk = h('button',{type:'button',class:'btn primary',onclick:function(){ close(); apply(pending || noneVal); }},'Aceptar');
-  var bCan = h('button',{type:'button',class:'btn',onclick:function(){ close(); }},'Cancelar');
-  function close(){
-    document.removeEventListener('keydown', onKey, true);
-    scrim.remove();
-    if(prev && prev.focus) prev.focus({ preventScroll:true });
-  }
+  var list = h('div',{class:'fs-list',role:'listbox'}), pathEl = h('p',{class:'fs-path'});
+  var bOk = h('button',{type:'button',class:'btn primary',onclick:function(){ done(pending || noneVal); }},'Aceptar');
+  var bCan = h('button',{type:'button',class:'btn',onclick:function(){ done(null); }},'Cancelar');
   function row(f, label, opt){
     var on = (f ? f.id : '') === pending;
     var n = (f && !opt.noGo) ? kids(f.id).length : 0;
-    return h('button',{type:'button',class:'fs-row' + (on ? ' on' : '') + (opt.cls ? ' ' + opt.cls : ''),role:'option','aria-selected':on ? 'true' : 'false',onclick:opt.go},[
-      opt.noDot ? null : mkDot(f),
+    return h('button',{type:'button',class:'fs-row' + (on ? ' on' : ''),role:'option','aria-selected':on ? 'true' : 'false',onclick:opt.go},[
+      mkDot(f),
       h('span',{class:'ddl'},label),
       on ? ico('check') : null,
       n ? h('span',{class:'fs-go','aria-hidden':'true'},[ico('chev')]) : null
@@ -2894,10 +2888,42 @@ function openFolderSheet(sel, btn, apply){
     kids(lvl).forEach(function(k){
       list.appendChild(row(k, k.name, { go:function(){ pending = k.id; if(kids(k.id).length) lvl = k.id; draw(); } }));
     });
-    var focus = list.querySelector('.fs-row.on') || list.querySelector('.fs-row');
-    if(focus) focus.focus({ preventScroll:true });
+  }
+  function focusRow(){
+    var f = list.querySelector('.fs-row.on') || list.querySelector('.fs-row');
+    if(f) f.focus({ preventScroll:true });
     var on = list.querySelector('.fs-row.on'); if(on && on.scrollIntoView) on.scrollIntoView({ block:'nearest' });
   }
+  draw();
+  return { root:h('div',{class:'fs'},[pathEl, list, h('div',{class:'row-btns'},[bOk, bCan])]), focus:focusRow };
+}
+/* desplegable dentro del propio formulario (sin ventanas encima) */
+function toggleFolderInline(sel, btn, wrap, apply){
+  if(wrap._fsPanel){ wrap._closeInline(true); return; }
+  var picker = buildFolderPicker(sel, function(v){ wrap._closeInline(true); if(v !== null) apply(v); });
+  var panel = h('div',{class:'fs-inline'},[picker.root]);
+  panel.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); wrap._closeInline(true); }
+  });
+  wrap._closeInline = function(refocus){
+    if(wrap._fsPanel){ wrap._fsPanel.remove(); wrap._fsPanel = null; }
+    btn.setAttribute('aria-expanded','false');
+    if(refocus) btn.focus({ preventScroll:true });
+  };
+  wrap._fsPanel = panel;
+  wrap.appendChild(panel);
+  btn.setAttribute('aria-expanded','true');
+  picker.focus();
+  if(panel.scrollIntoView) panel.scrollIntoView({ block:'nearest', behavior: reduced ? 'auto' : 'smooth' });
+}
+function openFolderSheet(sel, btn, apply){
+  var prev = document.activeElement, scrim = h('div',{class:'dlg-scrim sheet'});
+  function close(){
+    document.removeEventListener('keydown', onKey, true);
+    scrim.remove();
+    if(prev && prev.focus) prev.focus({ preventScroll:true });
+  }
+  var picker = buildFolderPicker(sel, function(v){ close(); if(v !== null) apply(v); });
   function onKey(e){
     if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); close(); return; }
     if(e.key !== 'Tab') return;
@@ -2906,14 +2932,13 @@ function openFolderSheet(sel, btn, apply){
     f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
   }
   var dlg = h('div',{class:'dlg sheet',role:'dialog','aria-modal':'true','aria-labelledby':'fs-title'},[
-    titleEl, pathEl, list,
-    h('div',{class:'row-btns'},[bOk, bCan])
+    h('h2',{id:'fs-title'},'Elegir carpeta'), picker.root
   ]);
   scrim.appendChild(dlg);
   scrim.addEventListener('mousedown', function(e){ if(e.target === scrim) close(); });
   document.addEventListener('keydown', onKey, true);
   document.body.appendChild(scrim);
-  draw();
+  picker.focus();
 }
 function enhance(sel, opts){
   opts = opts || {};
@@ -2942,7 +2967,11 @@ function enhance(sel, opts){
   }
   function open(){
     closeMenu(false);
-    if(opts.tree){ openFolderSheet(sel, btn, function(v){ sel.value = v; sel.dispatchEvent(new Event('change',{ bubbles:true })); }); return; }
+    if(opts.tree){
+      var ap = function(v){ sel.value = v; sel.dispatchEvent(new Event('change',{ bubbles:true })); };
+      if(opts.inline) toggleFolderInline(sel, btn, wrap, ap); else openFolderSheet(sel, btn, ap);
+      return;
+    }
     var r = btn.getBoundingClientRect(), cur = sel.value;
     var menu = h('div',{class:'ddmenu',role:'listbox'});
     Array.prototype.forEach.call(sel.options, function(o){
@@ -2996,7 +3025,7 @@ function enhance(sel, opts){
   sync();
   return wrap;
 }
-enhance($('f-folder'),{ dots:true, tree:true });
+enhance($('f-folder'),{ dots:true, tree:true, inline:true });
 enhance($('t-folder'),{ dots:true, tree:true });
 enhance($('t-link'));
 /* ordenar los guardados: por fecha o por nombre (los fijados siempre quedan arriba) */
@@ -3983,7 +4012,6 @@ function layoutFrame(){
   if(!ok) return;
   fr.style.height = fh + 'px';
   fr.style.top = (state.draftImageY / 100 * (hh - fh)) + 'px';
-  $('f-imgy').value = String(state.draftImageY);
 }
 function setDraftImageY(y){
   y = Math.max(0, Math.min(100, Math.round(Number(y))));
@@ -3992,7 +4020,6 @@ function setDraftImageY(y){
 }
 $('f-imgimg').addEventListener('load', layoutFrame);
 window.addEventListener('resize', layoutFrame);
-$('f-imgy').addEventListener('input', function(e){ setDraftImageY(e.target.value); });
 (function(){
   var box = $('f-imgprev'), fr = $('f-imgframe'), drag = null;
   function move(e){
