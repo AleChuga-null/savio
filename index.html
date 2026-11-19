@@ -844,6 +844,16 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
   .calside{position:static}
   .cal-day{min-height:46px}
 }
+/* ---- formulario de guardado como ventana emergente ---- */
+.modal-scrim{position:fixed;inset:0;z-index:80;background:rgba(13,43,36,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:scrimIn .2s ease}
+@keyframes scrimIn{from{opacity:0}to{opacity:1}}
+#composer{position:fixed;z-index:81;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,calc(100vw - 24px));max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;
+  background:rgba(246,252,252,.97);box-shadow:0 28px 70px -16px rgba(13,43,36,.6),inset 0 1px 0 rgba(255,255,255,.9);animation:popIn .26s var(--ease)}
+#composer:not([hidden]){display:flex}
+@keyframes popIn{from{opacity:0;transform:translate(-50%,-47%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+body.modal-open{overflow:hidden}
+@media (max-width:820px){#composer{padding:18px 16px;border-radius:22px}}
+@media (prefers-reduced-motion:reduce){#composer,.modal-scrim{animation:none}}
 </style>
 
 </head>
@@ -1011,7 +1021,8 @@ body.lp-hold .card{-webkit-user-select:none;user-select:none}
     <p class="count sr" id="count"></p>
     <p class="status" id="status" role="status" hidden></p>
 
-    <section class="panel" id="composer" hidden aria-labelledby="composerTitle">
+    <div class="modal-scrim" id="composerScrim" hidden></div>
+    <section class="panel" id="composer" role="dialog" aria-modal="true" hidden aria-labelledby="composerTitle">
       <h2 id="composerTitle">Nuevo guardado</h2>
       <form id="linkForm" style="display:flex;flex-direction:column;gap:12px" novalidate>
         <div class="field">
@@ -2599,13 +2610,17 @@ function openComposer(link){
   if(link && typeof link.imageY === 'number') setDraftImageY(link.imageY);
   updatePlatform();
   $('composer').hidden = false;
+  $('composerScrim').hidden = false;
+  document.body.classList.add('modal-open');
+  $('composer').scrollTop = 0;
   layoutFrame();
   $('fab').hidden = true;
-  $('composer').scrollIntoView({ block:'start' });
   el.url.focus({ preventScroll:true });
 }
 function closeComposer(){
   $('composer').hidden = true;
+  $('composerScrim').hidden = true;
+  document.body.classList.remove('modal-open');
   syncFab();
   $('linkForm').reset();
   resetImgDraft('');
@@ -2712,6 +2727,7 @@ $('linkForm').addEventListener('submit', function(e){
   toast(wasEdit ? 'Cambios guardados' : (f ? 'Guardado en «' + f.name + '»' : 'Guardado'));
 });
 $('f-cancel').addEventListener('click', closeComposer);
+$('composerScrim').addEventListener('click', function(){ if(!el.url.value.trim() && !el.title.value.trim() && !el.note.value.trim() && !el.tags.value.trim()) closeComposer(); });
 $('fab').addEventListener('click', function(){
   closeProfile();
   if(state.view === 'tasks') openTaskComposer({ folderId: folderById(state.folder) ? state.folder : '', due: isToday() ? (state.calSel || todayStr()) : '' });
@@ -4525,7 +4541,6 @@ document.addEventListener('visibilitychange', function(){ if(!document.hidden) c
     if(share.title) el.title.value = share.title;
     el.url.dispatchEvent(new Event('input', { bubbles:true }));
     updatePlatform();
-    $('composer').scrollIntoView({ block:'start' });
     (share.title ? el.folder : el.title).focus({ preventScroll:true });
   }, 250);
 })();
